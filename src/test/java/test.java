@@ -1,3 +1,4 @@
+import com.ylinor.brawlator.Brawlator;
 import com.ylinor.brawlator.MonsterAction;
 import com.ylinor.brawlator.data.beans.MonsterBean;
 import com.ylinor.brawlator.data.beans.MonsterBuilder;
@@ -9,11 +10,7 @@ import java.util.Optional;
 
 public class test {
 
-    @Test
-  public void test(){
-        SqliteHandler.testConnection();
-    }
-    @Test
+ /*   @Test
     public void insertMonster(){
 
         MonsterDAO monsterDAO = new MonsterDAO();
@@ -26,5 +23,9 @@ public class test {
     public void getmonster(){
         Optional<MonsterBean> monster = MonsterAction.getMonster(1);
        System.out.print(monster.get().getName());
+    }*/
+    @Test
+    public void testConnection(){
+        Brawlator.testConnection();
     }
 }

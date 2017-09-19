@@ -30,6 +30,9 @@ repositories {
 dependencies {
     compile 'org.spongepowered:spongeapi:6.0.0'
     compile 'org.xerial:sqlite-jdbc:3.7.2'
+    compile 'com.j256.ormlite:ormlite-jdbc:5.0'
+    compile 'org.slf4j:slf4j-api:1.7.5'
+    compile 'org.slf4j:slf4j-log4j12:1.7.5'
     testCompile "junit:junit:4.11"
 }
 sonarqube {
@@ -37,6 +40,6 @@ sonarqube {
         property "sonar.projectName", "Brawlator"
         property "sonar.organization", "ylinor-github"
         property "sonar.host.url", "https://sonarcloud.io/"
-        property "sonar.login", "=== YOUR SONARCLOUD KEY HERE ==="
+        property "sonar.login", "dd396ee75825a9f0334d9bccf4adfafe403a8b24"
     }
 }

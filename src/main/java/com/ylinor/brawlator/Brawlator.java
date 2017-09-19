@@ -3,17 +3,17 @@ package com.ylinor.brawlator;
 import javax.inject.Inject;
 
 
-import com.ylinor.brawlator.commands.InvokeCommand;
-import com.ylinor.brawlator.commands.database.SelectMonsterCommand;
-import com.ylinor.brawlator.data.handler.SqliteHandler;
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
+import com.ylinor.brawlator.data.beans.Monster;
 import org.slf4j.Logger;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.command.args.GenericArguments;
-import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
-import org.spongepowered.api.text.Text;
+
 
 @Plugin(id = "brawlator", name = "Brawlator", version = "0.0.1")
 public class Brawlator {
@@ -24,7 +24,10 @@ public class Brawlator {
 	public void onServerStart(GameStartedServerEvent event) {
 		logger.info("Brawlator plugin initialized.");
 
-		SqliteHandler.testConnection();
+		testConnection();
+
+
+		/*SqliteHandler.testConnection();
 
 		/// Commandes du plugin
 
@@ -45,6 +48,32 @@ public class Brawlator {
                 .description(Text.of("Query database about monsters"))
                 .child(monsterSelect, "select").build();
         Sponge.getCommandManager().register(this, monsterDatabase, "monsters");
-
+*/
 	}
+
+	public static void testConnection(){
+		try {
+			// this uses h2 by default but change to match your database
+			String databaseUrl = "jdbc:sqlite:browlator.db";
+			// create a connection source to our database
+			ConnectionSource connectionSource =
+					new JdbcConnectionSource(databaseUrl);
+
+			// instantiate the dao
+			Dao<Monster, String> accountDao =
+					DaoManager.createDao(connectionSource, Monster.class);
+
+
+			// if you need to create the 'accounts' table make this call
+			TableUtils.createTableIfNotExists(connectionSource, Monster.class);
+			Monster monster = new Monster(1,"Skeleton",30);
+
+// persist the account object to the database
+			accountDao.create(monster);
+
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 }
