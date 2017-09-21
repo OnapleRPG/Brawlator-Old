@@ -1,30 +1,43 @@
+import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
 import com.ylinor.brawlator.MonsterAction;
 import com.ylinor.brawlator.data.beans.MonsterBean;
 import com.ylinor.brawlator.data.beans.MonsterBuilder;
+import com.ylinor.brawlator.data.beans.TestBean;
 import com.ylinor.brawlator.data.dao.MonsterDAO;
 import com.ylinor.brawlator.data.handler.SqliteHandler;
 import org.junit.Test;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Optional;
 
 public class test {
 
     @Test
   public void test(){
-        SqliteHandler.testConnection();
-    }
-    @Test
-    public void insertMonster(){
+        ConnectionSource connectionSource = null;
+        try {
+           /* Statement stmt = connection.createStatement();
 
-        MonsterDAO monsterDAO = new MonsterDAO();
-        MonsterBean monsterBean = new MonsterBuilder().name("Archer Myope").type("skeleton")
-                .effect("FIRE_RESISTANCE",99999 ,5)//.effect("INVISIBILITY",99999,1)
-                .build();
-        monsterDAO.insert(monsterBean);
+            stmt.execute(MonsterDAO.tableCreation);
+            stmt.execute(EffectDAO.tableCreation);*/
+
+            // create our data-source for the database
+            connectionSource = new JdbcConnectionSource("jdbc:sqlite:test.db");
+            TableUtils.createTable(connectionSource, TestBean.class);
+
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        // SqliteHandler.getConnection();
     }
     @Test
-    public void getmonster(){
-        Optional<MonsterBean> monster = MonsterAction.getMonster(1);
-       System.out.print(monster.get().getName());
+    public void testbdd() {
+    SqliteHandler.getConnection();
     }
 }
+
+

@@ -1,28 +1,47 @@
 package com.ylinor.brawlator.data.beans;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.EntityTypes;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.HashMap;
 import java.util.List;
-
+@DatabaseTable(tableName = "monster")
 public class MonsterBean {
+
     /** Id du monstre dans la base de données **/
+    @DatabaseField(id=true)
     private int id;
+
     /** Nom affiché au dessus du monstre **/
+    @DatabaseField
     private String name;
+
     /** Type de monstre **/
+    @DatabaseField
     private String type;
     /** Points de vie du monstre **/
+    @DatabaseField
     private double hp;
     /** Vitesse du monstre **/
+    @DatabaseField
     private double speed;
     /**Dommage de base du monstre**/
+    @DatabaseField
     private double attackDamage;
     /** Resistance à la poussée **/
+    @DatabaseField
     private int knockbackResistance;
+
     /** Effets appliquer au monstre **/
     private List<EffectBean> effectLists;
+
+    public MonsterBean() {
+    }
 
 
     public int getId() {
@@ -40,7 +59,7 @@ public class MonsterBean {
     public double getSpeed() { return speed; }
     public double getAttackDamage() { return attackDamage; }
     public int getKnockbackResistance() { return knockbackResistance; }
-    public List<EffectBean> getEffectLists() { return effectLists; }
+   public List<EffectBean> getEffectLists() { return effectLists; }
 
     public static HashMap<String, EntityType> getMonsterTypes() { return monsterTypes; }
 
@@ -66,7 +85,7 @@ public class MonsterBean {
         this.speed = speed;
         this.attackDamage = attackDamage;
         this.knockbackResistance = knockbackResistance;
-        this.effectLists = effectLists;
+  //      this.effectLists = effectLists;
     }
 
 
