@@ -3,28 +3,60 @@ package com.ylinor.brawlator;
 import javax.inject.Inject;
 
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.jdbc.JdbcConnectionSource;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
-import com.ylinor.brawlator.data.beans.Monster;
+import com.google.common.reflect.TypeToken;
+import com.ylinor.brawlator.data.beans.MonsterBean;
+import com.ylinor.brawlator.data.handler.ConfigurationHandler;
+import ninja.leaping.configurate.ConfigurationNode;
+import ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
+import ninja.leaping.configurate.loader.ConfigurationLoader;
+import ninja.leaping.configurate.objectmapping.ObjectMappingException;
+import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
 import org.slf4j.Logger;
+import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
+
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
 
 @Plugin(id = "brawlator", name = "Brawlator", version = "0.0.1")
 public class Brawlator {
 	@Inject
 	private Logger logger;
-	
+
+
+	@Inject
+	@ConfigDir(sharedRoot=true)
+	private Path configDir;
+
+	private CommentedConfigurationNode monster;
+
 	@Listener
 	public void onServerStart(GameStartedServerEvent event) {
+
+
 		logger.info("Brawlator plugin initialized.");
 
-		testConnection();
+		 monster = loadConfiguration("monster.conf");
+		TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(MonsterBean.class), new MonsterSerializer());
+		try {
+			List<MonsterBean> monsterList = monster.getNode("monster").getList(TypeToken.of(MonsterBean.class));
+			for (MonsterBean monsterBean: monsterList
+				 ) {
+				logger.info(monsterBean.getName());
+			}
+		} catch (ObjectMappingException e) {
+			e.printStackTrace();
+		}
+
+
+
 
 
 		/*SqliteHandler.testConnection();
@@ -50,30 +82,15 @@ public class Brawlator {
         Sponge.getCommandManager().register(this, monsterDatabase, "monsters");
 */
 	}
-
-	public static void testConnection(){
+	private CommentedConfigurationNode loadConfiguration(String configName) {
+		ConfigurationLoader<CommentedConfigurationNode> configLoader = HoconConfigurationLoader.builder().setPath(Paths.get(configDir+"/"+configName)).build();
+		CommentedConfigurationNode configNode = null;
 		try {
-			// this uses h2 by default but change to match your database
-			String databaseUrl = "jdbc:sqlite:browlator.db";
-			// create a connection source to our database
-			ConnectionSource connectionSource =
-					new JdbcConnectionSource(databaseUrl);
-
-			// instantiate the dao
-			Dao<Monster, String> accountDao =
-					DaoManager.createDao(connectionSource, Monster.class);
-
-
-			// if you need to create the 'accounts' table make this call
-			TableUtils.createTableIfNotExists(connectionSource, Monster.class);
-			Monster monster = new Monster(1,"Skeleton",30);
-
-// persist the account object to the database
-			accountDao.create(monster);
-
-		} catch(Exception e) {
-			e.printStackTrace();
+			configNode = configLoader.load();
+		} catch (IOException e) {
+			logger.error("Error while loading configuration " + configName + " : " + e.getMessage());
 		}
+		return configNode;
 	}
 
 }
