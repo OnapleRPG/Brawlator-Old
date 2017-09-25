@@ -26,15 +26,15 @@ public class SelectMonsterCommand implements CommandExecutor {
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
 		if (src instanceof Player && ((Player) src).hasPermission("database_read")) {
-			int monsterId = (args.getOne("id").isPresent()) ? args.<Integer>getOne("id").get() : -1;
-			Optional<MonsterBean> monsterOptional = MonsterAction.getMonster(monsterId);
+			String monsterName = (args.getOne("name").isPresent()) ? args.<String>getOne("name").get() : "";
+			Optional<MonsterBean> monsterOptional = MonsterAction.getMonster(monsterName);
 			if(monsterOptional.isPresent()) {
 				MonsterBean monster = monsterOptional.get();
 				((Player) src).sendMessage(Text.of("MONSTER "+monster.getId()+" : "+monster.getName()+" | "+
 					monster.getType()+" | "+monster.getHp()+" | "+monster.getAttackDamage()+" | "+monster.getSpeed()+" | "+
 					monster.getKnockbackResistance()));
 			} else {
-				((Player) src).sendMessage(Text.of("MONSTER "+monsterId+" not found"));
+				((Player) src).sendMessage(Text.of("MONSTER "+ monsterName +" not found"));
 			}
 		}
 		return CommandResult.success();

@@ -67,7 +67,7 @@ public class Brawlator {
 
 		CommandSpec invoke = CommandSpec.builder()
                 .description(Text.of("Invoke a monster whose id is registered into the database"))
-				.arguments(GenericArguments.onlyOne(GenericArguments.integer(Text.of("id"))))
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("id"))))
 				.executor(new InvokeCommand()).build();
 		Sponge.getCommandManager().register(this, invoke, "invoke");
 

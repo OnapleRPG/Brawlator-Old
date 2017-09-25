@@ -32,7 +32,7 @@ public class InvokeCommand implements CommandExecutor {
 			World world = ((Player) src).getWorld();
 			Location location = ((Player) src).getLocation();
 
-				int monsterId = (args.getOne("id").isPresent()) ? args.<Integer>getOne("id").get() : -1;
+				String monsterId = (args.getOne("id").isPresent()) ? args.<String>getOne("id").get() : "";
 			List<MonsterBean> monsterBeanList = ConfigurationHandler.getMonsterList();
 			MonsterBean monster = monsterBeanList.get(0);
 			if(true/*monster.isPresent()*/) {

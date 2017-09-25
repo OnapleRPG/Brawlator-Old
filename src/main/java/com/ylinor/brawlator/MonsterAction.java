@@ -137,11 +137,11 @@ public class MonsterAction {
     /**
      * Requête le DAO pour récupérer un monstre de la BDD
      *
-     * @param id
+     * @param name
      * @return
      */
-    public static Optional<MonsterBean> getMonster(int id){
+    public static Optional<MonsterBean> getMonster(String name){
         MonsterDAO monsterDao = new MonsterDAO();
-        return monsterDao.getMonster(id);
+        return monsterDao.getMonster(name);
     }
 }
