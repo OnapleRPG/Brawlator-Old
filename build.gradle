@@ -31,8 +31,6 @@ dependencies {
     compile 'org.spongepowered:spongeapi:6.0.0'
     compile 'org.xerial:sqlite-jdbc:3.7.2'
     compile 'com.j256.ormlite:ormlite-jdbc:5.0'
-    compile 'org.slf4j:slf4j-api:1.7.5'
-    compile 'org.slf4j:slf4j-log4j12:1.7.5'
     testCompile "junit:junit:4.11"
 }
 sonarqube {
