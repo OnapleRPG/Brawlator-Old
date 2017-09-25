@@ -1,6 +1,7 @@
 package com.ylinor.brawlator.data.beans;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MonsterBuilder {
@@ -19,6 +20,8 @@ public class MonsterBuilder {
     private int knockbackResistance = 1;
 
     private List<EffectBean> effectList = new ArrayList<>();
+
+;    private HashMap<String,EquipementBean> equipement = new HashMap<>();
 
     public MonsterBuilder effect(String type, int duration, int amplifier){
         this.effectList.add(new EffectBean(type,duration,amplifier));
@@ -57,9 +60,13 @@ public class MonsterBuilder {
         this.knockbackResistance = knockbackResistance;
         return  this;
     }
+    public MonsterBuilder addEquipement(String emplacement,EquipementBean equipement){
+        this.equipement.put(emplacement,equipement);
+        return this;
+    }
 
     public MonsterBean build(){
-        return new MonsterBean(name,type,hp,speed,attackDamage,knockbackResistance,effectList);
+        return new MonsterBean(name,type,hp,speed,attackDamage,knockbackResistance,effectList,equipement);
     }
 
 }

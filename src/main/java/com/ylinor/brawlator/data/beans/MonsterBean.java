@@ -2,6 +2,7 @@ package com.ylinor.brawlator.data.beans;
 
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.EntityTypes;
+import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +24,9 @@ public class MonsterBean {
     private int knockbackResistance;
     /** Effets appliquer au monstre **/
     private List<EffectBean> effectLists;
+
+    /** Eqipement du monstre**/
+    private HashMap<String,EquipementBean> equipement;
 
 
     public int getId() {
@@ -59,7 +63,8 @@ public class MonsterBean {
     public void setKnockbackResistance(int knockbackResistance) { this.knockbackResistance = knockbackResistance; }
     public void setEffectLists(List<EffectBean> effectLists) { this.effectLists = effectLists; }
 
-    public MonsterBean(String name, String type, double hp, double speed, double attackDamage, int knockbackResistance, List<EffectBean> effectLists) {
+    public MonsterBean(String name, String type, double hp, double speed, double attackDamage, int knockbackResistance,
+                       List<EffectBean> effectLists,HashMap<String, EquipementBean> equipement) {
         this.name = name;
         this.type = type;
         this.hp = hp;
@@ -67,8 +72,16 @@ public class MonsterBean {
         this.attackDamage = attackDamage;
         this.knockbackResistance = knockbackResistance;
         this.effectLists = effectLists;
+        this.equipement = equipement;
     }
 
+    public void addEquipement(String emplacement,EquipementBean equipementBean){
+        this.equipement.put(emplacement,equipementBean);
+    }
+
+    public HashMap<String, EquipementBean> getEquipement() {
+        return equipement;
+    }
 
     public static final MonsterBuilder builder(){
         return new MonsterBuilder();

@@ -1,6 +1,7 @@
 package com.ylinor.brawlator;
 
 import com.ylinor.brawlator.data.beans.EffectBean;
+import com.ylinor.brawlator.data.beans.EquipementBean;
 import com.ylinor.brawlator.data.beans.MonsterBean;
 import com.ylinor.brawlator.data.dao.MonsterDAO;
 import org.spongepowered.api.data.key.Keys;
@@ -43,10 +44,7 @@ public class MonsterAction {
         entity = addEffects(entity, monster.getEffectLists());
         //  Gestion des objets appartenant au monstre
         if (entity instanceof ArmorEquipable) {
-            HashMap<String, ItemType> items = new HashMap<>();
-            items.put("hand", ItemTypes.WOODEN_SWORD);
-            items.put("helmet", ItemTypes.LEATHER_HELMET);
-            entity = (Entity)addItems((ArmorEquipable)entity, items);
+            entity = (Entity) equip((ArmorEquipable)entity,monster);
         }
         //  Spawn de l'entité dans le monde
         Cause cause = Cause.source(SpawnTypes.PLUGIN).build();
@@ -122,6 +120,17 @@ public class MonsterAction {
             }
         }
         return entity;
+    }
+
+    private static ArmorEquipable equip(ArmorEquipable entity, MonsterBean monster){
+        HashMap<String, ItemType> equipement = new HashMap<>();
+        for(Map.Entry<String,EquipementBean> entry : monster.getEquipement().entrySet()){
+           Optional<ItemType> itemType = EquipementAction.getEquipement(entry.getValue());
+           if(itemType.isPresent()){
+               equipement.put(entry.getKey(),itemType.get());
+           }
+        }
+       return addItems(entity,equipement);
     }
 
 
