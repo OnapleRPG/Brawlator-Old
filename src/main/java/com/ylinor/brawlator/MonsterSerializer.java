@@ -8,8 +8,10 @@ import com.ylinor.brawlator.data.beans.MonsterBuilder;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializer;
+import sun.awt.SunHints;
 
 import java.util.List;
+import java.util.Map;
 
 public class MonsterSerializer implements TypeSerializer<MonsterBean> {
 
@@ -65,7 +67,15 @@ public class MonsterSerializer implements TypeSerializer<MonsterBean> {
         @Override
         public void serialize(TypeToken<?> type, MonsterBean obj, ConfigurationNode value)
                 throws ObjectMappingException {
-            value.getNode("monster","name").setValue(obj.getName());
-            value.getNode("monster","hp").setValue(obj.getHp());
+            value.getNode("name").setValue(obj.getName());
+            value.getNode("hp").setValue( Math.floor(obj.getHp()));
+            value.getNode("type").setValue(obj.getType());
+            final TypeToken<List<EffectBean>> token = new TypeToken<List<EffectBean>>() {};
+            value.getNode("effects").setValue(token, obj.getEffectLists());
+
+
+            for (Map.Entry<String,EquipementBean>entry :obj.getEquipement().entrySet()) {
+                value.getNode("equipement",entry.getKey()).setValue(TypeToken.of(EquipementBean.class),entry.getValue());
+            }
         }
     }

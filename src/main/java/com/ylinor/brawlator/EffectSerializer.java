@@ -18,6 +18,8 @@ public class EffectSerializer implements TypeSerializer<EffectBean> {
 
     @Override
     public void serialize(TypeToken<?> type, EffectBean obj, ConfigurationNode value) throws ObjectMappingException {
-
+        value.getNode("type").setValue(obj.getType());
+        value.getNode("duration").setValue(obj.getDuration());
+        value.getNode("amplifier").setValue(obj.getAmplifier());
     }
 }

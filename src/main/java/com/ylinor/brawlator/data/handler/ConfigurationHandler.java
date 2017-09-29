@@ -1,6 +1,7 @@
 package com.ylinor.brawlator.data.handler;
 
 import com.google.common.reflect.TypeToken;
+import com.ylinor.brawlator.Brawlator;
 import com.ylinor.brawlator.EffectSerializer;
 import com.ylinor.brawlator.EquipementSerialiser;
 import com.ylinor.brawlator.MonsterSerializer;
@@ -8,6 +9,7 @@ import com.ylinor.brawlator.data.beans.EffectBean;
 import com.ylinor.brawlator.data.beans.EquipementBean;
 import com.ylinor.brawlator.data.beans.MonsterBean;
 import com.ylinor.brawlator.data.beans.MonsterBuilder;
+import com.ylinor.brawlator.data.dao.MonsterDAO;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
@@ -23,6 +25,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ConfigurationHandler {
 
@@ -31,53 +34,42 @@ public class ConfigurationHandler {
     @Inject
     private Logger logger;
 
-    private static List<MonsterBean> monsterList;
-    private static CommentedConfigurationNode monster;
 
-    public static List<MonsterBean> getMonsterList(){
-        return monsterList;
-    }
+    private static CommentedConfigurationNode monster;
 
     public static void setConfiguration(CommentedConfigurationNode commentedConfigurationNode){
         monster = commentedConfigurationNode;
     }
 
-    public static void createMonsterList(){
-        monsterList = new ArrayList<>();
-        TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(MonsterBean.class), new MonsterSerializer());
-        TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(EffectBean.class), new EffectSerializer());
-        TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(EquipementBean.class), new EquipementSerialiser());
+    public static Optional<List<MonsterBean>> getMonsterList(){
 
         try {
-            monsterList = monster.getNode("monster").getList(TypeToken.of(MonsterBean.class));
-
-            for (MonsterBean monster:monsterList
-                 ) {
-                System.out.println(monster.getName());
-
+            List<MonsterBean> list = monster.getNode("monster").getList(TypeToken.of(MonsterBean.class));
+            if (!list.isEmpty()) {
+               return Optional.of(list);
             }
-        } catch (ObjectMappingException e) {
+            return Optional.empty();
+            }
+            catch (Exception e) {
             e.printStackTrace();
+            return Optional.empty();
         }
+
     }
 
-  /*  public CommentedConfigurationNode getMonster() {
-        return monster;
-    }
-    public void createMonster(){
-        monster = loadConfiguration("monster.conf");
-
-        TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(MonsterBean.class), new MonsterSerializer());
-        ConfigurationNode targetNode = monster.getNode("monster");
-
+    public static void serializeMonsterList(List<MonsterBean> monsterList){
+        final TypeToken<List<MonsterBean>> token = new TypeToken<List<MonsterBean>>() {};
         try {
-           MonsterBean monsterBean = targetNode.getValue(TypeToken.of(MonsterBean.class));
-            logger.info(monsterBean.getName());
+
+            monster.getNode("monster").setValue(token, monsterList);
+
         } catch (ObjectMappingException e) {
             e.printStackTrace();
         }
+    }
 
-    }*/
+
+
 
 
 

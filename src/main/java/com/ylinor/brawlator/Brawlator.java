@@ -9,12 +9,16 @@ import com.ylinor.brawlator.commands.database.SelectMonsterCommand;
 import com.ylinor.brawlator.data.beans.EffectBean;
 import com.ylinor.brawlator.data.beans.EquipementBean;
 import com.ylinor.brawlator.data.beans.MonsterBean;
+import com.ylinor.brawlator.data.beans.MonsterBuilder;
+import com.ylinor.brawlator.data.dao.MonsterDAO;
 import com.ylinor.brawlator.data.handler.ConfigurationHandler;
 import ninja.leaping.configurate.ConfigurationNode;
+import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
+import ninja.leaping.configurate.objectmapping.serialize.TypeSerializerCollection;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
@@ -23,6 +27,7 @@ import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
+import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.text.Text;
 
@@ -45,6 +50,11 @@ public class Brawlator {
 
 	private CommentedConfigurationNode monster;
 
+	private ConfigurationLoader<CommentedConfigurationNode> configLoader;
+
+	public ConfigurationLoader<CommentedConfigurationNode> getConfigurationLoader(){
+		return configLoader;
+	}
 	@Listener
 	public void onServerStart(GameStartedServerEvent event) {
 
@@ -55,7 +65,17 @@ public class Brawlator {
 
 
 		ConfigurationHandler.setConfiguration(monster);
-		ConfigurationHandler.createMonsterList();
+		MonsterDAO.populate();
+
+		MonsterBean monsterBean = MonsterBean.builder().name("test").type("creeper")
+				.effect("FIRE_RESISTANCE",9999,1).build();
+
+		MonsterBean monsterBean1 = MonsterBean.builder().name("infecte").type("Skeleton").hp(60)
+				.addEquipement("hand"
+						, new EquipementBean("IRON_SWORD",1)).build();
+
+		MonsterDAO.insert(monsterBean);
+		MonsterDAO.insert(monsterBean1);
 
 
 
@@ -84,15 +104,40 @@ public class Brawlator {
         Sponge.getCommandManager().register(this, monsterDatabase, "monsters");
 
 	}
+
+	@Listener
+	public void onServerStop(GameStoppedServerEvent event) {
+		logger.info("stop");
+		save(monster);
+	}
+
+
+
 	private CommentedConfigurationNode loadConfiguration(String configName) {
-		ConfigurationLoader<CommentedConfigurationNode> configLoader = HoconConfigurationLoader.builder().setPath(Paths.get(configDir+"/"+configName)).build();
+		configLoader = HoconConfigurationLoader.builder().setPath(Paths.get(configDir+"/"+configName)).build();
 		CommentedConfigurationNode configNode = null;
+
+
+		TypeSerializerCollection serializers = TypeSerializers.getDefaultSerializers().newChild();
+		serializers.registerType(TypeToken.of(MonsterBean.class), new MonsterSerializer())
+				.registerType(TypeToken.of(EffectBean.class), new EffectSerializer())
+				.registerType(TypeToken.of(EquipementBean.class), new EquipementSerialiser());
+		ConfigurationOptions options = ConfigurationOptions.defaults().setSerializers(serializers);
 		try {
-			configNode = configLoader.load();
+			configNode = configLoader.load(options);
 		} catch (IOException e) {
 			logger.error("Error while loading configuration " + configName + " : " + e.getMessage());
 		}
 		return configNode;
+	}
+	private void save(ConfigurationNode rootNode){
+		try {
+			ConfigurationHandler.serializeMonsterList(MonsterDAO.monsterList);
+
+			configLoader.save(rootNode);
+		} catch(IOException e) {
+			// error
+		}
 	}
 
 

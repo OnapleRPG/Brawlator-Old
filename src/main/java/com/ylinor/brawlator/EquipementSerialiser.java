@@ -18,6 +18,7 @@ public class EquipementSerialiser implements TypeSerializer<EquipementBean> {
 
     @Override
     public void serialize(TypeToken<?> type, EquipementBean obj, ConfigurationNode value) throws ObjectMappingException {
-
+        value.getNode("name").setValue(obj.getName());
+        value.getNode("modifierId").setValue(obj.getModifierId());
     }
 }

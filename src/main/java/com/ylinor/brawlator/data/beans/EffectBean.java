@@ -10,7 +10,6 @@ import java.util.HashMap;
 public class EffectBean {
 
     /** ID de la potion**/
-
     private int id;
     /** Type de l'effet**/
    @DatabaseField(canBeNull = false)
@@ -27,9 +26,6 @@ public class EffectBean {
     public EffectBean() {
     }
 
-
-
-
     public String getType() { return type; }
     public void setType(String type) { this.type = type; }
     public int getDuration() { return duration; }
@@ -40,6 +36,7 @@ public class EffectBean {
     public void setAmplifier(int amplifier) { this.amplifier = amplifier; }
     public void setMonsterId(int monsterId) { this.monsterId = monsterId; }
     public void setId(int id) { this.id = id; }
+
     public EffectBean( String type, int duration, int amplifier) {
 
         this.type = type;
