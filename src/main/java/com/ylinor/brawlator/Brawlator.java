@@ -5,6 +5,7 @@ import javax.inject.Inject;
 
 import com.google.common.reflect.TypeToken;
 import com.ylinor.brawlator.commands.InvokeCommand;
+import com.ylinor.brawlator.commands.MonsterCommand;
 import com.ylinor.brawlator.commands.database.SelectMonsterCommand;
 import com.ylinor.brawlator.data.beans.EffectBean;
 import com.ylinor.brawlator.data.beans.EquipementBean;
@@ -67,16 +68,6 @@ public class Brawlator {
 		ConfigurationHandler.setConfiguration(monster);
 		MonsterDAO.populate();
 
-		MonsterBean monsterBean = MonsterBean.builder().name("test").type("creeper")
-				.effect("FIRE_RESISTANCE",9999,1).build();
-
-		MonsterBean monsterBean1 = MonsterBean.builder().name("infecte").type("Skeleton").hp(60)
-				.addEquipement("hand"
-						, new EquipementBean("IRON_SWORD",1)).build();
-
-		MonsterDAO.insert(monsterBean);
-		MonsterDAO.insert(monsterBean1);
-
 
 
 
@@ -84,6 +75,15 @@ public class Brawlator {
 		/*SqliteHandler.testConnection();*/
 
 		/// Commandes du plugin
+
+		CommandSpec create = CommandSpec.builder()
+				.description(Text.of("Create a monster and it to the base"))
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("name")))
+				,GenericArguments.onlyOne(GenericArguments.string(Text.of("type")))
+				,GenericArguments.flags().valueFlag(GenericArguments.integer(Text.of("hp")),"-hp").buildWith(GenericArguments.none()))
+
+				.executor(new MonsterCommand()).build();
+		Sponge.getCommandManager().register(this,create,"create");
 
 		CommandSpec invoke = CommandSpec.builder()
                 .description(Text.of("Invoke a monster whose id is registered into the database"))
