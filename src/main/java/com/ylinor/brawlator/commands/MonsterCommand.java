@@ -1,5 +1,6 @@
 package com.ylinor.brawlator.commands;
 
+import com.j256.ormlite.stmt.query.In;
 import com.ylinor.brawlator.data.beans.MonsterBean;
 import com.ylinor.brawlator.data.beans.MonsterBuilder;
 import com.ylinor.brawlator.data.dao.MonsterDAO;
@@ -10,6 +11,8 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColor;
+import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
 
@@ -28,19 +31,38 @@ public class MonsterCommand implements CommandExecutor {
            monsterBuilder.name(nameOptional.get());
         }
         Optional<String> typeOptional = args.<String>getOne("type");
-        if(typeOptional.isPresent()) {
+        if (typeOptional.isPresent()) {
             monsterBuilder.type(typeOptional.get());
         }
         Optional<Double> hpOptional = args.<Double>getOne("hp");
-        if(typeOptional.isPresent()) {
+        if (hpOptional.isPresent()) {
             monsterBuilder.hp(hpOptional.get());
         }
 
-        Optional<Double> damageOptional = args.<Double>getOne("damage");
+        Optional<Integer> krOptionnal = args.<Integer>getOne("kr");
+        if (krOptionnal.isPresent()) {
+            monsterBuilder.knockbackResistance(krOptionnal.get());
+        }
 
-        MonsterDAO.insert(monsterBuilder.build());
+        Optional<Integer> damageOptional = args.<Integer>getOne("damage");
+        if (damageOptional.isPresent()) {
+            monsterBuilder.knockbackResistance(damageOptional.get());
+        }
+        Optional<Double> speedOptional = args.<Double>getOne("speed");
+        if(speedOptional.isPresent()) {
+            monsterBuilder.speed(speedOptional.get());
+        }
+        MonsterBean monsterBean = monsterBuilder.build();
+        MonsterDAO.insert(monsterBean);
 
         ((Player) src).sendMessage(Text.of("MONSTER successfully created."));
+        ((Player) src).sendMessage(Text.builder("    >Name : " + monsterBean.getName()).color(TextColors.GOLD).build());
+        ((Player) src).sendMessage(Text.builder("    >Type : " + monsterBean.getType()).color(TextColors.GOLD).build());
+        ((Player) src).sendMessage(Text.builder("    >Health : " + monsterBean.getHp()).color(TextColors.GOLD).build());
+        ((Player) src).sendMessage(Text.builder("    >Speed : " + monsterBean.getSpeed()).color(TextColors.GOLD).build());
+        ((Player) src).sendMessage(Text.builder("    >Damage : " + monsterBean.getAttackDamage()).color(TextColors.GOLD).build());
+        ((Player) src).sendMessage(Text.builder("    >Knockback Resistance : " + monsterBean.getKnockbackResistance()).color(TextColors.GOLD).build());
+        ((Player) src).sendMessage(Text.builder("You can add equipments and effects to the monster with the command /modify").color(TextColors.GREEN).build());
 
         return CommandResult.success();
     }

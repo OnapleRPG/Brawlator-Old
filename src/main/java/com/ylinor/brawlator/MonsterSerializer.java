@@ -18,10 +18,13 @@ public class MonsterSerializer implements TypeSerializer<MonsterBean> {
         @Override
         public MonsterBean deserialize(TypeToken<?> type, ConfigurationNode value)
                 throws ObjectMappingException {
+            String name = value.getNode("name").getString();
+            String entityType = value.getNode("type").getString();
+            Integer hp = value.getNode("hp").getInt();
+            Double speed = value.getNode("speed").getDouble();
+            Integer damage = value.getNode("damage").getInt();
+            Integer knockbackResistance = value.getNode("knockbackResistance").getInt();
 
-             String name = value.getNode("name").getString();
-             String entityType = value.getNode("type").getString();
-             Integer hp = value.getNode("hp").getInt();
             List<EffectBean> effects = value.getNode("effects").getList(TypeToken.of(EffectBean.class));
 
             EquipementBean hand = value.getNode("equipement","hand").getValue(TypeToken.of(EquipementBean.class));
@@ -30,18 +33,27 @@ public class MonsterSerializer implements TypeSerializer<MonsterBean> {
             EquipementBean leggings = value.getNode("equipement","leggings").getValue(TypeToken.of(EquipementBean.class));
             EquipementBean boots = value.getNode("equipement","boots").getValue(TypeToken.of(EquipementBean.class));
 
-
-
-           MonsterBuilder monsterBuilder =  new MonsterBuilder();
-           if (name != null){
+            MonsterBuilder monsterBuilder =  new MonsterBuilder();
+            if (name != null) {
                monsterBuilder.name(name);
-           }
-           if (type != null){
+            }
+            if (type != null) {
                monsterBuilder.type(entityType);
-           }
-           if (hp != null){
+            }
+            if (hp != null) {
                 monsterBuilder.hp(hp);
             }
+
+            if (damage != null) {
+               monsterBuilder.attackDamage(damage);
+            }
+            if(knockbackResistance != null) {
+               monsterBuilder.knockbackResistance(knockbackResistance);
+            }
+            if(speed != null) {
+               monsterBuilder.speed(speed);
+            }
+
             if (effects != null) {
                monsterBuilder.effects(effects);
             }
@@ -61,7 +73,7 @@ public class MonsterSerializer implements TypeSerializer<MonsterBean> {
                 monsterBuilder.addEquipement("boots",boots);
             }
 
-           return monsterBuilder.build();
+            return monsterBuilder.build();
         }
 
         @Override
@@ -70,6 +82,11 @@ public class MonsterSerializer implements TypeSerializer<MonsterBean> {
             value.getNode("name").setValue(obj.getName());
             value.getNode("hp").setValue( Math.floor(obj.getHp()));
             value.getNode("type").setValue(obj.getType());
+            value.getNode("speed").setValue(obj.getSpeed());
+            value.getNode("knockbackResistance").setValue(obj.getKnockbackResistance());
+            value.getNode("damage").setValue(obj.getAttackDamage());
+
+
             final TypeToken<List<EffectBean>> token = new TypeToken<List<EffectBean>>() {};
             value.getNode("effects").setValue(token, obj.getEffectLists());
 
