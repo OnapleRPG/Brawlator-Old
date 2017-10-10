@@ -8,6 +8,8 @@ import com.ylinor.brawlator.commands.InvokeCommand;
 import com.ylinor.brawlator.commands.MonsterCommand;
 import com.ylinor.brawlator.commands.database.SelectMonsterCommand;
 import com.ylinor.brawlator.commands.effectCommand;
+import com.ylinor.brawlator.commands.element.EffectCommandElement;
+import com.ylinor.brawlator.commands.element.MonsterCommandElement;
 import com.ylinor.brawlator.data.beans.EffectBean;
 import com.ylinor.brawlator.data.beans.EquipementBean;
 import com.ylinor.brawlator.data.beans.MonsterBean;

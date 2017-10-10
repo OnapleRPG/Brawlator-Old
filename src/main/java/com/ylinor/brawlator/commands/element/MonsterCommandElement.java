@@ -1,4 +1,4 @@
-package com.ylinor.brawlator;
+package com.ylinor.brawlator.commands.element;
 
 import com.ylinor.brawlator.data.beans.MonsterBean;
 import com.ylinor.brawlator.data.dao.MonsterDAO;
