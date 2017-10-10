@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class MonsterDAO {
 
@@ -23,6 +24,18 @@ public class MonsterDAO {
 
     public static void delete(MonsterBean monsterBean) {
         monsterList.stream().filter(monster ->  Objects.equals( monster.getName(),monsterBean.getName())).iterator().remove();
+    }
+
+    public static boolean update(MonsterBean monsterBean){
+        Integer index = monsterList.indexOf(monsterBean);
+        if (index != -1) {
+            monsterList.set(index,monsterBean);
+            return true;
+        }
+        return false;
+    }
+    public static List<String> getNameList(){
+     return monsterList.stream().map(MonsterBean::getName).collect(Collectors.toList());
     }
 
     public static void populate(){

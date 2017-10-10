@@ -102,4 +102,17 @@ public class MonsterBean {
         monsterTypes.put("skeleton", EntityTypes.SKELETON);
     }
 
+    public void addEffect(EffectBean effect){
+        this.effectLists.add(effect);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MonsterBean)) return false;
+
+        MonsterBean that = (MonsterBean) o;
+
+        return name.equals(that.name);
+    }
 }

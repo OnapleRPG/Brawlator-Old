@@ -7,18 +7,20 @@ import com.google.common.reflect.TypeToken;
 import com.ylinor.brawlator.commands.InvokeCommand;
 import com.ylinor.brawlator.commands.MonsterCommand;
 import com.ylinor.brawlator.commands.database.SelectMonsterCommand;
+import com.ylinor.brawlator.commands.effectCommand;
 import com.ylinor.brawlator.data.beans.EffectBean;
 import com.ylinor.brawlator.data.beans.EquipementBean;
 import com.ylinor.brawlator.data.beans.MonsterBean;
-import com.ylinor.brawlator.data.beans.MonsterBuilder;
 import com.ylinor.brawlator.data.dao.MonsterDAO;
 import com.ylinor.brawlator.data.handler.ConfigurationHandler;
+import com.ylinor.brawlator.serializer.EffectSerializer;
+import com.ylinor.brawlator.serializer.EquipementSerialiser;
+import com.ylinor.brawlator.serializer.MonsterSerializer;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
-import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializerCollection;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
 import org.slf4j.Logger;
@@ -36,7 +38,6 @@ import org.spongepowered.api.text.Text;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 
 
 @Plugin(id = "brawlator", name = "Brawlator", version = "0.0.1")
@@ -80,7 +81,7 @@ public class Brawlator {
 				.description(Text.of("Create a monster and it to the base"))
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("name")))
 				,GenericArguments.onlyOne(GenericArguments.string(Text.of("type")))
-				,GenericArguments.flags().valueFlag(GenericArguments.integer(Text.of("hp")),"-hp").buildWith(GenericArguments.none()))
+				,GenericArguments.flags().valueFlag(GenericArguments.doubleNum(Text.of("hp")),"-hp").buildWith(GenericArguments.none()))
 
 				.executor(new MonsterCommand()).build();
 		Sponge.getCommandManager().register(this,create,"create");
@@ -90,6 +91,13 @@ public class Brawlator {
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("id"))))
 				.executor(new InvokeCommand()).build();
 		Sponge.getCommandManager().register(this, invoke, "invoke");
+
+		CommandSpec effect = CommandSpec.builder().arguments(
+			new MonsterCommandElement(Text.of("monster"))
+				,new EffectCommandElement(Text.of("effect"))
+		).executor(new effectCommand()).build();
+
+		Sponge.getCommandManager().register(this,effect,"effect");
 
 
 		CommandSpec monsterSelect = CommandSpec.builder()

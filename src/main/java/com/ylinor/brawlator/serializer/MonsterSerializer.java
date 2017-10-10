@@ -1,4 +1,4 @@
-package com.ylinor.brawlator;
+package com.ylinor.brawlator.serializer;
 
 import com.google.common.reflect.TypeToken;
 import com.ylinor.brawlator.data.beans.EffectBean;
