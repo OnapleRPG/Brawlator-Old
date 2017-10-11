@@ -27,4 +27,6 @@ public class EquipementBean {
         this.name = name;
         this.modifierId = modifierId;
     }
+
+
 }

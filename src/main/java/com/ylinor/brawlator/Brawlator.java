@@ -9,7 +9,9 @@ import com.ylinor.brawlator.commands.MonsterCommand;
 import com.ylinor.brawlator.commands.database.SelectMonsterCommand;
 import com.ylinor.brawlator.commands.effectCommand;
 import com.ylinor.brawlator.commands.element.EffectCommandElement;
+import com.ylinor.brawlator.commands.element.EquipementCommandElement;
 import com.ylinor.brawlator.commands.element.MonsterCommandElement;
+import com.ylinor.brawlator.commands.equipementCommand;
 import com.ylinor.brawlator.data.beans.EffectBean;
 import com.ylinor.brawlator.data.beans.EquipementBean;
 import com.ylinor.brawlator.data.beans.MonsterBean;
@@ -100,6 +102,14 @@ public class Brawlator {
 		).executor(new effectCommand()).build();
 
 		Sponge.getCommandManager().register(this,effect,"effect");
+
+
+		CommandSpec equipment = CommandSpec.builder().arguments(
+				new MonsterCommandElement(Text.of("monster"))
+				,GenericArguments.string(Text.of("emplacement"))
+				,new EquipementCommandElement(Text.of("equipment"))
+		).executor(new equipementCommand()).build();
+		Sponge.getCommandManager().register(this, equipment, "equipment");
 
 
 		CommandSpec monsterSelect = CommandSpec.builder()
