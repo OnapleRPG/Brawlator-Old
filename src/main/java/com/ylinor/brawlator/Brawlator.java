@@ -3,6 +3,7 @@ package com.ylinor.brawlator;
 import javax.inject.Inject;
 
 
+import com.flowpowered.math.vector.Vector3i;
 import com.google.common.reflect.TypeToken;
 import com.ylinor.brawlator.commands.InvokeCommand;
 import com.ylinor.brawlator.commands.MonsterCommand;
@@ -32,16 +33,22 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
+import org.spongepowered.api.entity.living.animal.Wolf;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.block.TickBlockEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.world.LocatableBlock;
+import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
 
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 
 @Plugin(id = "brawlator", name = "Brawlator", version = "0.0.1")
@@ -123,12 +130,22 @@ public class Brawlator {
                 .child(monsterSelect, "select").build();
         Sponge.getCommandManager().register(this, monsterDatabase, "monsters");
 
+
+		Optional<World> world = Sponge.getServer().getWorld("world");
+		world.get().addScheduledUpdate(new Vector3i(-232,96,223),1,2000);
 	}
 
 	@Listener
 	public void onServerStop(GameStoppedServerEvent event) {
 		logger.info("stop");
 		save(monster);
+	}
+
+
+	@Listener
+	public void onTickBlockEvent(TickBlockEvent.Scheduled event) {
+
+		logger.info("tickblockevent : " + event.getTargetBlock().toString());
 	}
 
 
@@ -153,7 +170,7 @@ public class Brawlator {
 	private void save(ConfigurationNode rootNode){
 		try {
 			ConfigurationHandler.serializeMonsterList(MonsterDAO.monsterList);
-
+;
 			configLoader.save(rootNode);
 		} catch(IOException e) {
 			// error
