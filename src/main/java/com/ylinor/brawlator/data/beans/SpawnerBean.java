@@ -1,6 +1,10 @@
 package com.ylinor.brawlator.data.beans;
 
 import com.flowpowered.math.vector.Vector3i;
+import com.ylinor.brawlator.Brawlator;
+import com.ylinor.brawlator.SpawnEvent;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.event.cause.Cause;
 
 public class SpawnerBean {
     private Vector3i position;
@@ -8,6 +12,8 @@ public class SpawnerBean {
     private int quantity;
     private int spawnRate;
     private int range;
+
+    private int time;
 
     public Vector3i getPosition() {
         return position;
@@ -55,6 +61,7 @@ public class SpawnerBean {
         this.quantity = quantity;
         this.spawnRate = spawnRate;
         this.range = range;
+        this.time = spawnRate;
     }
 
     @Override
@@ -66,6 +73,18 @@ public class SpawnerBean {
                 ", spawnRate=" + spawnRate +
                 ", range=" + range +
                 '}';
+    }
+
+    public void updateTime(){
+        if(this.time > 0){
+            time--;
+            Brawlator.getLogger().info("Spawner at " + position.toString() + " have "+ time);
+        } else {
+            time = spawnRate;
+            SpawnEvent event = new SpawnEvent(
+                    Cause.source(Sponge.getPluginManager().getPlugin("brawlator").get()).build(),this);
+            Sponge.getEventManager().post(event);
+        }
     }
 
 }

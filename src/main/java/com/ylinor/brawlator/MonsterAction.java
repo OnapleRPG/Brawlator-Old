@@ -21,6 +21,7 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 public class MonsterAction {
 
@@ -35,6 +36,7 @@ public class MonsterAction {
     public static Optional<Entity> invokeMonster(World world, Location location, MonsterBean monster) {
         //  Vérification que le type du monstre existe pour le plugin
         if (!MonsterBean.monsterTypes.containsKey(monster.getType())) {
+            Brawlator.getLogger().warn("Le type du monstre n'existe pas");
             return Optional.empty();
         }
         //  Création de l'entité
@@ -48,6 +50,7 @@ public class MonsterAction {
         }
         //  Spawn de l'entité dans le monde
         Cause cause = Cause.source(SpawnTypes.PLUGIN).build();
+
         world.spawnEntity(entity, cause);
         return Optional.ofNullable(entity);
     }

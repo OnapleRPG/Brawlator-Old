@@ -17,6 +17,7 @@ import com.ylinor.brawlator.data.beans.EffectBean;
 import com.ylinor.brawlator.data.beans.EquipementBean;
 import com.ylinor.brawlator.data.beans.MonsterBean;
 import com.ylinor.brawlator.data.dao.MonsterDAO;
+import com.ylinor.brawlator.data.dao.SpawnerDAO;
 import com.ylinor.brawlator.data.handler.ConfigurationHandler;
 import com.ylinor.brawlator.serializer.EffectSerializer;
 import com.ylinor.brawlator.serializer.EquipementSerialiser;
@@ -39,6 +40,7 @@ import org.spongepowered.api.event.block.TickBlockEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.LocatableBlock;
 import org.spongepowered.api.world.Location;
@@ -49,42 +51,45 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 
 @Plugin(id = "brawlator", name = "Brawlator", version = "0.0.1")
 public class Brawlator {
-	@Inject
-	private Logger logger;
 
+
+
+
+	private static Logger logger;
+
+	@Inject
+	private void setLogger(Logger logger) {
+		Brawlator.logger = logger;
+	}
+	public static Logger getLogger() {
+		return logger;
+	}
 
 	@Inject
 	@ConfigDir(sharedRoot=true)
 	private Path configDir;
 
-	private CommentedConfigurationNode monster;
 
-	private ConfigurationLoader<CommentedConfigurationNode> configLoader;
-
-	public ConfigurationLoader<CommentedConfigurationNode> getConfigurationLoader(){
-		return configLoader;
-	}
 	@Listener
 	public void onServerStart(GameStartedServerEvent event) {
 
 
 		logger.info("Brawlator plugin initialized.");
 
-		 monster = loadConfiguration("monster.conf");
 
-
-		ConfigurationHandler.setConfiguration(monster);
+		ConfigurationHandler.setMonsterConfiguration(ConfigurationHandler.loadMonsterConfiguration(configDir + "/monster.conf"));
+		ConfigurationHandler.setSpawnerConfiguration(ConfigurationHandler.loadSpawnerConfiguration(configDir + "/spawner.conf"));
 		MonsterDAO.populate();
+		SpawnerDAO.populate();
 
+		getLogger().info(String.valueOf(SpawnerDAO.spawnerList.size())+ " Spawner(s) loaded");
 
-
-
-
-		/*SqliteHandler.testConnection();*/
+		getLogger().info(String.valueOf(MonsterDAO.monsterList.size())+ " Monster(s) loaded");
 
 		/// Commandes du plugin
 
@@ -131,51 +136,34 @@ public class Brawlator {
         Sponge.getCommandManager().register(this, monsterDatabase, "monsters");
 
 
-		Optional<World> world = Sponge.getServer().getWorld("world");
-		world.get().addScheduledUpdate(new Vector3i(-232,96,223),1,2000);
+
+        Task task = Task.builder().execute(()-> SpawnerAction.updateSpawner()).delay(20, TimeUnit.SECONDS)
+				.interval(10,TimeUnit.SECONDS).name("Spawn monster").submit(this);
+
+
+	}
+
+	@Listener
+	public void onSpawnEvent(SpawnEvent event){
+		getLogger().info(
+		MonsterAction.invokeMonster(getWorld(),getWorld().getLocation(event.getSpawnerBean().getPosition()),event.getSpawnerBean().getMonsterBean()).get().toString()
+		);
 	}
 
 	@Listener
 	public void onServerStop(GameStoppedServerEvent event) {
 		logger.info("stop");
-		save(monster);
+		ConfigurationHandler.save();
 	}
 
 
-	@Listener
-	public void onTickBlockEvent(TickBlockEvent.Scheduled event) {
-
-		logger.info("tickblockevent : " + event.getTargetBlock().toString());
+	public static World getWorld(){
+		return Sponge.getServer().getWorld("world").get();
 	}
 
 
 
-	private CommentedConfigurationNode loadConfiguration(String configName) {
-		configLoader = HoconConfigurationLoader.builder().setPath(Paths.get(configDir+"/"+configName)).build();
-		CommentedConfigurationNode configNode = null;
 
-
-		TypeSerializerCollection serializers = TypeSerializers.getDefaultSerializers().newChild();
-		serializers.registerType(TypeToken.of(MonsterBean.class), new MonsterSerializer())
-				.registerType(TypeToken.of(EffectBean.class), new EffectSerializer())
-				.registerType(TypeToken.of(EquipementBean.class), new EquipementSerialiser());
-		ConfigurationOptions options = ConfigurationOptions.defaults().setSerializers(serializers);
-		try {
-			configNode = configLoader.load(options);
-		} catch (IOException e) {
-			logger.error("Error while loading configuration " + configName + " : " + e.getMessage());
-		}
-		return configNode;
-	}
-	private void save(ConfigurationNode rootNode){
-		try {
-			ConfigurationHandler.serializeMonsterList(MonsterDAO.monsterList);
-;
-			configLoader.save(rootNode);
-		} catch(IOException e) {
-			// error
-		}
-	}
 
 
 }
