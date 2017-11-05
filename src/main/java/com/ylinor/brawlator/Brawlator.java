@@ -156,14 +156,11 @@ public class Brawlator {
 		ConfigurationHandler.save();
 	}
 
-
 	public static World getWorld(){
-		return Sponge.getServer().getWorld("world").get();
+		Optional<World> worldOptional = Sponge.getServer().getWorld("world");
+		if(worldOptional.isPresent()){
+			return worldOptional.get();
+		}
+		return null;
 	}
-
-
-
-
-
-
 }
