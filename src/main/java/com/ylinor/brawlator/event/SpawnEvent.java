@@ -1,4 +1,4 @@
-package com.ylinor.brawlator;
+package com.ylinor.brawlator.event;
 
 import com.ylinor.brawlator.data.beans.SpawnerBean;
 import org.spongepowered.api.event.cause.Cause;

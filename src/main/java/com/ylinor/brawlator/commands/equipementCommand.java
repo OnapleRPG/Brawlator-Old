@@ -1,6 +1,5 @@
 package com.ylinor.brawlator.commands;
 
-import com.ylinor.brawlator.EquipementAction;
 import com.ylinor.brawlator.data.beans.EquipementBean;
 import com.ylinor.brawlator.data.beans.MonsterBean;
 import com.ylinor.brawlator.data.dao.MonsterDAO;

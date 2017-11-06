@@ -1,4 +1,4 @@
-package com.ylinor.brawlator;
+package com.ylinor.brawlator.action;
 
 import com.ylinor.brawlator.data.beans.EquipementBean;
 import org.spongepowered.api.Sponge;

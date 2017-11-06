@@ -2,7 +2,7 @@ package com.ylinor.brawlator.data.beans;
 
 import com.flowpowered.math.vector.Vector3i;
 import com.ylinor.brawlator.Brawlator;
-import com.ylinor.brawlator.SpawnEvent;
+import com.ylinor.brawlator.event.SpawnEvent;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.cause.Cause;
 

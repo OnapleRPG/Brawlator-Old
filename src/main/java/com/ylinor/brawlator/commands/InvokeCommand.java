@@ -1,8 +1,7 @@
 package com.ylinor.brawlator.commands;
-import com.ylinor.brawlator.MonsterAction;
+import com.ylinor.brawlator.action.MonsterAction;
 import com.ylinor.brawlator.data.beans.MonsterBean;
 import com.ylinor.brawlator.data.dao.MonsterDAO;
-import com.ylinor.brawlator.data.handler.ConfigurationHandler;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -12,8 +11,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
-import java.util.List;
-import java.util.Objects;
+
 import java.util.Optional;
 
 
