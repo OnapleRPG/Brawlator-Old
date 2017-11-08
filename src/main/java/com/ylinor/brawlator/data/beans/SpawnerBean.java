@@ -7,6 +7,8 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.cause.Cause;
 
 public class SpawnerBean {
+
+    private int id ;
     private Vector3i position;
     private MonsterBean monsterBean;
     private int quantity;
@@ -14,6 +16,10 @@ public class SpawnerBean {
     private int range;
 
     private int time;
+
+    public int getId() { return id; }
+
+    public void setId(int id) { this.id = id; }
 
     public Vector3i getPosition() {
         return position;
@@ -63,6 +69,17 @@ public class SpawnerBean {
         this.range = range;
         this.time = spawnRate;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MonsterBean)) return false;
+
+        MonsterBean that = (MonsterBean) o;
+
+        return this.getId() == that.getId();
+    }
+
 
     @Override
     public String toString() {
