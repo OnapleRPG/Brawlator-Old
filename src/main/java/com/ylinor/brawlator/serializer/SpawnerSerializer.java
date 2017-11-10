@@ -10,7 +10,7 @@ import com.ylinor.brawlator.data.dao.MonsterDAO;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializer;
-import org.spongepowered.api.entity.living.monster.Monster;
+
 
 import java.util.Optional;
 
@@ -18,7 +18,8 @@ public class SpawnerSerializer implements TypeSerializer<SpawnerBean> {
 
     @Override
     public SpawnerBean deserialize(TypeToken<?> type, ConfigurationNode value) throws ObjectMappingException {
-       Vector3i position = value.getNode("position").getValue(TypeToken.of(Vector3i.class));
+       int id = value.getNode("id").getInt();
+        Vector3i position = value.getNode("position").getValue(TypeToken.of(Vector3i.class));
         Optional<MonsterBean> monsterBeanOptional = MonsterDAO.getMonster(value.getNode("monster").getString());
         if(!monsterBeanOptional.isPresent()){
             throw new  ObjectMappingException();
@@ -33,7 +34,8 @@ public class SpawnerSerializer implements TypeSerializer<SpawnerBean> {
 
     @Override
     public void serialize(TypeToken<?> type, SpawnerBean obj, ConfigurationNode value) throws ObjectMappingException {
-        //value.getNode("position").setValue(obj.getPosition());
+        value.getNode("id").setValue(obj.getId());
+        value.getNode("position").setValue(obj.getPosition());
         value.getNode("monster").setValue(obj.getMonsterBean().getName());
         value.getNode("quantity").setValue(obj.getQuantity());
         value.getNode("range").setValue(obj.getRange());

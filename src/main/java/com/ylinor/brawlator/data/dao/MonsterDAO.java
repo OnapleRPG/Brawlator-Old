@@ -23,7 +23,8 @@ public class MonsterDAO {
     }
 
     public static void delete(MonsterBean monsterBean) {
-        monsterList.stream().filter(monster ->  Objects.equals( monster.getName(),monsterBean.getName())).iterator().remove();
+        //monsterList.stream().filter(monster ->  Objects.equals( monster.getName(),monsterBean.getName())).iterator().remove();
+        monsterList.remove(monsterBean);
     }
 
     public static boolean update(MonsterBean monsterBean){

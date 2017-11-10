@@ -8,6 +8,7 @@ import com.ylinor.brawlator.data.beans.SpawnerBean;
 import com.ylinor.brawlator.data.dao.SpawnerDAO;
 
 import org.spongepowered.api.block.BlockState;
+import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.data.property.block.SolidCubeProperty;
 import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.world.World;
@@ -71,7 +72,11 @@ public class SpawnerAction {
     public static void updateSpawner() {
         Brawlator.getLogger().info("update");
         for (SpawnerBean spawnerBean : SpawnerDAO.spawnerList) {
-            spawnerBean.updateTime();
+            if (Brawlator.getWorld().getLocation(spawnerBean.getPosition()).getBlockType() == BlockTypes.BARRIER) {
+                spawnerBean.updateTime();
+            } else {
+                SpawnerDAO.delete(spawnerBean);
+            }
         }
     }
 

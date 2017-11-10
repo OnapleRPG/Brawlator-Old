@@ -33,7 +33,7 @@ public class SpawnerDAO {
     }
 
     public static void delete(SpawnerBean spawnerBean) {
-        spawnerList.stream().filter(spawner ->  Objects.equals( spawner.getId(),spawnerBean.getId())).iterator().remove();
+        spawnerList.remove(spawnerBean);
     }
 
 }

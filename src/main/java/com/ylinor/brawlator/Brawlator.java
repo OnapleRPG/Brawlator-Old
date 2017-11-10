@@ -3,16 +3,15 @@ package com.ylinor.brawlator;
 import javax.inject.Inject;
 
 
+import com.flowpowered.math.vector.Vector3i;
 import com.ylinor.brawlator.action.MonsterAction;
 import com.ylinor.brawlator.action.SpawnerAction;
-import com.ylinor.brawlator.commands.InvokeCommand;
-import com.ylinor.brawlator.commands.MonsterCommand;
+import com.ylinor.brawlator.commands.*;
 import com.ylinor.brawlator.commands.database.SelectMonsterCommand;
-import com.ylinor.brawlator.commands.effectCommand;
 import com.ylinor.brawlator.commands.element.EffectCommandElement;
 import com.ylinor.brawlator.commands.element.EquipementCommandElement;
 import com.ylinor.brawlator.commands.element.MonsterCommandElement;
-import com.ylinor.brawlator.commands.equipementCommand;
+import com.ylinor.brawlator.data.beans.SpawnerBean;
 import com.ylinor.brawlator.data.dao.MonsterDAO;
 import com.ylinor.brawlator.data.dao.SpawnerDAO;
 import com.ylinor.brawlator.data.handler.ConfigurationHandler;
@@ -26,6 +25,7 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.World;
@@ -69,6 +69,8 @@ public class Brawlator {
 		MonsterDAO.populate();
 		SpawnerDAO.populate();
 
+	//	SpawnerDAO.insert(new SpawnerBean(new Vector3i(-294, 72, 75),MonsterDAO.getMonster("Zombie putride").get(),5,5,5));
+
 		getLogger().info(String.valueOf(SpawnerDAO.spawnerList.size())+ " Spawner(s) loaded");
 
 		getLogger().info(String.valueOf(MonsterDAO.monsterList.size())+ " Monster(s) loaded");
@@ -76,7 +78,7 @@ public class Brawlator {
 		/// Commandes du plugin
 
 		CommandSpec create = CommandSpec.builder()
-				.description(Text.of("Create a monster and it to the base"))
+				.description(Text.of("Create a monster and add it to the base"))
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("name")))
 				,GenericArguments.onlyOne(GenericArguments.string(Text.of("type")))
 				,GenericArguments.flags().valueFlag(GenericArguments.doubleNum(Text.of("hp")),"-hp").buildWith(GenericArguments.none()))
@@ -106,6 +108,16 @@ public class Brawlator {
 		Sponge.getCommandManager().register(this, equipment, "equipment");
 
 
+		CommandSpec createSpawner = CommandSpec.builder().arguments(
+				GenericArguments.location(Text.of("position"))
+				,new MonsterCommandElement(Text.of("monster"))
+				,GenericArguments.integer(Text.of("range"))
+				,GenericArguments.integer(Text.of("spawnrate"))
+				,GenericArguments.integer(Text.of("quantity"))
+		).executor(new CreateSpawnerCommand()).build();
+
+		Sponge.getCommandManager().register(this,createSpawner,"spawner");
+
 		CommandSpec monsterSelect = CommandSpec.builder()
                 .permission("ylinor.brawlator.database_read")
                 .description(Text.of("Select and print a monster from database"))
@@ -116,6 +128,8 @@ public class Brawlator {
                 .description(Text.of("Query database about monsters"))
                 .child(monsterSelect, "select").build();
         Sponge.getCommandManager().register(this, monsterDatabase, "monsters");
+
+
 
 
 
@@ -137,7 +151,9 @@ public class Brawlator {
 		logger.info("stop");
 		ConfigurationHandler.save();
 	}
-
+	public static PluginContainer getInstance(){
+		return  Sponge.getPluginManager().getPlugin("brawlator").get();
+	}
 	public static World getWorld(){
 		Optional<World> worldOptional = Sponge.getServer().getWorld("world");
 		if(worldOptional.isPresent()){

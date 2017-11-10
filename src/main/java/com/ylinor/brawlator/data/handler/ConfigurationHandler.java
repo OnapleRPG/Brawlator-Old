@@ -1,5 +1,6 @@
 package com.ylinor.brawlator.data.handler;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.reflect.TypeToken;
 import com.ylinor.brawlator.Brawlator;
 import com.ylinor.brawlator.data.beans.EffectBean;
@@ -19,8 +20,7 @@ import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 public class ConfigurationHandler {
@@ -79,7 +79,11 @@ public class ConfigurationHandler {
         TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(SpawnerBean.class), new SpawnerSerializer());
         try {
            List<SpawnerBean> list = spawner.getNode("spawner").getList(TypeToken.of(SpawnerBean.class));
-            return Optional.ofNullable(list);
+           if(!list.isEmpty()){
+               return Optional.of(list);
+           }
+           Brawlator.getLogger().warn("liste vide");
+           return Optional.empty();
 
         } catch (Exception e){
             Brawlator.getLogger().error(e.toString());
@@ -92,7 +96,8 @@ public class ConfigurationHandler {
                 .registerType(TypeToken.of(EffectBean.class), new EffectSerializer())
                 .registerType(TypeToken.of(EquipementBean.class), new EquipementSerialiser());
         try {
-            List<MonsterBean> list = monster.getNode("monster").getList(TypeToken.of(MonsterBean.class));
+            List<MonsterBean> list =
+                    monster.getNode("monster").getList(TypeToken.of(MonsterBean.class));
             if (!list.isEmpty()) {
                return Optional.of(list);
             }
