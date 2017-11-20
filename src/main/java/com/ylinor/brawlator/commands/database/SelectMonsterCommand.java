@@ -15,9 +15,8 @@ import java.util.Optional;
 
 public class SelectMonsterCommand implements CommandExecutor {
 
-	public SelectMonsterCommand() {
+	public SelectMonsterCommand() {}
 
-	}
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
 		if (src instanceof Player && ((Player) src).hasPermission("database_read")) {

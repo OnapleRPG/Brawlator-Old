@@ -4,28 +4,20 @@ import com.flowpowered.math.vector.Vector2i;
 import com.flowpowered.math.vector.Vector3i;
 import com.ylinor.brawlator.Brawlator;
 import com.ylinor.brawlator.data.beans.SpawnerBean;
-
 import com.ylinor.brawlator.data.dao.SpawnerDAO;
-
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.data.property.block.SolidCubeProperty;
+import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.world.World;
 
-import org.spongepowered.api.entity.Entity;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
-import java.util.Collection;
-
 
 public class SpawnerAction {
-
     /**
-     *
-     * @param spawnerBean
-     * @return
+     *get a spawnable lo
+     * @param spawnerBean the spawner
+     * @return a spawnable location
      */
     public Vector2i getLocation(SpawnerBean spawnerBean){
         int range = spawnerBean.getRange();
@@ -34,17 +26,16 @@ public class SpawnerAction {
         Vector3i position;
         do {
             position = spawnerBean.getPosition();
-             x =range - Math.round(Math.random()*range *2);
-             y = range - Math.round(Math.random()*range *2);
+            x = range - Math.round(Math.random()*range *2);
+            y = range - Math.round(Math.random()*range *2);
 
             position.add(x, 0, y);
         }while (isAir(position));
         return new Vector2i(spawnerBean.getPosition().getX()+x,spawnerBean.getPosition().getY()+y);
-
     }
     /**
      * look if a location is free to spawn an entity
-     * @param spawnLocation
+     * @param spawnLocation the position to check
      * @return if the location is free to spawn an entity
      */
     public boolean isAir(Vector3i spawnLocation) {
@@ -55,7 +46,6 @@ public class SpawnerAction {
             spawnLocation.add(new Vector3i(0,1,0));
             BlockState blockState  = world.getLocatableBlock(spawnLocation).getBlockState();
             traversable =  blockState.getProperty(SolidCubeProperty.class).get().getValue();
-
             if(traversable){
                 check++;
             }
@@ -65,12 +55,10 @@ public class SpawnerAction {
         }
         return false;
     }
-
     /**
-     * update all spawner time
+     * periodicly update all spawner time and unused delete spawner
      */
     public static void updateSpawner() {
-        Brawlator.getLogger().info("update");
         for (SpawnerBean spawnerBean : SpawnerDAO.spawnerList) {
             if (Brawlator.getWorld().getLocation(spawnerBean.getPosition()).getBlockType() == BlockTypes.BARRIER) {
                 spawnerBean.updateTime();
@@ -79,10 +67,12 @@ public class SpawnerAction {
             }
         }
     }
-
-
+    /**
+     * get the number of entity near the spawner
+     * @param spawnerBean
+     * @return
+     */
     public int getEntities(SpawnerBean spawnerBean) {
-
         Entity entity = Brawlator.getWorld().createEntity(EntityTypes.PLAYER,spawnerBean.getPosition());
         Brawlator.getLogger().info("entité proche" + entity.getNearbyEntities(spawnerBean.getRange()+10).size());
     return entity.getNearbyEntities(spawnerBean.getRange()+10).size();

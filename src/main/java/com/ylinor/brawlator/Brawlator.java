@@ -35,12 +35,8 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-
 @Plugin(id = "brawlator", name = "Brawlator", version = "0.0.1")
 public class Brawlator {
-
-
-
 
 	private static Logger logger;
 
@@ -56,49 +52,38 @@ public class Brawlator {
 	@ConfigDir(sharedRoot=true)
 	private Path configDir;
 
-
 	@Listener
 	public void onServerStart(GameStartedServerEvent event) {
-
-
 		logger.info("Brawlator plugin initialized.");
-
-
 		ConfigurationHandler.setMonsterConfiguration(ConfigurationHandler.loadMonsterConfiguration(configDir + "/monster.conf"));
 		ConfigurationHandler.setSpawnerConfiguration(ConfigurationHandler.loadSpawnerConfiguration(configDir + "/spawner.conf"));
 		MonsterDAO.populate();
 		SpawnerDAO.populate();
-
-	//	SpawnerDAO.insert(new SpawnerBean(new Vector3i(-294, 72, 75),MonsterDAO.getMonster("Zombie putride").get(),5,5,5));
-
 		getLogger().info(String.valueOf(SpawnerDAO.spawnerList.size())+ " Spawner(s) loaded");
-
 		getLogger().info(String.valueOf(MonsterDAO.monsterList.size())+ " Monster(s) loaded");
 
 		/// Commandes du plugin
-
 		CommandSpec create = CommandSpec.builder()
 				.description(Text.of("Create a monster and add it to the base"))
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("name")))
-				,GenericArguments.onlyOne(GenericArguments.string(Text.of("type")))
-				,GenericArguments.flags().valueFlag(GenericArguments.doubleNum(Text.of("hp")),"-hp").buildWith(GenericArguments.none()))
-
+						,GenericArguments.onlyOne(GenericArguments.string(Text.of("type")))
+						,GenericArguments.flags().valueFlag(GenericArguments.doubleNum(Text.of("hp")),"-hp")
+						.buildWith(GenericArguments.none()))
 				.executor(new MonsterCommand()).build();
 		Sponge.getCommandManager().register(this,create,"create");
 
 		CommandSpec invoke = CommandSpec.builder()
-                .description(Text.of("Invoke a monster whose id is registered into the database"))
+				.description(Text.of("Invoke a monster whose id is registered into the database"))
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("id"))))
 				.executor(new InvokeCommand()).build();
 		Sponge.getCommandManager().register(this, invoke, "invoke");
 
 		CommandSpec effect = CommandSpec.builder().arguments(
-			new MonsterCommandElement(Text.of("monster"))
+				new MonsterCommandElement(Text.of("monster"))
 				,new EffectCommandElement(Text.of("effect"))
 		).executor(new effectCommand()).build();
 
 		Sponge.getCommandManager().register(this,effect,"effect");
-
 
 		CommandSpec equipment = CommandSpec.builder().arguments(
 				new MonsterCommandElement(Text.of("monster"))
@@ -106,7 +91,6 @@ public class Brawlator {
 				,new EquipementCommandElement(Text.of("equipment"))
 		).executor(new equipementCommand()).build();
 		Sponge.getCommandManager().register(this, equipment, "equipment");
-
 
 		CommandSpec createSpawner = CommandSpec.builder().arguments(
 				GenericArguments.location(Text.of("position"))
@@ -119,41 +103,54 @@ public class Brawlator {
 		Sponge.getCommandManager().register(this,createSpawner,"spawner");
 
 		CommandSpec monsterSelect = CommandSpec.builder()
-                .permission("ylinor.brawlator.database_read")
-                .description(Text.of("Select and print a monster from database"))
-                .arguments(GenericArguments.onlyOne(GenericArguments.integer(Text.of("id"))))
-                .executor(new SelectMonsterCommand()).build();
+				.permission("ylinor.brawlator.database_read")
+				.description(Text.of("Select and print a monster from database"))
+				.arguments(GenericArguments.onlyOne(GenericArguments.integer(Text.of("id"))))
+				.executor(new SelectMonsterCommand()).build();
 
 		CommandSpec monsterDatabase = CommandSpec.builder()
-                .description(Text.of("Query database about monsters"))
-                .child(monsterSelect, "select").build();
-        Sponge.getCommandManager().register(this, monsterDatabase, "monsters");
+				.description(Text.of("Query database about monsters"))
+				.child(monsterSelect, "select").build();
+		Sponge.getCommandManager().register(this, monsterDatabase, "monsters");
 
-
-
-
-
-        Task task = Task.builder().execute(()-> SpawnerAction.updateSpawner()).delay(20, TimeUnit.SECONDS)
+		Task task = Task.builder().execute(()-> SpawnerAction.updateSpawner()).delay(20, TimeUnit.SECONDS)
 				.interval(10,TimeUnit.SECONDS).name("Spawn monster").submit(this);
-
 
 	}
 
+	/**
+	 * Listener of spawner
+	 * @param event event rised
+	 */
 	@Listener
 	public void onSpawnEvent(SpawnEvent event){
 		getLogger().info(
-		MonsterAction.invokeMonster(getWorld(),getWorld().getLocation(event.getSpawnerBean().getPosition()),event.getSpawnerBean().getMonsterBean()).get().toString()
+				MonsterAction.invokeMonster(getWorld(),getWorld().getLocation(event.getSpawnerBean().getPosition()),event.getSpawnerBean().getMonsterBean()).get().toString()
 		);
 	}
 
+	/**
+	 * Listener of the server stop event and save configuration
+	 * @param event
+	 */
 	@Listener
 	public void onServerStop(GameStoppedServerEvent event) {
 		logger.info("stop");
 		ConfigurationHandler.save();
 	}
+
+	/**
+	 * Get the plugin instance
+	 * @return the instance
+	 */
 	public static PluginContainer getInstance(){
 		return  Sponge.getPluginManager().getPlugin("brawlator").get();
 	}
+
+	/**
+	 * Get the current world
+	 * @return the world
+	 */
 	public static World getWorld(){
 		Optional<World> worldOptional = Sponge.getServer().getWorld("world");
 		if(worldOptional.isPresent()){

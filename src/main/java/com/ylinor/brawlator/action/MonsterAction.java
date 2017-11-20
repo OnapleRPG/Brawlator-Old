@@ -5,10 +5,14 @@ import com.ylinor.brawlator.data.beans.EffectBean;
 import com.ylinor.brawlator.data.beans.EquipementBean;
 import com.ylinor.brawlator.data.beans.MonsterBean;
 import com.ylinor.brawlator.data.dao.MonsterDAO;
+import org.spongepowered.api.data.DataHolder;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.PotionEffectData;
+import org.spongepowered.api.data.manipulator.mutable.entity.HealthData;
 import org.spongepowered.api.data.type.HandTypes;
+import org.spongepowered.api.data.value.mutable.MutableBoundedValue;
 import org.spongepowered.api.effect.potion.PotionEffect;
+import org.spongepowered.api.effect.potion.PotionEffectType;
 import org.spongepowered.api.entity.ArmorEquipable;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.event.cause.Cause;
@@ -24,12 +28,12 @@ import java.util.*;
 public class MonsterAction {
 
     /**
-     * Invoque un monstre à une position donnée
+     * Invoque a monster at a specific position
      *
-     * @param world Instance du monde
-     * @param location Emplacement de spawn
-     * @param monster Bean du monstre contenant ses caractéristiques
-     * @return Entité (optionnelle) spawn
+     * @param world Instance of the world
+     * @param location Spawn 's Emplacement
+     * @param monster Bean of the monster and his characteristic
+     * @return Optional entity spawned
      */
     public static Optional<Entity> invokeMonster(World world, Location location, MonsterBean monster) {
         //  Vérification que le type du monstre existe pour le plugin
@@ -38,10 +42,16 @@ public class MonsterAction {
             return Optional.empty();
         }
         //  Création de l'entité
+       Brawlator.getLogger().info(monster.toString());
         Entity entity = world.createEntity(MonsterBean.monsterTypes.get(monster.getType()), location.getPosition());
-        entity = editCharacteristics(entity, monster.getName(), monster.getHp(), monster.getAttackDamage(), monster.getSpeed(), monster.getKnockbackResistance());
+        if(entity instanceof  DataHolder) {
+            entity =(Entity) editCharacteristics( (DataHolder) entity, monster.getName(), monster.getHp(), monster.getAttackDamage(), monster.getSpeed(), monster.getKnockbackResistance());
+        }
         //  Gestion des effets de potion à donner au monstre
         entity = addEffects(entity, monster.getEffectLists());
+
+
+
         //  Gestion des objets appartenant au monstre
         if (entity instanceof ArmorEquipable) {
             entity = (Entity) equip((ArmorEquipable)entity,monster);
@@ -50,42 +60,70 @@ public class MonsterAction {
         Cause cause = Cause.source(SpawnTypes.PLUGIN).build();
 
         world.spawnEntity(entity, cause);
+        HealthData healthData = entity.getOrCreate(HealthData.class).get();
+        healthData.health().set(500.0);
+        entity.offer(healthData);
+        Brawlator.getLogger().info("info" + entity.getOrCreate(HealthData.class).get().health().get());
+
         return Optional.ofNullable(entity);
     }
 
 
     /**
-     * Fixe les charactéristiques d'un monstre, et renvoie l'entité modifiée
-     * @param entity Monstre à éditer
-     * @param displayName Nom à afficher au dessus
-     * @param hp Points de vie
-     * @param attackDamage Puissance d'attaque
-     * @param speed Vitesse de déplacement
-     * @param knockbackResistance Résistance au recul
-     * @return Entité modifiée
+     * Edit Monster's characteristics of monster and send back the modified entity
+     * @param entity Monster to edit
+     * @param displayName Name of the monster to display
+     * @param hp health point of the monster
+     * @param attackDamage damage of the monster
+     * @param speed walking speed of the monster
+     * @param knockbackResistance resistance to knockback
+     * @return Modified entity
      */
-    private static Entity editCharacteristics(Entity entity, String displayName, double hp, double attackDamage, double speed, int knockbackResistance) {
+    private static DataHolder editCharacteristics(DataHolder entity, String displayName, double hp, double attackDamage, double speed, int knockbackResistance) {
         entity.offer(Keys.DISPLAY_NAME, Text.of(displayName));
-        entity.offer(Keys.MAX_HEALTH, hp);
+
+       /* MovementSpeedData movementSpeedData = entity.getOrCreate(MovementSpeedData.class).get();
+        movementSpeedData.walkSpeed().set(speed);*/
+
+        Optional<HealthData> healthOptional = entity.get(HealthData.class);
+        if (healthOptional.isPresent()) {
+            HealthData healthData = healthOptional.get();
+            Brawlator.getLogger().info("health modification");
+
+            MutableBoundedValue<Double> currentHealth = healthData.health();
+            currentHealth.set(hp);
+            healthData.set(currentHealth);
+
+            entity.offer(healthData);
+        }
+
+      /*  entity.offer(movementSpeedData);*/
+
         entity.offer(Keys.ATTACK_DAMAGE, attackDamage);
-        entity.offer(Keys.WALKING_SPEED, speed);
+
+
         entity.offer(Keys.KNOCKBACK_STRENGTH, knockbackResistance);
         return entity;
     }
 
     /**
-     * Ajoute des effets de potion à un monstre, et renvoie l'entité modifiée
-     * @param entity Monstre auquel ajouter un effet
-     * @param effects Liste des effets à ajouter
-     * @return Entité modifiée
+     * Add potion effects to a monster and send back the entity
+     * @param entity Entity to apply the effect
+     * @param effects List of effect
+     * @return Modified entity
      */
     private static Entity addEffects(Entity entity, List<EffectBean> effects){
         List<PotionEffect> potions = new ArrayList();
         for (EffectBean effect :
              effects) {
-            PotionEffect potion = PotionEffect.builder().potionType(EffectBean.effectTypes.get(effect.getType()))
-                    .duration(effect.getDuration()).amplifier(effect.getAmplifier()).build();
-            potions.add(potion);
+            PotionEffectType potionEffectType = EffectBean.effectTypes.get(effect.getType());
+            if(potionEffectType == null){
+                Brawlator.getLogger().warn(effect.getType() + " is not valid");
+            } else {
+                PotionEffect potion = PotionEffect.builder().potionType(potionEffectType)
+                        .duration(effect.getDuration()).amplifier(effect.getAmplifier()).build();
+                potions.add(potion);
+            }
         }
         PotionEffectData effectData = entity.getOrCreate(PotionEffectData.class).get();
         effectData.addElements(potions);
@@ -94,10 +132,10 @@ public class MonsterAction {
     }
 
     /**
-     * Ajoute des objets à un monstre, et renvoie l'entité modifiée
-     * @param entity Monstre à équiper
-     * @param items Hashmap des objets à équiper avec leurs types
-     * @return Entité modifiée
+     * Add objects to a monster , and send back the entity
+     * @param entity Monster to equip
+     * @param items Hashmap of objects to equip with their emplacements
+     * @@return Modified entity
      */
     private static ArmorEquipable addItems(ArmorEquipable entity, HashMap<String, ItemType> items) {
         for (Map.Entry<String, ItemType> item : items.entrySet()) {
@@ -123,6 +161,12 @@ public class MonsterAction {
         return entity;
     }
 
+    /***
+     * Equip an entity(ArmorEquipable) of these equipments indiques in the monsterBean
+     * @param entity entity to equip
+     * @param monster monster of reference to get items
+     * @return Modified entity
+     */
     private static ArmorEquipable equip(ArmorEquipable entity, MonsterBean monster){
         HashMap<String, ItemType> equipement = new HashMap<>();
         for(Map.Entry<String,EquipementBean> entry : monster.getEquipement().entrySet()){
@@ -136,10 +180,10 @@ public class MonsterAction {
 
 
     /**
-     * Requête le DAO pour récupérer un monstre de la BDD
+     * Request the DAO to get a monster in the database
      *
-     * @param name
-     * @return
+     * @param name name of the monster
+     * @return the monster (optional)
      */
     public static Optional<MonsterBean> getMonster(String name){
         MonsterDAO monsterDao = new MonsterDAO();

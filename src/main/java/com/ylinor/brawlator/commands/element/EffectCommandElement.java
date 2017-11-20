@@ -8,7 +8,6 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.text.Text;
 
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -26,11 +25,8 @@ public class EffectCommandElement extends CommandElement {
         errorArgs = args;
 
         String effectInput = args.next();
-
         Optional<String> amplifierInputOptionnal = args.nextIfPresent();
-
         Optional<String> durationInputOptionnal = args.nextIfPresent();
-
         int amplifier = 1;
         int duration = 99999;
         if (amplifierInputOptionnal.isPresent()) {

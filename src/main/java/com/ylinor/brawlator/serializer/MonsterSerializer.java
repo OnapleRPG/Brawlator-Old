@@ -8,7 +8,6 @@ import com.ylinor.brawlator.data.beans.MonsterBuilder;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializer;
-import sun.awt.SunHints;
 
 import java.util.List;
 import java.util.Map;

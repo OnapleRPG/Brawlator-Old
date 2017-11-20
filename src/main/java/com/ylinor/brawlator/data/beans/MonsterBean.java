@@ -107,6 +107,21 @@ public class MonsterBean {
     }
 
     @Override
+    public String toString() {
+        return "MonsterBean{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", type='" + type + '\'' +
+                ", hp=" + hp +
+                ", speed=" + speed +
+                ", attackDamage=" + attackDamage +
+                ", knockbackResistance=" + knockbackResistance +
+                ", effectLists=" + effectLists +
+                ", equipement=" + equipement +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof MonsterBean)) return false;

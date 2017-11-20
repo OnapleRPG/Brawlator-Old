@@ -24,7 +24,6 @@ public class MonsterCommandElement extends CommandElement {
     protected Object parseValue(CommandSource source, CommandArgs args) throws ArgumentParseException {
         String monsterName = args.next();
         Optional<MonsterBean> monsterBeanOptional = MonsterDAO.getMonster(monsterName);
-
         if(monsterBeanOptional.isPresent()){
           return monsterBeanOptional.get();
         }

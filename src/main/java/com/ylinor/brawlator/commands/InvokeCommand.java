@@ -15,7 +15,9 @@ import org.spongepowered.api.world.World;
 import java.util.Optional;
 
 
-
+/**
+ * Command to invoke a monster present in the database
+ */
 public class InvokeCommand implements CommandExecutor {
 	/**
 	 * Constructeur par defaut

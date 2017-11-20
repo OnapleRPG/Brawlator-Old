@@ -8,7 +8,6 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.text.Text;
 
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -24,14 +23,11 @@ public class EquipementCommandElement extends CommandElement {
     protected Object parseValue(CommandSource source, CommandArgs args) throws ArgumentParseException {
         errorArgs = args;
         String equipementNameInput = args.next();
-
         Optional<String> idOptionnal = args.nextIfPresent();
-
         int id = 0;
         if(idOptionnal.isPresent()){
             id = parseInt(idOptionnal.get());
         }
-
         return new EquipementBean(equipementNameInput, id);
     }
 
