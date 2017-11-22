@@ -61,7 +61,9 @@ public class SpawnerAction {
     public static void updateSpawner() {
         for (SpawnerBean spawnerBean : SpawnerDAO.spawnerList) {
             if (Brawlator.getWorld().getLocation(spawnerBean.getPosition()).getBlockType() == BlockTypes.BARRIER) {
-                spawnerBean.updateTime();
+               if (!isEnoughEntity(spawnerBean)) {
+                    spawnerBean.updateTime();
+                }
             } else {
                 SpawnerDAO.delete(spawnerBean);
             }
@@ -72,10 +74,21 @@ public class SpawnerAction {
      * @param spawnerBean
      * @return
      */
-    public int getEntities(SpawnerBean spawnerBean) {
+    private static int getEntities(SpawnerBean spawnerBean) {
         Entity entity = Brawlator.getWorld().createEntity(EntityTypes.PLAYER,spawnerBean.getPosition());
         Brawlator.getLogger().info("entité proche" + entity.getNearbyEntities(spawnerBean.getRange()+10).size());
-    return entity.getNearbyEntities(spawnerBean.getRange()+10).size();
+        int qte = entity.getNearbyEntities(spawnerBean.getRange()+10).size();
+        entity.remove();
+    return qte;
+    }
+
+    /**
+     * Check if there is enough entity spawned  around a spawner
+     * @param spawnerBean the spawner to check
+     * @return true if is enough false if not
+     */
+    private static Boolean isEnoughEntity(SpawnerBean spawnerBean){
+        return getEntities(spawnerBean)>=spawnerBean.getQuantity();
     }
 
 
