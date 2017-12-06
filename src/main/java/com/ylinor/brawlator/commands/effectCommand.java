@@ -28,6 +28,8 @@ public class effectCommand implements CommandExecutor {
             MonsterBean monsterBean = monsterBeanOptional.get();
             Optional<EffectBean> effectOptional = args.<EffectBean>getOne("effect");
             if(effectOptional.isPresent()){
+
+
                 monsterBean.addEffect(effectOptional.get());
             }
             MonsterDAO.update(monsterBean);

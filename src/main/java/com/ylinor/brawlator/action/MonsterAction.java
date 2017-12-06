@@ -5,6 +5,7 @@ import com.ylinor.brawlator.data.beans.EffectBean;
 import com.ylinor.brawlator.data.beans.EquipementBean;
 import com.ylinor.brawlator.data.beans.MonsterBean;
 import com.ylinor.brawlator.data.dao.MonsterDAO;
+import com.ylinor.brawlator.exception.EntityTypeNotFound;
 import org.spongepowered.api.data.DataHolder;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.PotionEffectData;
@@ -35,11 +36,11 @@ public class MonsterAction {
      * @param monster Bean of the monster and his characteristic
      * @return Optional entity spawned
      */
-    public static Optional<Entity> invokeMonster(World world, Location location, MonsterBean monster) {
+    public static Optional<Entity> invokeMonster(World world, Location location, MonsterBean monster) throws EntityTypeNotFound {
         //  Vérification que le type du monstre existe pour le plugin
         if (!MonsterBean.monsterTypes.containsKey(monster.getType())) {
             Brawlator.getLogger().warn("Le type du monstre n'existe pas");
-            return Optional.empty();
+            throw new EntityTypeNotFound(monster.getType());
         }
         //  Création de l'entité
        Brawlator.getLogger().info(monster.toString());

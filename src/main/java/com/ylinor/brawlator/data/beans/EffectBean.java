@@ -50,5 +50,11 @@ public class EffectBean {
         effectTypes.put("STRENGTH", PotionEffectTypes.STRENGTH);
     }
 
+    public static boolean exist(String name){
+        return effectTypes.containsKey(name);
+    }
+
+
+
 
 }

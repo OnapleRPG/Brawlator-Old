@@ -31,7 +31,8 @@ public class MonsterCommand implements CommandExecutor {
         }
         Optional<String> typeOptional = args.<String>getOne("type");
         if (typeOptional.isPresent()) {
-            monsterBuilder.type(typeOptional.get());
+            String type = typeOptional.get().toLowerCase();
+            monsterBuilder.type(type);
         }
         Optional<Double> hpOptional = args.<Double>getOne("hp");
         if (hpOptional.isPresent()) {
@@ -59,7 +60,7 @@ public class MonsterCommand implements CommandExecutor {
         ((Player) src).sendMessage(Text.builder("    >Speed : " + monsterBean.getSpeed()).color(TextColors.GOLD).build());
         ((Player) src).sendMessage(Text.builder("    >Damage : " + monsterBean.getAttackDamage()).color(TextColors.GOLD).build());
         ((Player) src).sendMessage(Text.builder("    >Knockback Resistance : " + monsterBean.getKnockbackResistance()).color(TextColors.GOLD).build());
-        ((Player) src).sendMessage(Text.builder("You can add equipments and effects to the monster with the command /modify").color(TextColors.GREEN).build());
+        ((Player) src).sendMessage(Text.builder("You can add equipments with /equipement and effects with /effect ").color(TextColors.GREEN).build());
 
         return CommandResult.success();
     }

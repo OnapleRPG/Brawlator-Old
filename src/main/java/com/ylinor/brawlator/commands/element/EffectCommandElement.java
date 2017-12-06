@@ -24,7 +24,11 @@ public class EffectCommandElement extends CommandElement {
     protected Object parseValue(CommandSource source, CommandArgs args) throws ArgumentParseException {
         errorArgs = args;
 
-        String effectInput = args.next();
+        String effectInput = args.next().toUpperCase();
+
+        if(!EffectBean.exist(effectInput)){
+            throw errorArgs.createError(Text.of("Effect named : " + effectInput + " does not exist"));
+        }
         Optional<String> amplifierInputOptionnal = args.nextIfPresent();
         Optional<String> durationInputOptionnal = args.nextIfPresent();
         int amplifier = 1;

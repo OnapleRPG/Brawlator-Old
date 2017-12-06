@@ -1,40 +1,34 @@
 package com.ylinor.brawlator.commands.element;
 
-import com.ylinor.brawlator.data.beans.EquipementBean;
-import org.spongepowered.api.Sponge;
+import com.ylinor.brawlator.Brawlator;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.ArgumentParseException;
 import org.spongepowered.api.command.args.CommandArgs;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
-import org.spongepowered.api.item.ItemType;
-import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 
-import java.util.Collections;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-public class EquipementCommandElement extends CommandElement {
+public class Vector3iCommandElement extends CommandElement {
+
     CommandArgs errorArgs;
 
-    public EquipementCommandElement(Text key) {
+    public Vector3iCommandElement(Text key) {
         super(key);
     }
 
+    private int x,y,z =0;
     @Override
     protected Object parseValue(CommandSource source, CommandArgs args) throws ArgumentParseException {
-        errorArgs = args;
-        String equipementNameInput = args.next().toUpperCase();
-       if(!Sponge.getRegistry().getType(ItemType.class,equipementNameInput).isPresent()){
-           throw errorArgs.createError(Text.of("Item Type named : " + equipementNameInput + "does not exist"));
-        }
-        Optional<String> idOptionnal = args.nextIfPresent();
-        int id = 0;
-        if(idOptionnal.isPresent()){
-            id = parseInt(idOptionnal.get());
-        }
-        return new EquipementBean(equipementNameInput, id);
+
+         x = parseInt(args.next());
+         y = parseInt(args.next());
+         z = parseInt(args.next());
+        return null;
     }
 
     private int parseInt(String input) throws ArgumentParseException {
@@ -44,9 +38,19 @@ public class EquipementCommandElement extends CommandElement {
             throw errorArgs.createError(Text.of("'" + input + "' is not a valid number!"));
         }
     }
-
     @Override
     public List<String> complete(CommandSource src, CommandArgs args, CommandContext context) {
-        return Collections.emptyList();
+       Player p = (Player)src;
+        if(x ==0) {
+          return new ArrayList<>(p.getTransform().getPosition().getFloorX());
+        }
+        if(y==0) {
+            return new ArrayList<>(p.getTransform().getPosition().getFloorX());
+        }
+        if(z==0) {
+            return new ArrayList<>(p.getTransform().getPosition().getFloorX());
+        }
+        return null;
     }
+
 }

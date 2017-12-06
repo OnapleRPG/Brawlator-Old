@@ -24,6 +24,7 @@ import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
+import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.Task;
@@ -124,10 +125,13 @@ public class Brawlator {
 	 */
 	@Listener
 	public void onSpawnEvent(SpawnEvent event){
-		getLogger().info(
-				MonsterAction.invokeMonster(getWorld(),getWorld().getLocation(event.getSpawnerBean().getPosition()),event.getSpawnerBean().getMonsterBean()).get().toString()
-		);
-	}
+
+				try {
+					getLogger().info(MonsterAction.invokeMonster(getWorld(), getWorld().getLocation(event.getSpawnerBean().getPosition()), event.getSpawnerBean().getMonsterBean()).get().toString());
+				} catch (Exception e) {
+					getLogger().warn(e.getMessage());
+				}
+		}
 
 	/**
 	 * Listener of the server stop event and save configuration
