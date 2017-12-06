@@ -14,7 +14,9 @@ import org.spongepowered.api.text.format.TextColors;
 import java.util.Optional;
 
 public class equipementCommand implements CommandExecutor {
-
+    /**
+     * Command to add Stuff to a monster
+     */
     public equipementCommand() {
 
     }

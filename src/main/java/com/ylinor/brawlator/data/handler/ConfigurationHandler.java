@@ -1,6 +1,6 @@
 package com.ylinor.brawlator.data.handler;
 
-import com.google.common.collect.ImmutableList;
+
 import com.google.common.reflect.TypeToken;
 import com.ylinor.brawlator.Brawlator;
 import com.ylinor.brawlator.data.beans.EffectBean;

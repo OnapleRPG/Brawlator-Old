@@ -1,6 +1,5 @@
 package com.ylinor.brawlator.commands.element;
 
-import com.ylinor.brawlator.Brawlator;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.ArgumentParseException;
 import org.spongepowered.api.command.args.CommandArgs;
@@ -9,7 +8,6 @@ import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 

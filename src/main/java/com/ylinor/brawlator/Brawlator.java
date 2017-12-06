@@ -1,9 +1,6 @@
 package com.ylinor.brawlator;
 
 import javax.inject.Inject;
-
-
-import com.flowpowered.math.vector.Vector3i;
 import com.ylinor.brawlator.action.MonsterAction;
 import com.ylinor.brawlator.action.SpawnerAction;
 import com.ylinor.brawlator.commands.*;
@@ -11,7 +8,6 @@ import com.ylinor.brawlator.commands.database.SelectMonsterCommand;
 import com.ylinor.brawlator.commands.element.EffectCommandElement;
 import com.ylinor.brawlator.commands.element.EquipementCommandElement;
 import com.ylinor.brawlator.commands.element.MonsterCommandElement;
-import com.ylinor.brawlator.data.beans.SpawnerBean;
 import com.ylinor.brawlator.data.dao.MonsterDAO;
 import com.ylinor.brawlator.data.dao.SpawnerDAO;
 import com.ylinor.brawlator.data.handler.ConfigurationHandler;
@@ -24,14 +20,11 @@ import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
-import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.World;
-
-
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -63,7 +56,7 @@ public class Brawlator {
 		getLogger().info(String.valueOf(SpawnerDAO.spawnerList.size())+ " Spawner(s) loaded");
 		getLogger().info(String.valueOf(MonsterDAO.monsterList.size())+ " Monster(s) loaded");
 
-		/// Commandes du plugin
+
 		CommandSpec create = CommandSpec.builder()
 				.description(Text.of("Create a monster and add it to the base"))
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("name")))

@@ -2,10 +2,8 @@ package com.ylinor.brawlator.data.dao;
 
 import com.ylinor.brawlator.data.beans.SpawnerBean;
 import com.ylinor.brawlator.data.handler.ConfigurationHandler;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 public class SpawnerDAO {

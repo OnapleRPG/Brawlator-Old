@@ -2,8 +2,6 @@ package com.ylinor.brawlator.data.dao;
 
 import com.ylinor.brawlator.data.beans.MonsterBean;
 import com.ylinor.brawlator.data.handler.ConfigurationHandler;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
