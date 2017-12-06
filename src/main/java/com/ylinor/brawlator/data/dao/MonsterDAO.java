@@ -12,9 +12,9 @@ import java.util.stream.Collectors;
 
 public class MonsterDAO {
 
-    public static List<MonsterBean> monsterList;
+    public static final List<MonsterBean> monsterList = new ArrayList<>();
 
-    public static Optional<MonsterBean> getMonster(String name){
+    public static  Optional<MonsterBean> getMonster(String name){
         return monsterList.stream().filter(monsterBean -> Objects.equals(monsterBean.getName(),name)).findFirst();
     }
 
@@ -42,11 +42,8 @@ public class MonsterDAO {
     public static void populate(){
         Optional<List<MonsterBean>> monsterBeanList = ConfigurationHandler.getMonsterList();
         if(monsterBeanList.isPresent()) {
-            monsterList = monsterBeanList.get();
-        } else {
-            monsterList = new ArrayList<>();
+            monsterList.addAll(monsterBeanList.get());
         }
-
 
     }
 
