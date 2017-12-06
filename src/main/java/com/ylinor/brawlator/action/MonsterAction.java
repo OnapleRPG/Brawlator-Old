@@ -60,11 +60,10 @@ public class MonsterAction {
         //  Spawn de l'entité dans le monde
         Cause cause = Cause.source(SpawnTypes.PLUGIN).build();
 
+        entity.offer(Keys.ATTACK_DAMAGE,10.0d);
         world.spawnEntity(entity, cause);
-        HealthData healthData = entity.getOrCreate(HealthData.class).get();
-        healthData.health().set(500.0);
-        entity.offer(healthData);
-        Brawlator.getLogger().info("info" + entity.getOrCreate(HealthData.class).get().health().get());
+
+       // Brawlator.getLogger().info("info" + entity.getOrCreate(HealthData.class).get().health().get());
 
         return Optional.ofNullable(entity);
     }
@@ -85,20 +84,10 @@ public class MonsterAction {
 
        /* MovementSpeedData movementSpeedData = entity.getOrCreate(MovementSpeedData.class).get();
         movementSpeedData.walkSpeed().set(speed);*/
+        entity.offer(Keys.MAX_HEALTH,hp);
+        entity.offer(Keys.HEALTH,hp);
 
-        Optional<HealthData> healthOptional = entity.get(HealthData.class);
-        if (healthOptional.isPresent()) {
-            HealthData healthData = healthOptional.get();
-            Brawlator.getLogger().info("health modification");
-
-            MutableBoundedValue<Double> currentHealth = healthData.health();
-            currentHealth.set(hp);
-            healthData.set(currentHealth);
-
-            entity.offer(healthData);
-        }
-
-      /*  entity.offer(movementSpeedData);*/
+      entity.offer(Keys.WALKING_SPEED,speed);
 
         entity.offer(Keys.ATTACK_DAMAGE, attackDamage);
 
