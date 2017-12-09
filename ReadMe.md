@@ -31,21 +31,20 @@ Duration is how long the effect will be effective on the spawned monster default
 Some monsters like *zombie* or *skeleton* can be equiped with stuff. To equipe monster with stuff type  the following command : ```/equipment <monster> <emplacement > <equipment >```
 #### Configuration file
 sample of configuration file :  
-```Monster[  
+``` Monster[  
 {  
     damage=1.0  
     effects=[]  
        equipement {  
-       hand {  
-       modifierId=0  
-       name=BOW  
-       }  
-       }  
+            hand {  
+                modifierId=0  
+                name=BOW  
+                }  
+            }  
        hp=50.0  
        knockbackResistance=1  
        name="archer violant"  
        speed=1.0  
        type=skeleton  
     }  
-]```
-
+] ```
