@@ -29,8 +29,6 @@ repositories {
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 dependencies {
     compile 'org.spongepowered:spongeapi:6.0.0'
-    compile 'org.xerial:sqlite-jdbc:3.7.2'
-    compile 'com.j256.ormlite:ormlite-jdbc:5.0'
     testCompile "junit:junit:4.11"
 }
 sonarqube {
