@@ -15,9 +15,9 @@ This will create a *barrier block* at the specified position And periodicly spaw
 
 ## Customisation
 ### Monster
-####Stats
+#### Stats
 _Arriving soon_
-####Effects
+#### Effects
 Several effects can be added to monsters.   
 * ```RESISTANCE```
 * ```FIRE_RESISTANCE```
@@ -27,25 +27,25 @@ Several effects can be added to monsters.
 To add effects to a monster just type this command : ```/effect <monster_name> <effect> [duration] [amplifier] ```. The monster name must be renseigned and it refers to the monster you want to add effect.  
 The effect is the effect you want to apply.   
 Duration is how long the effect will be effective on the spawned monster default value is *99999* and amplifier is the power of the effect, the default value is *1*.
-####Equipement
+#### Equipement
 Some monsters like *zombie* or *skeleton* can be equiped with stuff. To equipe monster with stuff type  the following command : ```/equipment <monster> <emplacement > <equipment >```
-####Configuration file
-sample of configuration file : 
-`Monster[
+#### Configuration file
+sample of configuration file :  
+`Monster[  
 {  
-        damage=1.0  
-        effects=[]  
-        equipement {  
-            hand {  
-                modifierId=0  
-                name=BOW  
-            }  
-        }  
-        hp=50.0  
-        knockbackResistance=1  
-        name="archer violant"  
-        speed=1.0  
-        type=skeleton  
-    }
+    damage=1.0  
+    effects=[]  
+       equipement {  
+       hand {  
+       modifierId=0  
+       name=BOW  
+       }  
+       }  
+       hp=50.0  
+       knockbackResistance=1  
+       name="archer violant"  
+       speed=1.0  
+       type=skeleton  
+    }  
 ]`
 
