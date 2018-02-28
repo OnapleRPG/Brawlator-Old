@@ -56,8 +56,7 @@ public class CreateSpawnerCommand implements CommandExecutor {
         }
         SpawnerBean spawnerBean = new SpawnerBean(position.get().getBlockPosition(),monsterBeanOptional.get(),qua,sp,ran);
         SpawnerDAO.insert(spawnerBean);
-        Brawlator.getWorld().setBlock(position.get().getBlockPosition(), BlockState.builder().blockType(BlockTypes.BARRIER).build()
-                ,Cause.source(Brawlator.getInstance()).build());
+        Brawlator.getWorld().setBlock(position.get().getBlockPosition(), BlockState.builder().blockType(BlockTypes.BARRIER).build());
         if( src instanceof Player){
             src.sendMessage(Text.builder().append(Text.of("Spawner successfully created with this parameter"))
                     .color(TextColors.GREEN).build());

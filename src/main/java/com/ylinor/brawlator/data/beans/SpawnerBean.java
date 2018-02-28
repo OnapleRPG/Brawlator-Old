@@ -5,6 +5,7 @@ import com.ylinor.brawlator.Brawlator;
 import com.ylinor.brawlator.event.SpawnEvent;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.cause.EventContext;
 
 public class SpawnerBean {
 
@@ -98,8 +99,7 @@ public class SpawnerBean {
             Brawlator.getLogger().info("Spawner at " + position.toString() + " have "+ time);
         } else {
             time = spawnRate;
-            SpawnEvent event = new SpawnEvent(
-                    Cause.source(Sponge.getPluginManager().getPlugin("brawlator").get()).build(),this);
+            SpawnEvent event = new SpawnEvent(this);
             Sponge.getEventManager().post(event);
         }
     }

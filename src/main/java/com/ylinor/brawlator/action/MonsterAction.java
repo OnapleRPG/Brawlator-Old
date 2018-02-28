@@ -56,10 +56,9 @@ public class MonsterAction {
             entity = (Entity) equip((ArmorEquipable)entity,monster);
         }
         //  Spawn de l'entité dans le monde
-        Cause cause = Cause.source(SpawnTypes.PLUGIN).build();
 
         entity.offer(Keys.ATTACK_DAMAGE,10.0d);
-        world.spawnEntity(entity, cause);
+        world.spawnEntity(entity);
 
        // Brawlator.getLogger().info("info" + entity.getOrCreate(HealthData.class).get().health().get());
 

@@ -17,15 +17,22 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
+import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
+import org.spongepowered.api.event.item.inventory.DropItemEvent;
+import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.World;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -51,11 +58,16 @@ public class Brawlator {
 		logger.info("Brawlator plugin initialized.");
 		ConfigurationHandler.setMonsterConfiguration(ConfigurationHandler.loadMonsterConfiguration(configDir + "/monster.conf"));
 		ConfigurationHandler.setSpawnerConfiguration(ConfigurationHandler.loadSpawnerConfiguration(configDir + "/spawner.conf"));
+		ConfigurationHandler.setLootTableConfigLoader(ConfigurationHandler.loadLootTableConfiguration(configDir + "/loottable.conf"));
 		MonsterDAO.populate();
 		SpawnerDAO.populate();
+
+		ConfigurationHandler.getLootTableList();
+
 		getLogger().info(String.valueOf(SpawnerDAO.spawnerList.size())+ " Spawner(s) loaded");
 		getLogger().info(String.valueOf(MonsterDAO.monsterList.size())+ " Monster(s) loaded");
 
+		Sponge.getEventManager().registerListeners(this, new BrawlatorListener());
 
 		CommandSpec create = CommandSpec.builder()
 				.description(Text.of("Create a monster and add it to the base"))
@@ -110,6 +122,8 @@ public class Brawlator {
 		Task task = Task.builder().execute(()-> SpawnerAction.updateSpawner()).delay(20, TimeUnit.SECONDS)
 				.interval(10,TimeUnit.SECONDS).name("Spawn monster").submit(this);
 
+
+
 	}
 
 	/**
@@ -134,6 +148,33 @@ public class Brawlator {
 	public void onServerStop(GameStoppedServerEvent event) {
 		logger.info("stop");
 		ConfigurationHandler.save();
+	}
+
+	@Listener
+	public void onEntityDeath(DestructEntityEvent.Death event){
+	logger.info(event.getTargetEntity().toString());
+
+	}
+
+		/**
+		 * Cancel block breaking dropping event unless specified in config
+		 * @param event Item dropping event
+		 */
+		@Listener
+		public void onDropItemEvent(DropItemEvent.Destruct event) {
+			/*List<String> defaultDrops = ConfigurationHandler.getHarvestDefaultDropList();
+			Optional<Player> player = event.getCause().first(Player.class);
+			if (player.isPresent()) {
+				for (Entity entity: event.getEntities()) {
+					Optional<ItemStackSnapshot> stack = entity.get(Keys.REPRESENTED_ITEM);
+					if (stack.isPresent()) {
+						if (!defaultDrops.contains(stack.get().getType().getId())) {
+							event.setCancelled(true);
+						}
+					}
+				}
+
+		}*/
 	}
 
 	/**
