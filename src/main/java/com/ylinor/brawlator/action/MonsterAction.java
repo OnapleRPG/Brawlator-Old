@@ -6,6 +6,7 @@ import com.ylinor.brawlator.data.beans.EquipementBean;
 import com.ylinor.brawlator.data.beans.MonsterBean;
 import com.ylinor.brawlator.data.dao.MonsterDAO;
 import com.ylinor.brawlator.exception.EntityTypeNotFound;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataHolder;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.PotionEffectData;
@@ -14,6 +15,7 @@ import org.spongepowered.api.effect.potion.PotionEffect;
 import org.spongepowered.api.effect.potion.PotionEffectType;
 import org.spongepowered.api.entity.ArmorEquipable;
 import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.entity.spawn.SpawnTypes;
 import org.spongepowered.api.item.ItemType;
@@ -35,34 +37,35 @@ public class MonsterAction {
      * @return Optional entity spawned
      */
     public static Optional<Entity> invokeMonster(World world, Location location, MonsterBean monster) throws EntityTypeNotFound {
-        //  Vérification que le type du monstre existe pour le plugin
-        if (!MonsterBean.monsterTypes.containsKey(monster.getType())) {
-            Brawlator.getLogger().warn("Le type du monstre n'existe pas");
-            throw new EntityTypeNotFound(monster.getType());
-        }
+
         //  Création de l'entité
        Brawlator.getLogger().info(monster.toString());
-        Entity entity = world.createEntity(MonsterBean.monsterTypes.get(monster.getType()), location.getPosition());
-        if(entity instanceof  DataHolder) {
-            entity =(Entity) editCharacteristics( (DataHolder) entity, monster.getName(), monster.getHp(), monster.getAttackDamage(), monster.getSpeed(), monster.getKnockbackResistance());
+        Optional<EntityType> entityTypeOptional = Sponge.getRegistry().getType(EntityType.class,monster.getType());
+        if(entityTypeOptional.isPresent()) {
+            Entity entity = world.createEntity(entityTypeOptional.get(), location.getPosition());
+            if (entity instanceof DataHolder) {
+                entity = (Entity) editCharacteristics((DataHolder) entity, monster.getName(), monster.getHp(), monster.getAttackDamage(), monster.getSpeed(), monster.getKnockbackResistance());
+            }
+            //  Gestion des effets de potion à donner au monstre
+            entity = addEffects(entity, monster.getEffectLists());
+
+
+            //  Gestion des objets appartenant au monstre
+            if (entity instanceof ArmorEquipable) {
+                entity = (Entity) equip((ArmorEquipable) entity, monster);
+            }
+            //  Spawn de l'entité dans le monde
+
+            entity.offer(Keys.ATTACK_DAMAGE, 10.0d);
+            world.spawnEntity(entity);
+
+            // Brawlator.getLogger().info("info" + entity.getOrCreate(HealthData.class).get().health().get());
+
+            return Optional.ofNullable(entity);
         }
-        //  Gestion des effets de potion à donner au monstre
-        entity = addEffects(entity, monster.getEffectLists());
+        Brawlator.getLogger().warn("Le type du monstre n'existe pas");
+        return Optional.empty();
 
-
-
-        //  Gestion des objets appartenant au monstre
-        if (entity instanceof ArmorEquipable) {
-            entity = (Entity) equip((ArmorEquipable)entity,monster);
-        }
-        //  Spawn de l'entité dans le monde
-
-        entity.offer(Keys.ATTACK_DAMAGE,10.0d);
-        world.spawnEntity(entity);
-
-       // Brawlator.getLogger().info("info" + entity.getOrCreate(HealthData.class).get().health().get());
-
-        return Optional.ofNullable(entity);
     }
 
 

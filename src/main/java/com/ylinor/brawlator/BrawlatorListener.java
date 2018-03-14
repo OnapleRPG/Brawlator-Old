@@ -1,5 +1,6 @@
 package com.ylinor.brawlator;
 
+import com.ylinor.brawlator.action.LootAction;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityTypes;
@@ -22,7 +23,10 @@ public class BrawlatorListener {
        Optional<Text> nameOptional  = entity.get(Keys.DISPLAY_NAME);
        if(nameOptional.isPresent()){
            String name = nameOptional.get().toPlain();
-
+           Optional<ItemStack> itemStackOptional = LootAction.getloot(name);
+           if(itemStackOptional.isPresent()){
+               spawnItemStack(itemStackOptional.get(),entity.getLocation());
+           }
        }
 
     }
@@ -33,7 +37,8 @@ public class BrawlatorListener {
      */
     @Listener
     public void onDropItemEvent(DropItemEvent.Destruct event) {
-			/*List<String> defaultDrops = ConfigurationHandler.getHarvestDefaultDropList();
+			event.setCancelled(true);
+        /*List<String> defaultDrops = ConfigurationHandler.getHarvestDefaultDropList();
 			Optional<Player> player = event.getCause().first(Player.class);
 			if (player.isPresent()) {
 				for (Entity entity: event.getEntities()) {

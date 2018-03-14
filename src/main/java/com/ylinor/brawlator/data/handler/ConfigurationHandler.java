@@ -82,7 +82,6 @@ public class ConfigurationHandler {
     public static void save(){
         try {
             ConfigurationHandler.serializeMonsterList(MonsterDAO.monsterList);
-            spawnerConfigLoader.save(spawner);
             monsterConfigLoader.save(monster);
 
         } catch(IOException e) {
@@ -102,6 +101,7 @@ public class ConfigurationHandler {
 
         } catch (Exception e){
             Brawlator.getLogger().error(e.toString());
+            e.printStackTrace();
             return Optional.empty();
         }
     }
@@ -111,13 +111,11 @@ public class ConfigurationHandler {
         try {
             lootTableList  = lootTable.getNode("loots").getList(TypeToken.of(LootTableBean.class));
 
-            Brawlator.getLogger().warn("liste de loot vide");
+            if(lootTableList.isEmpty()) {
+                Brawlator.getLogger().warn("liste de loot vide");
+            }
 
-
-        } catch (Exception e){
-            Brawlator.getLogger().error(e.toString());
-
-        }
+       } catch (Exception e){Brawlator.getLogger().error("oups"); e.printStackTrace(); }
     }
 
     public static Optional<List<MonsterBean>> getMonsterList(){
@@ -134,6 +132,7 @@ public class ConfigurationHandler {
             }
             catch (Exception e) {
             Brawlator.getLogger().error(e.getMessage());
+            e.printStackTrace();
             return Optional.empty();
         }
 

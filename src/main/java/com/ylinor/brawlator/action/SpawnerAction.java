@@ -59,13 +59,13 @@ public class SpawnerAction {
      * periodicly update all spawner time and unused delete spawner
      */
     public static void updateSpawner() {
+        Brawlator.getLogger().info("update");
         for (SpawnerBean spawnerBean : SpawnerDAO.spawnerList) {
+            Brawlator.getLogger().info(spawnerBean.getPosition().toString());
             if (Brawlator.getWorld().getLocation(spawnerBean.getPosition()).getBlockType() == BlockTypes.BARRIER) {
                if (!isEnoughEntity(spawnerBean)) {
                     spawnerBean.updateTime();
                 }
-            } else {
-                SpawnerDAO.delete(spawnerBean);
             }
         }
     }

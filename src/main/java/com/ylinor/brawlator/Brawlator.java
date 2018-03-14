@@ -119,7 +119,7 @@ public class Brawlator {
 				.child(monsterSelect, "select").build();
 		Sponge.getCommandManager().register(this, monsterDatabase, "monsters");
 
-		Task task = Task.builder().execute(()-> SpawnerAction.updateSpawner()).delay(20, TimeUnit.SECONDS)
+		 Task.builder().execute(()-> SpawnerAction.updateSpawner()).delay(20, TimeUnit.SECONDS)
 				.interval(10,TimeUnit.SECONDS).name("Spawn monster").submit(this);
 
 

@@ -19,7 +19,8 @@ public class SpawnerSerializer implements TypeSerializer<SpawnerBean> {
     @Override
     public SpawnerBean deserialize(TypeToken<?> type, ConfigurationNode value) throws ObjectMappingException {
        int id = value.getNode("id").getInt();
-        Vector3i position = value.getNode("position").getValue(TypeToken.of(Vector3i.class));
+        String[] position = value.getNode("position").getString().split(" ");
+
         Optional<MonsterBean> monsterBeanOptional = MonsterDAO.getMonster(value.getNode("monster").getString());
         if(!monsterBeanOptional.isPresent()){
             throw new  ObjectMappingException();
@@ -29,7 +30,7 @@ public class SpawnerSerializer implements TypeSerializer<SpawnerBean> {
         int range = value.getNode("range").getInt();
         int spawnrate = value.getNode("spawnrate").getInt();
 
-        return new SpawnerBean(new Vector3i(-296,71,82), monsterBean,quantity,spawnrate,range);
+        return new SpawnerBean(new Vector3i(Integer.parseInt(position[0]),Integer.parseInt(position[1]),Integer.parseInt(position[2])), monsterBean,quantity,spawnrate,range);
     }
 
     @Override
