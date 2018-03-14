@@ -28,24 +28,23 @@ To add effects to a monster just type this command : ```/effect <monster_name> <
 The effect is the effect you want to apply.   
 Duration is how long the effect will be effective on the spawned monster default value is *99999* and amplifier is the power of the effect, the default value is *1*.
 #### Equipement
-Some monsters like *zombie* or *skeleton* can be equiped with stuff. To equipe monster with stuff type  the following command : ```/equipment <monster> <emplacement > <equipment >```
+Some monsters like *zombie* or *skeleton* can be equiped with stuff. To equipe monster with stuff type  the following command : ```/equipment <monster_name> <emplacement > <equipment >```
 #### Configuration file
 sample of configuration file :  
-`Monster[  
+``` Monster[  
 {  
     damage=1.0  
     effects=[]  
        equipement {  
-       hand {  
-       modifierId=0  
-       name=BOW  
-       }  
-       }  
+            hand {  
+                modifierId=0  
+                name=BOW  
+                }  
+            }  
        hp=50.0  
        knockbackResistance=1  
        name="archer violant"  
        speed=1.0  
        type=skeleton  
     }  
-]`
-
+] ```

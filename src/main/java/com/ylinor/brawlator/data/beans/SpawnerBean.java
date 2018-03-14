@@ -99,9 +99,8 @@ public class SpawnerBean {
             Brawlator.getLogger().info("Spawner at " + position.toString() + " have "+ time);
         } else {
             time = spawnRate;
-            Cause cause = Cause.builder().append(Brawlator.getInstance()).build(EventContext.builder().build());
-            SpawnEvent event = new SpawnEvent(cause
-                    ,this);
+
+            SpawnEvent event = new SpawnEvent(this);
             Sponge.getEventManager().post(event);
         }
     }

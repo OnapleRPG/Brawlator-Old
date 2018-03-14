@@ -3,16 +3,10 @@ package com.ylinor.brawlator.data.handler;
 
 import com.google.common.reflect.TypeToken;
 import com.ylinor.brawlator.Brawlator;
-import com.ylinor.brawlator.data.beans.EffectBean;
-import com.ylinor.brawlator.data.beans.EquipementBean;
-import com.ylinor.brawlator.data.beans.MonsterBean;
-import com.ylinor.brawlator.data.beans.SpawnerBean;
+import com.ylinor.brawlator.data.beans.*;
 import com.ylinor.brawlator.data.dao.MonsterDAO;
 import com.ylinor.brawlator.data.dao.SpawnerDAO;
-import com.ylinor.brawlator.serializer.EffectSerializer;
-import com.ylinor.brawlator.serializer.EquipementSerialiser;
-import com.ylinor.brawlator.serializer.MonsterSerializer;
-import com.ylinor.brawlator.serializer.SpawnerSerializer;
+import com.ylinor.brawlator.serializer.*;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -28,8 +22,14 @@ public class ConfigurationHandler {
 
     private static ConfigurationLoader<CommentedConfigurationNode> monsterConfigLoader;
     private static ConfigurationLoader<CommentedConfigurationNode> spawnerConfigLoader;
+    private static ConfigurationLoader<CommentedConfigurationNode> lootTableConfigLoader;
     private static CommentedConfigurationNode monster;
     private static CommentedConfigurationNode spawner;
+    private static CommentedConfigurationNode lootTable;
+
+    public static List<LootTableBean> lootTableList = new ArrayList<>();
+
+
 
     public static void setMonsterConfiguration(CommentedConfigurationNode commentedConfigurationNode){
         monster = commentedConfigurationNode;
@@ -37,6 +37,9 @@ public class ConfigurationHandler {
 
     public static void setSpawnerConfiguration(CommentedConfigurationNode commentedConfigurationNode){
         spawner = commentedConfigurationNode;
+    }
+    public static void setLootTableConfigLoader(CommentedConfigurationNode commentedConfigurationNode){
+        lootTable = commentedConfigurationNode;
     }
 
     public static CommentedConfigurationNode loadMonsterConfiguration(String configName) {
@@ -55,6 +58,18 @@ public class ConfigurationHandler {
         CommentedConfigurationNode configNode = null;
         try {
             configNode = spawnerConfigLoader.load();
+            Brawlator.getLogger().info(configName + " was loaded successfully");
+        } catch (IOException e) {
+            Brawlator.getLogger().error("Error while loading configuration " + configName + " : " + e.getMessage());
+        }
+        return configNode;
+    }
+
+    public static CommentedConfigurationNode loadLootTableConfiguration(String configName) {
+        lootTableConfigLoader = HoconConfigurationLoader.builder().setPath(Paths.get(configName)).build();
+        CommentedConfigurationNode configNode = null;
+        try {
+            configNode = lootTableConfigLoader.load();
             Brawlator.getLogger().info(configName + " was loaded successfully");
         } catch (IOException e) {
             Brawlator.getLogger().error("Error while loading configuration " + configName + " : " + e.getMessage());
@@ -83,12 +98,26 @@ public class ConfigurationHandler {
            if(!list.isEmpty()){
                return Optional.of(list);
            }
-           Brawlator.getLogger().warn("liste vide");
+           Brawlator.getLogger().warn("liste de spawner vide");
            return Optional.empty();
 
         } catch (Exception e){
             Brawlator.getLogger().error(e.toString());
             return Optional.empty();
+        }
+    }
+
+    public static void getLootTableList(){
+        TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(LootTableBean.class), new LootTableSerializer());
+        try {
+            lootTableList  = lootTable.getNode("loots").getList(TypeToken.of(LootTableBean.class));
+
+            Brawlator.getLogger().warn("liste de loot vide");
+
+
+        } catch (Exception e){
+            Brawlator.getLogger().error(e.toString());
+
         }
     }
 
