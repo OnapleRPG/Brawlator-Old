@@ -6,6 +6,7 @@ import com.ylinor.brawlator.data.beans.EquipementBean;
 import com.ylinor.brawlator.data.beans.MonsterBean;
 import com.ylinor.brawlator.data.dao.MonsterDAO;
 import com.ylinor.brawlator.exception.EntityTypeNotFound;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataHolder;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.PotionEffectData;
@@ -14,7 +15,9 @@ import org.spongepowered.api.effect.potion.PotionEffect;
 import org.spongepowered.api.effect.potion.PotionEffectType;
 import org.spongepowered.api.entity.ArmorEquipable;
 import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.cause.EventContext;
 import org.spongepowered.api.event.cause.entity.spawn.SpawnTypes;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -42,28 +45,29 @@ public class MonsterAction {
         }
         //  Création de l'entité
        Brawlator.getLogger().info(monster.toString());
-        Entity entity = world.createEntity(MonsterBean.monsterTypes.get(monster.getType()), location.getPosition());
-        if(entity instanceof  DataHolder) {
-            entity =(Entity) editCharacteristics( (DataHolder) entity, monster.getName(), monster.getHp(), monster.getAttackDamage(), monster.getSpeed(), monster.getKnockbackResistance());
+        Optional<EntityType> entityTypeOptional = Sponge.getRegistry().getType(EntityType.class,monster.getType());
+        if( entityTypeOptional.isPresent()){
+            Entity entity = world.createEntity(entityTypeOptional.get(), location.getPosition());
+            if(entity instanceof  DataHolder) {
+                entity =(Entity) editCharacteristics( (DataHolder) entity, monster.getName(), monster.getHp(), monster.getAttackDamage(), monster.getSpeed(), monster.getKnockbackResistance());
+            }
+            //  Gestion des effets de potion à donner au monstre
+            entity = addEffects(entity, monster.getEffectLists());
+
+
+
+            /**  Gestion des objets appartenant au monstre*/
+            if (entity instanceof ArmorEquipable) {
+                entity = (Entity) equip((ArmorEquipable)entity,monster);
+            }
+            /** Spawn de l'entité dans le monde*/
+            world.spawnEntity(entity);
+            return Optional.ofNullable(entity);
         }
-        //  Gestion des effets de potion à donner au monstre
-        entity = addEffects(entity, monster.getEffectLists());
-
-
-
-        //  Gestion des objets appartenant au monstre
-        if (entity instanceof ArmorEquipable) {
-            entity = (Entity) equip((ArmorEquipable)entity,monster);
-        }
-        //  Spawn de l'entité dans le monde
-        Cause cause = Cause.source(SpawnTypes.PLUGIN).build();
-
-        entity.offer(Keys.ATTACK_DAMAGE,10.0d);
-        world.spawnEntity(entity, cause);
 
        // Brawlator.getLogger().info("info" + entity.getOrCreate(HealthData.class).get().health().get());
+        return Optional.empty();
 
-        return Optional.ofNullable(entity);
     }
 
 
@@ -84,13 +88,10 @@ public class MonsterAction {
         movementSpeedData.walkSpeed().set(speed);*/
         entity.offer(Keys.MAX_HEALTH,hp);
         entity.offer(Keys.HEALTH,hp);
-
-      entity.offer(Keys.WALKING_SPEED,speed);
-
+        entity.offer(Keys.WALKING_SPEED,speed);
         entity.offer(Keys.ATTACK_DAMAGE, attackDamage);
-
-
         entity.offer(Keys.KNOCKBACK_STRENGTH, knockbackResistance);
+
         return entity;
     }
 

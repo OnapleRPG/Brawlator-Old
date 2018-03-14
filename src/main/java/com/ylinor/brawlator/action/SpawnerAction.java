@@ -1,16 +1,22 @@
 package com.ylinor.brawlator.action;
 
 import com.flowpowered.math.vector.Vector2i;
+import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
 import com.ylinor.brawlator.Brawlator;
 import com.ylinor.brawlator.data.beans.SpawnerBean;
 import com.ylinor.brawlator.data.dao.SpawnerDAO;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockTypes;
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.property.block.SolidCubeProperty;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityTypes;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.World;
+
+import java.util.Optional;
+import java.util.function.Predicate;
 
 
 public class SpawnerAction {
@@ -59,7 +65,9 @@ public class SpawnerAction {
      * periodicly update all spawner time and unused delete spawner
      */
     public static void updateSpawner() {
+        Brawlator.getLogger().info("updating "+ SpawnerDAO.spawnerList.size() + " spawner");
         for (SpawnerBean spawnerBean : SpawnerDAO.spawnerList) {
+
             if (Brawlator.getWorld().getLocation(spawnerBean.getPosition()).getBlockType() == BlockTypes.BARRIER) {
                if (!isEnoughEntity(spawnerBean)) {
                     spawnerBean.updateTime();
@@ -75,10 +83,11 @@ public class SpawnerAction {
      * @return
      */
     private static int getEntities(SpawnerBean spawnerBean) {
-        Entity entity = Brawlator.getWorld().createEntity(EntityTypes.PLAYER,spawnerBean.getPosition());
-        Brawlator.getLogger().info("entité proche" + entity.getNearbyEntities(spawnerBean.getRange()+10).size());
-        int qte = entity.getNearbyEntities(spawnerBean.getRange()+10).size();
-        entity.remove();
+        //Entity entity = Brawlator.getWorld().createEntity(EntityTypes.,spawnerBean.getPosition());
+        //Brawlator.getLogger().info("entité proche" + entity.getNearbyEntities(spawnerBean.getRange()+10).size());
+       int qte = Brawlator.getWorld().getLocation(spawnerBean.getPosition()).getExtent().getEntities(
+                entity -> compare(entity,spawnerBean)).size();
+        Brawlator.getLogger().info("there is "+qte + "entities near "+spawnerBean.getPosition().toString());
     return qte;
     }
 
@@ -89,6 +98,22 @@ public class SpawnerAction {
      */
     private static Boolean isEnoughEntity(SpawnerBean spawnerBean){
         return getEntities(spawnerBean)>=spawnerBean.getQuantity();
+    }
+
+    private static boolean compare(Entity entity, SpawnerBean spawnerBean){
+        Optional<Text> nameOpt = entity.get(Keys.DISPLAY_NAME);
+        if (entity.getLocation().getPosition().distance(spawnerBean.getPosition().toDouble())<50){
+            if(nameOpt.isPresent()){
+                Text name = nameOpt.get();
+                Brawlator.getLogger().info(name.toPlain());
+                boolean eqname = name.toPlain().equals(spawnerBean.getMonsterBean().getName());
+
+            } else {
+                Brawlator.getLogger().warn("Entity name not present");
+                return false;
+            }
+        }
+        return false;
     }
 
 

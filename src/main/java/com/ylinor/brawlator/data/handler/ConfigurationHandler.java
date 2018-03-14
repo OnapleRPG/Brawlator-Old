@@ -8,6 +8,7 @@ import com.ylinor.brawlator.data.beans.EquipementBean;
 import com.ylinor.brawlator.data.beans.MonsterBean;
 import com.ylinor.brawlator.data.beans.SpawnerBean;
 import com.ylinor.brawlator.data.dao.MonsterDAO;
+import com.ylinor.brawlator.data.dao.SpawnerDAO;
 import com.ylinor.brawlator.serializer.EffectSerializer;
 import com.ylinor.brawlator.serializer.EquipementSerialiser;
 import com.ylinor.brawlator.serializer.MonsterSerializer;
@@ -67,9 +68,9 @@ public class ConfigurationHandler {
     public static void save(){
         try {
             ConfigurationHandler.serializeMonsterList(MonsterDAO.monsterList);
-            spawnerConfigLoader.save(spawner);
+            ConfigurationHandler.serializeSpawnerList(SpawnerDAO.spawnerList);
             monsterConfigLoader.save(monster);
-
+            spawnerConfigLoader.save(spawner);
         } catch(IOException e) {
             // error
         }
@@ -115,6 +116,16 @@ public class ConfigurationHandler {
         try {
 
             monster.getNode("monster").setValue(token, monsterList);
+
+        } catch (ObjectMappingException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void serializeSpawnerList(List<SpawnerBean> spawnerList){
+        final TypeToken<List<SpawnerBean>> token = new TypeToken<List<SpawnerBean>>() {};
+        try {
+
+            spawner.getNode("spanwers").setValue(token, spawnerList);
 
         } catch (ObjectMappingException e) {
             e.printStackTrace();

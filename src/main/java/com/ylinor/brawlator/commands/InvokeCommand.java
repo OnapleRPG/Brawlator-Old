@@ -1,4 +1,5 @@
 package com.ylinor.brawlator.commands;
+import com.ylinor.brawlator.Brawlator;
 import com.ylinor.brawlator.action.MonsterAction;
 import com.ylinor.brawlator.data.beans.MonsterBean;
 import com.ylinor.brawlator.data.dao.MonsterDAO;
@@ -40,6 +41,8 @@ public class InvokeCommand implements CommandExecutor {
 			Location location = ((Player) src).getLocation();
 			String monsterId = (args.getOne("id").isPresent()) ? args.<String>getOne("id").get() : "";
 			Optional<MonsterBean> monster = MonsterDAO.getMonster(monsterId);
+
+			Brawlator.getLogger().info(Brawlator.getItemService().fetch(1).get().getType().getName());
 			if(monster.isPresent()) {
 				try {
 					MonsterAction.invokeMonster(world, location, monster.get());

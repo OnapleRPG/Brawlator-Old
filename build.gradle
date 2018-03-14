@@ -24,11 +24,13 @@ publishing {
 
 repositories {
     mavenCentral()
+        maven { url 'https://jitpack.io' }
 }
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 dependencies {
     compile 'org.spongepowered:spongeapi:6.0.0'
+    compile 'com.github.Ylinor:Itemizer:-SNAPSHOT'
     testCompile "junit:junit:4.11"
 }
 sonarqube {

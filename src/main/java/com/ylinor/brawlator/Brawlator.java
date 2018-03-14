@@ -12,16 +12,25 @@ import com.ylinor.brawlator.data.dao.MonsterDAO;
 import com.ylinor.brawlator.data.dao.SpawnerDAO;
 import com.ylinor.brawlator.data.handler.ConfigurationHandler;
 import com.ylinor.brawlator.event.SpawnEvent;
+import com.ylinor.itemizer.Itemizer;
+import com.ylinor.itemizer.service.IItemService;
+import com.ylinor.itemizer.service.ItemService;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
+import org.spongepowered.api.entity.Item;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.block.InteractBlockEvent;
+import org.spongepowered.api.event.entity.DestructEntityEvent;
+import org.spongepowered.api.event.game.state.GameLoadCompleteEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
+import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.World;
@@ -29,7 +38,10 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-@Plugin(id = "brawlator", name = "Brawlator", version = "0.0.1")
+@Plugin(id = "brawlator", name = "Brawlator", version = "0.0.1", dependencies = {
+		@Dependency(id="itemizer",version = "0.0.1")
+}
+)
 public class Brawlator {
 
 	private static Logger logger;
@@ -46,6 +58,18 @@ public class Brawlator {
 	@ConfigDir(sharedRoot=true)
 	private Path configDir;
 
+	private PluginManager pluginManager = Sponge.getPluginManager();
+
+	@Listener
+	public void onServerStarting (GameLoadCompleteEvent event) {
+		logger.info ("loaded");
+
+	}
+	private static IItemService itemService;
+
+	public static IItemService getItemService(){ return itemService;}
+
+
 	@Listener
 	public void onServerStart(GameStartedServerEvent event) {
 		logger.info("Brawlator plugin initialized.");
@@ -55,6 +79,9 @@ public class Brawlator {
 		SpawnerDAO.populate();
 		getLogger().info(String.valueOf(SpawnerDAO.spawnerList.size())+ " Spawner(s) loaded");
 		getLogger().info(String.valueOf(MonsterDAO.monsterList.size())+ " Monster(s) loaded");
+
+
+		itemService = Sponge.getServiceManager().provide(IItemService.class).get();
 
 
 		CommandSpec create = CommandSpec.builder()
@@ -87,8 +114,7 @@ public class Brawlator {
 		Sponge.getCommandManager().register(this, equipment, "equipment");
 
 		CommandSpec createSpawner = CommandSpec.builder().arguments(
-				GenericArguments.location(Text.of("position"))
-				,new MonsterCommandElement(Text.of("monster"))
+				new MonsterCommandElement(Text.of("monster"))
 				,GenericArguments.integer(Text.of("range"))
 				,GenericArguments.integer(Text.of("spawnrate"))
 				,GenericArguments.integer(Text.of("quantity"))
@@ -125,6 +151,10 @@ public class Brawlator {
 					getLogger().warn(e.getMessage());
 				}
 		}
+	@Listener
+	public void onDestructEntityEvent(DestructEntityEvent.Death destructEntityEvent){
+		logger.debug("entity dead");
+	}
 
 	/**
 	 * Listener of the server stop event and save configuration
@@ -154,5 +184,11 @@ public class Brawlator {
 			return worldOptional.get();
 		}
 		return null;
+	}
+
+
+	@Listener
+	public void onInteractBlockEvent(InteractBlockEvent.Secondary event){
+
 	}
 }

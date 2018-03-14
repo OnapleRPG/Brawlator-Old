@@ -5,6 +5,7 @@ import com.ylinor.brawlator.Brawlator;
 import com.ylinor.brawlator.event.SpawnEvent;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.cause.EventContext;
 
 public class SpawnerBean {
 
@@ -83,12 +84,12 @@ public class SpawnerBean {
 
     @Override
     public String toString() {
-        return "SpawnerBean{" +
-                "position=" + position +
-                ", monsterBean=" + monsterBean +
-                ", quantity=" + quantity +
-                ", spawnRate=" + spawnRate +
-                ", range=" + range +
+        return "SpawnerBean{" + "\n"+
+                "position=" + position + "\n"+
+                ", monsterBean=" + monsterBean +"\n"+
+                ", quantity=" + quantity +"\n"+
+                ", spawnRate=" + spawnRate +"\n"+
+                ", range=" + range +"\n"+
                 '}';
     }
 
@@ -98,8 +99,9 @@ public class SpawnerBean {
             Brawlator.getLogger().info("Spawner at " + position.toString() + " have "+ time);
         } else {
             time = spawnRate;
-            SpawnEvent event = new SpawnEvent(
-                    Cause.source(Sponge.getPluginManager().getPlugin("brawlator").get()).build(),this);
+            Cause cause = Cause.builder().append(Brawlator.getInstance()).build(EventContext.builder().build());
+            SpawnEvent event = new SpawnEvent(cause
+                    ,this);
             Sponge.getEventManager().post(event);
         }
     }
