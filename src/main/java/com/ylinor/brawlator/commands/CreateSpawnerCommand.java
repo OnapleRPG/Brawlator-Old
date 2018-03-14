@@ -5,6 +5,7 @@ import com.ylinor.brawlator.data.beans.MonsterBean;
 import com.ylinor.brawlator.data.beans.SpawnerBean;
 import com.ylinor.brawlator.data.dao.SpawnerDAO;
 import org.spongepowered.api.block.BlockState;
+import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -13,9 +14,13 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.cause.EventContext;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.util.blockray.BlockRay;
+import org.spongepowered.api.util.blockray.BlockRayHit;
 import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
 
 import java.util.Optional;
 
@@ -33,9 +38,12 @@ public class CreateSpawnerCommand implements CommandExecutor {
         Optional<Integer> quantity = args.<Integer>getOne("quantity");
 
         int sp,ran,qua;
-        if (!position.isPresent()) {
-            return CommandResult.empty();
-        }
+
+        BlockRay<World> blockRay = BlockRay.from((Player) src).skipFilter(BlockRay.onlyAirFilter()).build();
+        Optional<BlockRayHit<World>> hitOptional = blockRay.end();
+        if(hitOptional.isPresent()){
+            hitOptional.get().getBlockPosition();
+            src.sendMessage(Text.of("look at block at " + hitOptional.get().getBlockPosition().toString()));
         if (!monsterBeanOptional.isPresent()) {
             return CommandResult.empty();
         }
@@ -54,9 +62,11 @@ public class CreateSpawnerCommand implements CommandExecutor {
         } else {
             ran = 20;//default value if range is empty
         }
-        SpawnerBean spawnerBean = new SpawnerBean(position.get().getBlockPosition(),monsterBeanOptional.get(),qua,sp,ran);
+        SpawnerBean spawnerBean = new SpawnerBean(hitOptional.get().getBlockPosition(),monsterBeanOptional.get(),qua,sp,ran);
         SpawnerDAO.insert(spawnerBean);
-        Brawlator.getWorld().setBlock(position.get().getBlockPosition(), BlockState.builder().blockType(BlockTypes.BARRIER).build());
+
+        Brawlator.getWorld().setBlock(hitOptional.get().getBlockPosition(), BlockState.builder().blockType(BlockTypes.BARRIER).build());
+
         if( src instanceof Player){
             src.sendMessage(Text.builder().append(Text.of("Spawner successfully created with this parameter"))
                     .color(TextColors.GREEN).build());
@@ -64,5 +74,8 @@ public class CreateSpawnerCommand implements CommandExecutor {
         }
 
         return CommandResult.builder().build();
+        }
+        src.sendMessage(Text.builder("You must look at the block you want to change to a spawner").color(TextColors.RED).build());
+        return  CommandResult.empty();
     }
 }

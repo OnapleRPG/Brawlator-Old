@@ -17,6 +17,7 @@ import org.spongepowered.api.entity.ArmorEquipable;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.cause.EventContext;
 import org.spongepowered.api.event.cause.entity.spawn.SpawnTypes;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -41,10 +42,11 @@ public class MonsterAction {
         //  Création de l'entité
        Brawlator.getLogger().info(monster.toString());
         Optional<EntityType> entityTypeOptional = Sponge.getRegistry().getType(EntityType.class,monster.getType());
-        if(entityTypeOptional.isPresent()) {
+
+        if( entityTypeOptional.isPresent()){
             Entity entity = world.createEntity(entityTypeOptional.get(), location.getPosition());
-            if (entity instanceof DataHolder) {
-                entity = (Entity) editCharacteristics((DataHolder) entity, monster.getName(), monster.getHp(), monster.getAttackDamage(), monster.getSpeed(), monster.getKnockbackResistance());
+            if(entity instanceof  DataHolder) {
+                entity =(Entity) editCharacteristics( (DataHolder) entity, monster.getName(), monster.getHp(), monster.getAttackDamage(), monster.getSpeed(), monster.getKnockbackResistance());
             }
             //  Gestion des effets de potion à donner au monstre
             entity = addEffects(entity, monster.getEffectLists());
@@ -56,16 +58,18 @@ public class MonsterAction {
             }
             //  Spawn de l'entité dans le monde
 
-            entity.offer(Keys.ATTACK_DAMAGE, 10.0d);
+
+            /**  Gestion des objets appartenant au monstre*/
+            if (entity instanceof ArmorEquipable) {
+                entity = (Entity) equip((ArmorEquipable)entity,monster);
+            }
+            /** Spawn de l'entité dans le monde*/
             world.spawnEntity(entity);
-
-            // Brawlator.getLogger().info("info" + entity.getOrCreate(HealthData.class).get().health().get());
-
+            //  Spawn de l'entité dans le monde
             return Optional.ofNullable(entity);
         }
-        Brawlator.getLogger().warn("Le type du monstre n'existe pas");
-        return Optional.empty();
 
+        return Optional.empty();
     }
 
 
@@ -86,13 +90,10 @@ public class MonsterAction {
         movementSpeedData.walkSpeed().set(speed);*/
         entity.offer(Keys.MAX_HEALTH,hp);
         entity.offer(Keys.HEALTH,hp);
-
-      entity.offer(Keys.WALKING_SPEED,speed);
-
+        entity.offer(Keys.WALKING_SPEED,speed);
         entity.offer(Keys.ATTACK_DAMAGE, attackDamage);
-
-
         entity.offer(Keys.KNOCKBACK_STRENGTH, knockbackResistance);
+
         return entity;
     }
 

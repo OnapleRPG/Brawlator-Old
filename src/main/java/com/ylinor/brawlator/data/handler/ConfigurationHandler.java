@@ -5,6 +5,7 @@ import com.google.common.reflect.TypeToken;
 import com.ylinor.brawlator.Brawlator;
 import com.ylinor.brawlator.data.beans.*;
 import com.ylinor.brawlator.data.dao.MonsterDAO;
+import com.ylinor.brawlator.data.dao.SpawnerDAO;
 import com.ylinor.brawlator.serializer.*;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
@@ -80,13 +81,14 @@ public class ConfigurationHandler {
 
 
     public static void save(){
-        try {
-            ConfigurationHandler.serializeMonsterList(MonsterDAO.monsterList);
-            monsterConfigLoader.save(monster);
+      /*  try {
+            //ConfigurationHandler.serializeMonsterList(MonsterDAO.monsterList);
+
+        //    monsterConfigLoader.save(monster);
 
         } catch(IOException e) {
             // error
-        }
+        }*/
     }
 
     public static Optional<List<SpawnerBean>> getSpawnerList(){
@@ -143,6 +145,16 @@ public class ConfigurationHandler {
         try {
 
             monster.getNode("monster").setValue(token, monsterList);
+
+        } catch (ObjectMappingException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void serializeSpawnerList(List<SpawnerBean> spawnerList){
+        final TypeToken<List<SpawnerBean>> token = new TypeToken<List<SpawnerBean>>() {};
+        try {
+
+            spawner.getNode("spanwers").setValue(token, spawnerList);
 
         } catch (ObjectMappingException e) {
             e.printStackTrace();

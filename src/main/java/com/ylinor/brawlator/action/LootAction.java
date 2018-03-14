@@ -19,15 +19,15 @@ public class LootAction {
             Optional<IItemService> optionalIItemService = Sponge.getServiceManager().provide(IItemService.class);
             if (optionalIItemService.isPresent()) {
                 IItemService iItemService = optionalIItemService.get();
-                if(lootTableBean.getItem().isPresent()){
-                   return iItemService.retrieve(lootTableBean.getItem().get());
+                if(lootTableBean.getItem()>0){
+                   return iItemService.retrieve(lootTableBean.getItem());
 
-                } else if(lootTableBean.getPool().isPresent()){
-                    return iItemService.fetch(lootTableBean.getPool().get());
+                } else if(lootTableBean.getPool()>0){
+                    return iItemService.fetch(lootTableBean.getPool());
                 }
             }
-            if (lootTableBean.getItemname().isPresent()){
-              Optional<ItemType> itemTypeOptional = Sponge.getRegistry().getType(ItemType.class,lootTableBean.getItemname().get());
+            if (lootTableBean.getItemname().isEmpty()){
+              Optional<ItemType> itemTypeOptional = Sponge.getRegistry().getType(ItemType.class,lootTableBean.getItemname());
               if(itemTypeOptional.isPresent()){
                   return Optional.of(ItemStack.of(itemTypeOptional.get(),1));
               }

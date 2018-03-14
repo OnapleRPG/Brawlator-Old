@@ -12,11 +12,11 @@ import java.util.Optional;
 public class LootTableSerializer implements TypeSerializer<LootTableBean> {
     @Override
     public LootTableBean deserialize(TypeToken<?> type, ConfigurationNode value) throws ObjectMappingException {
-
     LootTableBean lootTableBean = new LootTableBean(value.getNode("pool").getInt(),
             value.getNode("item").getInt(),
             value.getNode("itemname").getString(),
             value.getNode("name").getString());
+
     return lootTableBean;
     }
 
