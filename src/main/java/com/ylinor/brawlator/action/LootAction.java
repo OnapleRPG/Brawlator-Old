@@ -8,12 +8,24 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.Optional;
-
+@Singleton
 public class LootAction {
 
-    public static Optional<ItemStack> getloot(String monsterName){
-       Optional<LootTableBean> lootTableOpt = ConfigurationHandler.lootTableList.stream().filter(c->c.getName().equals(monsterName)).findFirst();
+    @Inject
+    private ConfigurationHandler configurationHandler;
+
+    public LootAction() {}
+
+    /**
+     * Get the loot from a monster name
+     * @param monsterName monster that you want to get the lootTable
+     * @return the corresponding ItemStack
+     */
+    public Optional<ItemStack> getloot(String monsterName){
+       Optional<LootTableBean> lootTableOpt = configurationHandler.lootTableList.stream().filter(c->c.getName().equals(monsterName)).findFirst();
         if(lootTableOpt.isPresent()){
             LootTableBean lootTableBean = lootTableOpt.get();
             Optional<IItemService> optionalIItemService = Sponge.getServiceManager().provide(IItemService.class);

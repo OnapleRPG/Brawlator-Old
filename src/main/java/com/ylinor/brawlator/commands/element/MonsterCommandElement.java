@@ -1,7 +1,7 @@
 package com.ylinor.brawlator.commands.element;
 
+import com.ylinor.brawlator.Brawlator;
 import com.ylinor.brawlator.data.beans.MonsterBean;
-import com.ylinor.brawlator.data.dao.MonsterDAO;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.ArgumentParseException;
 import org.spongepowered.api.command.args.CommandArgs;
@@ -11,6 +11,7 @@ import org.spongepowered.api.text.Text;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class MonsterCommandElement extends CommandElement {
     CommandArgs errorArgs;
@@ -23,7 +24,7 @@ public class MonsterCommandElement extends CommandElement {
     @Override
     protected Object parseValue(CommandSource source, CommandArgs args) throws ArgumentParseException {
         String monsterName = args.next();
-        Optional<MonsterBean> monsterBeanOptional = MonsterDAO.getMonster(monsterName);
+        Optional<MonsterBean> monsterBeanOptional = Brawlator.getMonsterAction().getMonster(monsterName);
         if(monsterBeanOptional.isPresent()){
           return monsterBeanOptional.get();
         }
@@ -33,6 +34,6 @@ public class MonsterCommandElement extends CommandElement {
 
     @Override
     public List<String> complete(CommandSource src, CommandArgs args, CommandContext context) {
-        return MonsterDAO.getNameList();
+        return Brawlator.getMonsterAction().getMonsterList().stream().map(MonsterBean::getName).collect(Collectors.toList());
     }
 }

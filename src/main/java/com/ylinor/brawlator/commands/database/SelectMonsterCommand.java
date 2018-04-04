@@ -1,6 +1,6 @@
 package com.ylinor.brawlator.commands.database;
 
-import com.ylinor.brawlator.action.MonsterAction;
+import com.ylinor.brawlator.Brawlator;
 import com.ylinor.brawlator.data.beans.MonsterBean;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -21,7 +21,7 @@ public class SelectMonsterCommand implements CommandExecutor {
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
 		if (src instanceof Player && ((Player) src).hasPermission("database_read")) {
 			String monsterName = (args.getOne("name").isPresent()) ? args.<String>getOne("name").get() : "";
-			Optional<MonsterBean> monsterOptional = MonsterAction.getMonster(monsterName);
+			Optional<MonsterBean> monsterOptional = Brawlator.getMonsterAction().getMonster(monsterName);
 			if(monsterOptional.isPresent()) {
 				MonsterBean monster = monsterOptional.get();
 				((Player) src).sendMessage(Text.of("MONSTER "+monster.getId()+" : "+monster.getName()+" | "+

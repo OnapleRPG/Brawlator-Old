@@ -4,13 +4,10 @@ import com.flowpowered.math.vector.Vector3i;
 import com.google.common.reflect.TypeToken;
 import com.ylinor.brawlator.Brawlator;
 import com.ylinor.brawlator.data.beans.MonsterBean;
-import com.ylinor.brawlator.data.beans.MonsterBuilder;
 import com.ylinor.brawlator.data.beans.SpawnerBean;
-import com.ylinor.brawlator.data.dao.MonsterDAO;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializer;
-
 
 import java.util.Optional;
 
@@ -21,7 +18,7 @@ public class SpawnerSerializer implements TypeSerializer<SpawnerBean> {
        int id = value.getNode("id").getInt();
         String[] position = value.getNode("position").getString().split(" ");
 
-        Optional<MonsterBean> monsterBeanOptional = MonsterDAO.getMonster(value.getNode("monster").getString());
+        Optional<MonsterBean> monsterBeanOptional = Brawlator.getMonsterAction().getMonster(value.getNode("monster").getString());
         if(!monsterBeanOptional.isPresent()){
             throw new  ObjectMappingException();
         }

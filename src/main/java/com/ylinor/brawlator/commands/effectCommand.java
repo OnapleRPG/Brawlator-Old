@@ -1,8 +1,5 @@
 package com.ylinor.brawlator.commands;
 
-import com.ylinor.brawlator.data.beans.EffectBean;
-import com.ylinor.brawlator.data.beans.MonsterBean;
-import com.ylinor.brawlator.data.dao.MonsterDAO;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -10,7 +7,6 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 
 import javax.inject.Inject;
-import java.util.Optional;
 import java.util.logging.Logger;
 
 /**
@@ -22,8 +18,8 @@ public class effectCommand implements CommandExecutor {
     private Logger logger;
 
     @Override
-    public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-        Optional<MonsterBean> monsterBeanOptional = args.<MonsterBean>getOne("monster");
+   public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
+     /*   Optional<MonsterBean> monsterBeanOptional = args.<MonsterBean>getOne("monster");
         if(monsterBeanOptional.isPresent()){
             MonsterBean monsterBean = monsterBeanOptional.get();
             Optional<EffectBean> effectOptional = args.<EffectBean>getOne("effect");
@@ -34,8 +30,8 @@ public class effectCommand implements CommandExecutor {
             }
             MonsterDAO.update(monsterBean);
             return CommandResult.success();
-        } else {
+        } else {*/
             return CommandResult.empty();
-        }
+       /* }*/
     }
 }

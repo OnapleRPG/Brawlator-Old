@@ -3,9 +3,7 @@ package com.ylinor.brawlator.commands;
 import com.ylinor.brawlator.Brawlator;
 import com.ylinor.brawlator.data.beans.MonsterBean;
 import com.ylinor.brawlator.data.beans.SpawnerBean;
-import com.ylinor.brawlator.data.dao.SpawnerDAO;
 import org.spongepowered.api.block.BlockState;
-import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -13,8 +11,6 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.EventContext;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.blockray.BlockRay;
@@ -63,7 +59,7 @@ public class CreateSpawnerCommand implements CommandExecutor {
             ran = 20;//default value if range is empty
         }
         SpawnerBean spawnerBean = new SpawnerBean(hitOptional.get().getBlockPosition(),monsterBeanOptional.get(),qua,sp,ran);
-        SpawnerDAO.insert(spawnerBean);
+        //SpawnerDAO.insert(spawnerBean);
 
         Brawlator.getWorld().setBlock(hitOptional.get().getBlockPosition(), BlockState.builder().blockType(BlockTypes.BARRIER).build());
 

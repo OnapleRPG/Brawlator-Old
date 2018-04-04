@@ -4,8 +4,6 @@ package com.ylinor.brawlator.data.handler;
 import com.google.common.reflect.TypeToken;
 import com.ylinor.brawlator.Brawlator;
 import com.ylinor.brawlator.data.beans.*;
-import com.ylinor.brawlator.data.dao.MonsterDAO;
-import com.ylinor.brawlator.data.dao.SpawnerDAO;
 import com.ylinor.brawlator.serializer.*;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
@@ -13,157 +11,82 @@ import ninja.leaping.configurate.loader.ConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
 
+import javax.inject.Singleton;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.*;
 
-
+@Singleton
 public class ConfigurationHandler {
 
-    private static ConfigurationLoader<CommentedConfigurationNode> monsterConfigLoader;
-    private static ConfigurationLoader<CommentedConfigurationNode> spawnerConfigLoader;
-    private static ConfigurationLoader<CommentedConfigurationNode> lootTableConfigLoader;
-    private static CommentedConfigurationNode monster;
-    private static CommentedConfigurationNode spawner;
-    private static CommentedConfigurationNode lootTable;
-
-    public static List<LootTableBean> lootTableList = new ArrayList<>();
+    public ConfigurationHandler() {}
 
 
+    public List<LootTableBean> lootTableList = new ArrayList<>();
+    public List<MonsterBean> monsterList = new ArrayList<>();
+    public List<SpawnerBean> spawnerList = new ArrayList<>();
 
-    public static void setMonsterConfiguration(CommentedConfigurationNode commentedConfigurationNode){
-        monster = commentedConfigurationNode;
-    }
 
-    public static void setSpawnerConfiguration(CommentedConfigurationNode commentedConfigurationNode){
-        spawner = commentedConfigurationNode;
-    }
-    public static void setLootTableConfigLoader(CommentedConfigurationNode commentedConfigurationNode){
-        lootTable = commentedConfigurationNode;
-    }
-
-    public static CommentedConfigurationNode loadMonsterConfiguration(String configName) {
-        monsterConfigLoader = HoconConfigurationLoader.builder().setPath(Paths.get(configName)).build();
+    /**
+     * Load configuration from files
+     * @param configName name of the configuration file
+     * @return A commented configuration node
+     * @throws Exception
+     */
+    public CommentedConfigurationNode loadConfiguration(String configName) throws Exception {
+        ConfigurationLoader<CommentedConfigurationNode> ConfigLoader = HoconConfigurationLoader.builder().setPath(Paths.get(configName)).build();
         CommentedConfigurationNode configNode = null;
         try {
-            configNode = monsterConfigLoader.load();
+            configNode = ConfigLoader.load();
             Brawlator.getLogger().info(configName + " was loaded successfully");
         } catch (IOException e) {
-            Brawlator.getLogger().error("Error while loading configuration " + configName + " : " + e.getMessage());
-        }
-        return configNode;
-    }
-    public static CommentedConfigurationNode loadSpawnerConfiguration(String configName) {
-        spawnerConfigLoader = HoconConfigurationLoader.builder().setPath(Paths.get(configName)).build();
-        CommentedConfigurationNode configNode = null;
-        try {
-            configNode = spawnerConfigLoader.load();
-            Brawlator.getLogger().info(configName + " was loaded successfully");
-        } catch (IOException e) {
-            Brawlator.getLogger().error("Error while loading configuration " + configName + " : " + e.getMessage());
-        }
-        return configNode;
-    }
-
-    public static CommentedConfigurationNode loadLootTableConfiguration(String configName) {
-        lootTableConfigLoader = HoconConfigurationLoader.builder().setPath(Paths.get(configName)).build();
-        CommentedConfigurationNode configNode = null;
-        try {
-            configNode = lootTableConfigLoader.load();
-            Brawlator.getLogger().info(configName + " was loaded successfully");
-        } catch (IOException e) {
-            Brawlator.getLogger().error("Error while loading configuration " + configName + " : " + e.getMessage());
+            throw new Exception("Error while loading configuration " + configName + " : " + e.getMessage());
         }
         return configNode;
     }
 
 
-
-
-    public static void save(){
-      /*  try {
-            //ConfigurationHandler.serializeMonsterList(MonsterDAO.monsterList);
-
-        //    monsterConfigLoader.save(monster);
-
-        } catch(IOException e) {
-            // error
-        }*/
-    }
-
-    public static Optional<List<SpawnerBean>> getSpawnerList(){
+    /**
+     * Load the spawner configuration file into a list of Spawner
+     * @param configNode the root node of the config file
+     * @return  the size of the loaded list
+     * @throws ObjectMappingException
+     */
+    public int setSpawnerList(CommentedConfigurationNode configNode) throws ObjectMappingException {
         TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(SpawnerBean.class), new SpawnerSerializer());
-        try {
-           List<SpawnerBean> list = spawner.getNode("spawner").getList(TypeToken.of(SpawnerBean.class));
-           if(!list.isEmpty()){
-               return Optional.of(list);
-           }
-           Brawlator.getLogger().warn("liste de spawner vide");
-           return Optional.empty();
 
-        } catch (Exception e){
-            Brawlator.getLogger().error(e.toString());
-            e.printStackTrace();
-            return Optional.empty();
-        }
+           spawnerList = configNode.getNode("spawner").getList(TypeToken.of(SpawnerBean.class));
+
+           return spawnerList.size();
+
+
     }
 
-    public static void getLootTableList(){
+    /**
+     * Load the lootTable configuration file into a list of LootTableBean
+     * @param configNode the root node of the config file
+     * @return  the size of the loaded list
+     * @throws ObjectMappingException
+     */
+    public int setLootTableList(CommentedConfigurationNode configNode) throws ObjectMappingException {
         TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(LootTableBean.class), new LootTableSerializer());
-        try {
-            lootTableList  = lootTable.getNode("loots").getList(TypeToken.of(LootTableBean.class));
 
-            if(lootTableList.isEmpty()) {
-                Brawlator.getLogger().warn("liste de loot vide");
-            }
-
-       } catch (Exception e){Brawlator.getLogger().error("oups"); e.printStackTrace(); }
+            lootTableList  = configNode.getNode("loots").getList(TypeToken.of(LootTableBean.class));
+        return lootTableList.size();
     }
 
-    public static Optional<List<MonsterBean>> getMonsterList(){
+    /**
+     * Load the monster configuration file into a list of MonsterBean
+     * @param configNode the root node of the config file
+     * @return  the size of the loaded list
+     * @throws ObjectMappingException
+     */
+    public int setMonsterList(CommentedConfigurationNode configNode) throws ObjectMappingException {
         TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(MonsterBean.class), new MonsterSerializer())
                 .registerType(TypeToken.of(EffectBean.class), new EffectSerializer())
                 .registerType(TypeToken.of(EquipementBean.class), new EquipementSerialiser());
-        try {
-            List<MonsterBean> list =
-                    monster.getNode("monster").getList(TypeToken.of(MonsterBean.class));
-            if (!list.isEmpty()) {
-               return Optional.of(list);
-            }
-            return Optional.empty();
-            }
-            catch (Exception e) {
-            Brawlator.getLogger().error(e.getMessage());
-            e.printStackTrace();
-            return Optional.empty();
-        }
 
+           monsterList  = configNode.getNode("monster").getList(TypeToken.of(MonsterBean.class));
+        return monsterList.size();
     }
-
-    public static void serializeMonsterList(List<MonsterBean> monsterList){
-        final TypeToken<List<MonsterBean>> token = new TypeToken<List<MonsterBean>>() {};
-        try {
-
-            monster.getNode("monster").setValue(token, monsterList);
-
-        } catch (ObjectMappingException e) {
-            e.printStackTrace();
-        }
-    }
-    public static void serializeSpawnerList(List<SpawnerBean> spawnerList){
-        final TypeToken<List<SpawnerBean>> token = new TypeToken<List<SpawnerBean>>() {};
-        try {
-
-            spawner.getNode("spanwers").setValue(token, spawnerList);
-
-        } catch (ObjectMappingException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-
-
-
-
 }

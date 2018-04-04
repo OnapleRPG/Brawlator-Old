@@ -4,7 +4,7 @@ import com.ylinor.brawlator.Brawlator;
 import com.ylinor.brawlator.data.beans.EffectBean;
 import com.ylinor.brawlator.data.beans.EquipementBean;
 import com.ylinor.brawlator.data.beans.MonsterBean;
-import com.ylinor.brawlator.data.dao.MonsterDAO;
+import com.ylinor.brawlator.data.handler.ConfigurationHandler;
 import com.ylinor.brawlator.exception.EntityTypeNotFound;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataHolder;
@@ -16,18 +16,24 @@ import org.spongepowered.api.effect.potion.PotionEffectType;
 import org.spongepowered.api.entity.ArmorEquipable;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityType;
-import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.EventContext;
-import org.spongepowered.api.event.cause.entity.spawn.SpawnTypes;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.*;
+import java.util.stream.Collectors;
 
+@Singleton
 public class MonsterAction {
+    public MonsterAction() {}
+
+    @Inject
+    private ConfigurationHandler configurationHandler;
+
 
     /**
      * Invoque a monster at a specific position
@@ -37,7 +43,7 @@ public class MonsterAction {
      * @param monster Bean of the monster and his characteristic
      * @return Optional entity spawned
      */
-    public static Optional<Entity> invokeMonster(World world, Location location, MonsterBean monster) throws EntityTypeNotFound {
+    public Optional<Entity> invokeMonster(World world, Location location, MonsterBean monster) throws EntityTypeNotFound {
 
         //  Création de l'entité
        Brawlator.getLogger().info(monster.toString());
@@ -83,7 +89,7 @@ public class MonsterAction {
      * @param knockbackResistance resistance to knockback
      * @return Modified entity
      */
-    private static DataHolder editCharacteristics(DataHolder entity, String displayName, double hp, double attackDamage, double speed, int knockbackResistance) {
+    private DataHolder editCharacteristics(DataHolder entity, String displayName, double hp, double attackDamage, double speed, int knockbackResistance) {
         entity.offer(Keys.DISPLAY_NAME, Text.of(displayName));
 
        /* MovementSpeedData movementSpeedData = entity.getOrCreate(MovementSpeedData.class).get();
@@ -103,7 +109,7 @@ public class MonsterAction {
      * @param effects List of effect
      * @return Modified entity
      */
-    private static Entity addEffects(Entity entity, List<EffectBean> effects){
+    private Entity addEffects(Entity entity, List<EffectBean> effects){
         List<PotionEffect> potions = new ArrayList();
         for (EffectBean effect :
              effects) {
@@ -128,10 +134,10 @@ public class MonsterAction {
      * @param items Hashmap of objects to equip with their emplacements
      * @@return Modified entity
      */
-    private static ArmorEquipable addItems(ArmorEquipable entity, HashMap<String, ItemType> items) {
+    private ArmorEquipable addItems(ArmorEquipable entity, HashMap<String, ItemType> items) {
         for (Map.Entry<String, ItemType> item : items.entrySet()) {
             ItemStack itemStack = ItemStack.builder().itemType(item.getValue()).build();
-            switch (item.getKey().toString()) {
+            switch (item.getKey()) {
                 case "hand":
                     entity.setItemInHand(HandTypes.MAIN_HAND, itemStack);
                     break;
@@ -158,7 +164,7 @@ public class MonsterAction {
      * @param monster monster of reference to get items
      * @return Modified entity
      */
-    private static ArmorEquipable equip(ArmorEquipable entity, MonsterBean monster){
+    private ArmorEquipable equip(ArmorEquipable entity, MonsterBean monster){
         HashMap<String, ItemType> equipement = new HashMap<>();
         for(Map.Entry<String,EquipementBean> entry : monster.getEquipement().entrySet()){
            Optional<ItemType> itemType = EquipementAction.getEquipement(entry.getValue());
@@ -176,8 +182,17 @@ public class MonsterAction {
      * @param name name of the monster
      * @return the monster (optional)
      */
-    public static Optional<MonsterBean> getMonster(String name){
-        MonsterDAO monsterDao = new MonsterDAO();
-        return monsterDao.getMonster(name);
+    public Optional<MonsterBean> getMonster(String name){
+        List<String> l =getMonsterList()
+                .stream()
+                .map(MonsterBean::getName)
+                .collect(Collectors.toList());
+        String[] arr = l.toArray(new String[l.size()]);
+        Brawlator.getLogger().info(String.join(",",arr));
+        return configurationHandler.monsterList.stream().filter(monsterBean -> monsterBean.getName().equals(name)).findFirst();
+    }
+
+    public List<MonsterBean> getMonsterList(){
+        return configurationHandler.monsterList;
     }
 }

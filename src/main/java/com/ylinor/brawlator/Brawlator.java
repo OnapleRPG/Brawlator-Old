@@ -1,15 +1,12 @@
 package com.ylinor.brawlator;
 
-import javax.inject.Inject;
+import com.ylinor.brawlator.action.LootAction;
 import com.ylinor.brawlator.action.MonsterAction;
 import com.ylinor.brawlator.action.SpawnerAction;
-import com.ylinor.brawlator.commands.*;
+import com.ylinor.brawlator.commands.InvokeCommand;
+import com.ylinor.brawlator.commands.ReloadCommand;
 import com.ylinor.brawlator.commands.database.SelectMonsterCommand;
-import com.ylinor.brawlator.commands.element.EffectCommandElement;
-import com.ylinor.brawlator.commands.element.EquipementCommandElement;
-import com.ylinor.brawlator.commands.element.MonsterCommandElement;
-import com.ylinor.brawlator.data.dao.MonsterDAO;
-import com.ylinor.brawlator.data.dao.SpawnerDAO;
+import com.ylinor.brawlator.data.beans.MonsterBean;
 import com.ylinor.brawlator.data.handler.ConfigurationHandler;
 import com.ylinor.brawlator.event.SpawnEvent;
 import com.ylinor.itemizer.service.IItemService;
@@ -19,19 +16,16 @@ import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.block.InteractBlockEvent;
-import org.spongepowered.api.event.entity.DestructEntityEvent;
-import org.spongepowered.api.event.game.state.GameLoadCompleteEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
-import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
 import org.spongepowered.api.plugin.Dependency;
-import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.World;
+
+import javax.inject.Inject;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -53,77 +47,83 @@ public class Brawlator {
 	}
 
 	@Inject
-	@ConfigDir(sharedRoot=true)
+	@ConfigDir(sharedRoot=false)
 	private Path configDir;
 
 	private PluginManager pluginManager = Sponge.getPluginManager();
 
-	@Listener
-	public void onServerStarting (GameLoadCompleteEvent event) {
-		logger.info ("loaded");
+	@Inject
+	private ConfigurationHandler configurationHandler;
 
+	private static MonsterAction monsterAction;
+
+	@Inject
+	private void setLogger(MonsterAction monsterAction) {
+		Brawlator.monsterAction = monsterAction;
 	}
-	private static IItemService itemService;
+	public static MonsterAction getMonsterAction() {
+		return monsterAction;
+	}
 
+
+	private static Brawlator brawlator;
+	public static Brawlator getBrawlator(){return brawlator;}
+
+	@Inject
+	private SpawnerAction spawnerAction;
+
+
+	private static LootAction lootAction;
+
+	@Inject
+	private void setLogger(LootAction lootAction) {
+		Brawlator.lootAction = lootAction;
+	}
+	public static LootAction getLootAction() {
+		return lootAction;
+	}
+
+	private static IItemService itemService;
 	public static IItemService getItemService(){ return itemService;}
 
 
 	@Listener
 	public void onServerStart(GameStartedServerEvent event) {
+		brawlator = this;
 		logger.info("Brawlator plugin initialized.");
-		ConfigurationHandler.setMonsterConfiguration(ConfigurationHandler.loadMonsterConfiguration(configDir + "/monster.conf"));
-		ConfigurationHandler.setSpawnerConfiguration(ConfigurationHandler.loadSpawnerConfiguration(configDir + "/spawner.conf"));
-		ConfigurationHandler.setLootTableConfigLoader(ConfigurationHandler.loadLootTableConfiguration(configDir + "/loottable.conf"));
-		MonsterDAO.populate();
-		SpawnerDAO.populate();
-
-		ConfigurationHandler.getLootTableList();
-
-		getLogger().info(String.valueOf(SpawnerDAO.spawnerList.size())+ " Spawner(s) loaded");
-		getLogger().info(String.valueOf(MonsterDAO.monsterList.size())+ " Monster(s) loaded");
-
 		Sponge.getEventManager().registerListeners(this, new BrawlatorListener());
 
-		itemService = Sponge.getServiceManager().provide(IItemService.class).get();
+		if(Sponge.getServiceManager().provide(IItemService.class).isPresent()){
+			itemService = Sponge.getServiceManager().provide(IItemService.class).get();
+		} else {
+			logger.warn("Itemizer dependency not found");
+		}
 
-
-		CommandSpec create = CommandSpec.builder()
-				.description(Text.of("Create a monster and add it to the base"))
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("name")))
-						,GenericArguments.onlyOne(GenericArguments.string(Text.of("type")))
-						,GenericArguments.flags().valueFlag(GenericArguments.doubleNum(Text.of("hp")),"-hp")
-						.buildWith(GenericArguments.none()))
-				.executor(new MonsterCommand()).build();
-		Sponge.getCommandManager().register(this,create,"create");
+		try {
+			logger.info("Monsters loaded : " + loadMonsters());
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		try {
+			logger.info("Spaners loaded : " + loadSpawners());
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		try {
+			logger.info("Loot tables loaded : " + loadLootTables());
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		for (MonsterBean m:configurationHandler.monsterList
+			 ) {
+			logger.info(m.getName());
+		}
 
 		CommandSpec invoke = CommandSpec.builder()
 				.description(Text.of("Invoke a monster whose id is registered into the database"))
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("id"))))
 				.executor(new InvokeCommand()).build();
 		Sponge.getCommandManager().register(this, invoke, "invoke");
-
-		CommandSpec effect = CommandSpec.builder().arguments(
-				new MonsterCommandElement(Text.of("monster"))
-				,new EffectCommandElement(Text.of("effect"))
-		).executor(new effectCommand()).build();
-
-		Sponge.getCommandManager().register(this,effect,"effect");
-
-		CommandSpec equipment = CommandSpec.builder().arguments(
-				new MonsterCommandElement(Text.of("monster"))
-				,GenericArguments.string(Text.of("emplacement"))
-				,new EquipementCommandElement(Text.of("equipment"))
-		).executor(new equipementCommand()).build();
-		Sponge.getCommandManager().register(this, equipment, "equipment");
-
-		CommandSpec createSpawner = CommandSpec.builder().arguments(
-				new MonsterCommandElement(Text.of("monster"))
-				,GenericArguments.integer(Text.of("range"))
-				,GenericArguments.integer(Text.of("spawnrate"))
-				,GenericArguments.integer(Text.of("quantity"))
-		).executor(new CreateSpawnerCommand()).build();
-
-		Sponge.getCommandManager().register(this,createSpawner,"spawner");
 
 		CommandSpec monsterSelect = CommandSpec.builder()
 				.permission("ylinor.brawlator.database_read")
@@ -136,11 +136,14 @@ public class Brawlator {
 				.child(monsterSelect, "select").build();
 		Sponge.getCommandManager().register(this, monsterDatabase, "monsters");
 
-		 Task.builder().execute(()-> SpawnerAction.updateSpawner()).delay(20, TimeUnit.SECONDS)
+		CommandSpec reload = CommandSpec.builder()
+				.description(Text.of("Invoke a monster whose id is registered into the database"))
+				.permission("ylinor.brawlator.administration")
+				.executor(new ReloadCommand()).build();
+		Sponge.getCommandManager().register(this, reload, "reload-brawlator");
+
+		 Task.builder().execute(()-> spawnerAction.updateSpawner()).delay(20, TimeUnit.SECONDS)
 				.interval(10,TimeUnit.SECONDS).name("Spawn monster").submit(this);
-
-
-
 	}
 
 	/**
@@ -151,52 +154,11 @@ public class Brawlator {
 	public void onSpawnEvent(SpawnEvent event){
 
 				try {
-					getLogger().info(MonsterAction.invokeMonster(getWorld(), getWorld().getLocation(event.getSpawnerBean().getPosition()), event.getSpawnerBean().getMonsterBean()).get().toString());
+					getLogger().info(monsterAction.invokeMonster(getWorld(), getWorld().getLocation(event.getSpawnerBean().getPosition()), event.getSpawnerBean().getMonsterBean()).get().toString());
 				} catch (Exception e) {
 					getLogger().warn(e.getMessage());
 				}
 		}
-	@Listener
-	public void onDestructEntityEvent(DestructEntityEvent.Death destructEntityEvent){
-		logger.debug("entity dead");
-	}
-
-	/**
-	 * Listener of the server stop event and save configuration
-	 * @param event
-	 */
-	@Listener
-	public void onServerStop(GameStoppedServerEvent event) {
-		logger.info("stop");
-		ConfigurationHandler.save();
-	}
-
-	@Listener
-	public void onEntityDeath(DestructEntityEvent.Death event){
-	logger.info(event.getTargetEntity().toString());
-
-	}
-
-		/**
-		 * Cancel block breaking dropping event unless specified in config
-		 * @param event Item dropping event
-		 */
-		@Listener
-		public void onDropItemEvent(DropItemEvent.Destruct event) {
-			/*List<String> defaultDrops = ConfigurationHandler.getHarvestDefaultDropList();
-			Optional<Player> player = event.getCause().first(Player.class);
-			if (player.isPresent()) {
-				for (Entity entity: event.getEntities()) {
-					Optional<ItemStackSnapshot> stack = entity.get(Keys.REPRESENTED_ITEM);
-					if (stack.isPresent()) {
-						if (!defaultDrops.contains(stack.get().getType().getId())) {
-							event.setCancelled(true);
-						}
-					}
-				}
-
-		}*/
-	}
 
 	/**
 	 * Get the plugin instance
@@ -212,15 +174,22 @@ public class Brawlator {
 	 */
 	public static World getWorld(){
 		Optional<World> worldOptional = Sponge.getServer().getWorld("world");
-		if(worldOptional.isPresent()){
+		if(worldOptional.isPresent()) {
 			return worldOptional.get();
 		}
 		return null;
 	}
 
-
-	@Listener
-	public void onInteractBlockEvent(InteractBlockEvent.Secondary event){
-
+	public int loadMonsters() throws Exception {
+		return configurationHandler.setMonsterList(configurationHandler.loadConfiguration(configDir + "/monster.conf"));
 	}
+
+	public int loadSpawners() throws Exception {
+		return configurationHandler.setSpawnerList(configurationHandler.loadConfiguration(configDir + "/spawner.conf"));
+	}
+
+	public int loadLootTables() throws Exception {
+		return configurationHandler.setLootTableList(configurationHandler.loadConfiguration(configDir + "/loot_table.conf"));
+	}
+
 }
