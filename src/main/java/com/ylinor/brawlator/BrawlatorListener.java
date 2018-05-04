@@ -26,17 +26,19 @@ public class BrawlatorListener {
 
     @Listener
     public void onDropItemEvent(DropItemEvent.Destruct event){
-       event.getEntities().clear();
-        Optional<Entity> entityOptional =  event.getCause().first(Entity.class);
-        if(entityOptional.isPresent()){
-            Entity entity = entityOptional.get();
-            Brawlator.getLogger().info(entity.getType().getName());
-            Optional<Text> nameOptional  = entity.get(Keys.DISPLAY_NAME);
-            if(nameOptional.isPresent()){
-                String name = nameOptional.get().toPlain();
-                Brawlator.getLogger().info(name);
-                Optional<ItemStack> itemStackOptional = Brawlator.getLootAction().getloot(name);
-                itemStackOptional.ifPresent(itemStack -> event.getEntities().add(cretateItemEntity(itemStack,entity.getLocation())));
+        if( event.getSource() instanceof Entity) {
+            event.getEntities().clear();
+            Optional<Entity> entityOptional = event.getCause().first(Entity.class);
+            if (entityOptional.isPresent()) {
+                Entity entity = entityOptional.get();
+                Brawlator.getLogger().info(entity.getType().getName());
+                Optional<Text> nameOptional = entity.get(Keys.DISPLAY_NAME);
+                if (nameOptional.isPresent()) {
+                    String name = nameOptional.get().toPlain();
+                    Brawlator.getLogger().info(name);
+                    Optional<ItemStack> itemStackOptional = Brawlator.getLootAction().getloot(name);
+                    itemStackOptional.ifPresent(itemStack -> event.getEntities().add(cretateItemEntity(itemStack, entity.getLocation())));
+                }
             }
         }
     }
