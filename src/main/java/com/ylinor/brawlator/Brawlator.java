@@ -15,6 +15,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
+import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.plugin.Dependency;
@@ -47,7 +48,7 @@ public class Brawlator {
 	}
 
 	@Inject
-	@ConfigDir(sharedRoot=false)
+	@ConfigDir(sharedRoot=true)
 	private Path configDir;
 
 	private PluginManager pluginManager = Sponge.getPluginManager();
@@ -181,15 +182,15 @@ public class Brawlator {
 	}
 
 	public int loadMonsters() throws Exception {
-		return configurationHandler.setMonsterList(configurationHandler.loadConfiguration(configDir + "/monster.conf"));
+		return configurationHandler.setMonsterList(configurationHandler.loadConfiguration(configDir + "/brawlator/monster.conf"));
 	}
 
 	public int loadSpawners() throws Exception {
-		return configurationHandler.setSpawnerList(configurationHandler.loadConfiguration(configDir + "/spawner.conf"));
+		return configurationHandler.setSpawnerList(configurationHandler.loadConfiguration(configDir + "/brawlator/spawner.conf"));
 	}
 
 	public int loadLootTables() throws Exception {
-		return configurationHandler.setLootTableList(configurationHandler.loadConfiguration(configDir + "/loot_table.conf"));
+		return configurationHandler.setLootTableList(configurationHandler.loadConfiguration(configDir + "/brawlator/loot_table.conf"));
 	}
 
 }
