@@ -31,8 +31,9 @@ repositories {
 dependencies {
 
     compile 'org.spongepowered:spongeapi:7.0.0'
-    compile 'com.github.Ylinor:Itemizer:-SNAPSHOT'
     testCompile "junit:junit:4.11"
+    implementation 'com.github.OnapleRPG:Itemizer:V0.1.1'
+
 
 }
 sonarqube {
