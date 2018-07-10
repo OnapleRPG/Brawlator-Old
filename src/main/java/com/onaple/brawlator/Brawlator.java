@@ -97,8 +97,8 @@ public class Brawlator {
 		return lootAction;
 	}
 
-	private static IItemService itemService;
-	public static IItemService getItemService(){ return itemService;}
+	private static Optional<IItemService> itemService;
+	public static Optional<IItemService> getItemService(){ return itemService;}
 
 
 	@Listener
@@ -110,8 +110,9 @@ public class Brawlator {
 
 		Optional itemServiceOptional =  Sponge.getServiceManager().provide(IItemService.class);
 		if(itemServiceOptional.isPresent()){
-			itemService = (IItemService) itemServiceOptional.get();
+			itemService =  itemServiceOptional;
 		} else {
+			itemService = Optional.empty();
 			logger.warn("Itemizer dependency not found");
 		}
 

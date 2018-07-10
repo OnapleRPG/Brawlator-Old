@@ -3,7 +3,7 @@ package com.onaple.brawlator.action;
 import com.onaple.brawlator.data.beans.LootTableBean;
 import com.onaple.brawlator.data.handler.ConfigurationHandler;
 import com.onaple.brawlator.Brawlator;
-import com.ylinor.itemizer.service.IItemService;
+import com.onaple.itemizer.service.IItemService;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -28,7 +28,8 @@ public class LootAction {
        Optional<LootTableBean> lootTableOpt = configurationHandler.getLootTableList().stream().filter(c->c.getName().equals(monsterName)).findFirst();
         if(lootTableOpt.isPresent()){
             LootTableBean lootTableBean = lootTableOpt.get();
-            Optional<IItemService> optionalIItemService = Sponge.getServiceManager().provide(IItemService.class);
+
+            Optional<IItemService> optionalIItemService = Brawlator.getItemService();
             if (optionalIItemService.isPresent()) {
                 IItemService iItemService = optionalIItemService.get();
                 if(lootTableBean.getItem()>0){
