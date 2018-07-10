@@ -1,7 +1,5 @@
 package com.onaple.brawlator.data.beans;
 
-import org.spongepowered.api.entity.EntityType;
-import org.spongepowered.api.entity.EntityTypes;
 import java.util.HashMap;
 import java.util.List;
 public class MonsterBean {
@@ -46,7 +44,6 @@ public class MonsterBean {
     public int getKnockbackResistance() { return knockbackResistance; }
    public List<EffectBean> getEffectLists() { return effectLists; }
 
-    public static HashMap<String, EntityType> getMonsterTypes() { return monsterTypes; }
 
     public void setId(int id) {
         this.id = id;
@@ -91,16 +88,6 @@ public class MonsterBean {
         return new MonsterBuilder();
     }
 
-    /** Liste des types de monstres reconnus **/
-    public static final HashMap<String, EntityType> monsterTypes;
-    static {
-        monsterTypes = new HashMap<>();
-        monsterTypes.put("creeper", EntityTypes.CREEPER);
-        monsterTypes.put("ocelot", EntityTypes.OCELOT);
-        monsterTypes.put("zombie", EntityTypes.ZOMBIE);
-        monsterTypes.put("horse", EntityTypes.HORSE);
-        monsterTypes.put("skeleton", EntityTypes.SKELETON);
-    }
 
     public void addEffect(EffectBean effect){
         this.effectLists.add(effect);
@@ -129,5 +116,10 @@ public class MonsterBean {
         MonsterBean that = (MonsterBean) o;
 
         return name.equals(that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
     }
 }

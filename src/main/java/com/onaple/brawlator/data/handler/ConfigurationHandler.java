@@ -22,10 +22,21 @@ public class ConfigurationHandler {
     public ConfigurationHandler() {}
 
 
-    public List<LootTableBean> lootTableList = new ArrayList<>();
-    public List<MonsterBean> monsterList = new ArrayList<>();
-    public List<SpawnerBean> spawnerList = new ArrayList<>();
+    private static final List<LootTableBean> lootTableList = new ArrayList<>();
+    private static final List<MonsterBean> monsterList = new ArrayList<>();
+    private static final List<SpawnerBean> spawnerList = new ArrayList<>();
 
+    public List<LootTableBean> getLootTableList() {
+        return lootTableList;
+    }
+
+    public List<MonsterBean> getMonsterList() {
+        return monsterList;
+    }
+
+    public List<SpawnerBean> getSpawnerList() {
+        return spawnerList;
+    }
 
     /**
      * Load configuration from files
@@ -55,7 +66,7 @@ public class ConfigurationHandler {
     public int setSpawnerList(CommentedConfigurationNode configNode) throws ObjectMappingException {
         TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(SpawnerBean.class), new SpawnerSerializer());
 
-           spawnerList = configNode.getNode("spawner").getList(TypeToken.of(SpawnerBean.class));
+           spawnerList.addAll(configNode.getNode("spawner").getList(TypeToken.of(SpawnerBean.class)));
 
            return spawnerList.size();
 
@@ -71,7 +82,7 @@ public class ConfigurationHandler {
     public int setLootTableList(CommentedConfigurationNode configNode) throws ObjectMappingException {
         TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(LootTableBean.class), new LootTableSerializer());
 
-            lootTableList  = configNode.getNode("loots").getList(TypeToken.of(LootTableBean.class));
+            lootTableList.addAll(configNode.getNode("loots").getList(TypeToken.of(LootTableBean.class)));
         return lootTableList.size();
     }
 
@@ -86,7 +97,7 @@ public class ConfigurationHandler {
                 .registerType(TypeToken.of(EffectBean.class), new EffectSerializer())
                 .registerType(TypeToken.of(EquipementBean.class), new EquipementSerialiser());
 
-           monsterList  = configNode.getNode("monster").getList(TypeToken.of(MonsterBean.class));
+           monsterList.addAll(configNode.getNode("monster").getList(TypeToken.of(MonsterBean.class)));
         return monsterList.size();
     }
 }

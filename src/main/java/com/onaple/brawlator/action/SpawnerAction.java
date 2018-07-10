@@ -58,12 +58,18 @@ public class SpawnerAction {
         try {
             World world = Brawlator.getWorld("world");
             BlockState blockState = world.getLocatableBlock(spawnLocation).getBlockState();
-            return blockState.getProperty(SolidCubeProperty.class).get().getValue();
+
+            Optional<SolidCubeProperty> solidCubePropertyOptional = blockState.getProperty(SolidCubeProperty.class);
+            if(solidCubePropertyOptional.isPresent()){
+                return solidCubePropertyOptional.get().getValue();
+            }else{
+                return false;
+            }
         } catch (NullPointerException e) {
             Brawlator.getLogger().error(e.getMessage());
             return false;
         } catch (WorldNotFoundException e) {
-            e.printStackTrace();
+            Brawlator.getLogger().error(e.toString());
             return false;
         }
     }
@@ -73,7 +79,7 @@ public class SpawnerAction {
      */
     public void updateSpawner() {
 
-        for (SpawnerBean spawnerBean : configurationHandler.spawnerList) {
+        for (SpawnerBean spawnerBean : configurationHandler.getSpawnerList()) {
 
             try {
                 if (Brawlator.getWorld("world").getLocation(spawnerBean.getPosition()).getBlockType() == BlockTypes.BARRIER) {
@@ -82,7 +88,8 @@ public class SpawnerAction {
                     }
                 }
             } catch (WorldNotFoundException e) {
-                e.printStackTrace();
+                Brawlator.getLogger().error(e.toString());
+
             }
         }
     }
@@ -99,7 +106,7 @@ public class SpawnerAction {
             qte = Brawlator.getWorld("world").getLocation(spawnerBean.getPosition()).getExtent().getEntities(
                     entity -> compare(entity, spawnerBean)).size();
         } catch (WorldNotFoundException e) {
-            e.printStackTrace();
+            Brawlator.getLogger().error(e.toString());
         }
         Brawlator.getLogger().info("there is " + qte + " entities near " + spawnerBean.getPosition().toString());
         return qte;

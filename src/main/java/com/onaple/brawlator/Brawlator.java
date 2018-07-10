@@ -59,17 +59,25 @@ public class Brawlator {
 
 	private PluginManager pluginManager = Sponge.getPluginManager();
 
-	@Inject
-	private ConfigurationHandler configurationHandler;
 
 	private static MonsterAction monsterAction;
 
 	@Inject
-	private void setLogger(MonsterAction monsterAction) {
+	private void setMonsterAction(MonsterAction monsterAction) {
 		Brawlator.monsterAction = monsterAction;
 	}
 	public static MonsterAction getMonsterAction() {
 		return monsterAction;
+	}
+
+	@Inject
+	private static ConfigurationHandler configurationHandler;
+	@Inject
+	private void setConfigurationHandler(ConfigurationHandler configurationHandler) {
+		Brawlator.configurationHandler = configurationHandler;
+	}
+	public static ConfigurationHandler getConfigurationHandler() {
+		return configurationHandler;
 	}
 
 
@@ -123,10 +131,7 @@ public class Brawlator {
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
-		for (MonsterBean m:configurationHandler.monsterList
-			 ) {
-			logger.info(m.getName());
-		}
+
 
 		CommandSpec invoke = CommandSpec.builder()
 				.description(Text.of("Invoke a monster whose id is registered into the database"))

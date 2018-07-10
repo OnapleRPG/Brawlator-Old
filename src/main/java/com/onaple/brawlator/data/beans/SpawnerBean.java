@@ -91,6 +91,13 @@ public class SpawnerBean {
                 '}';
     }
 
+    @Override
+    public int hashCode() {
+        int result = position.hashCode();
+        result = 31 * result + monsterBean.hashCode();
+        return result;
+    }
+
     public void updateTime(){
         if(this.time > 0){
             time--;
@@ -101,6 +108,7 @@ public class SpawnerBean {
             SpawnEvent event = new SpawnEvent(this);
             Sponge.getEventManager().post(event);
         }
+
     }
 
 }

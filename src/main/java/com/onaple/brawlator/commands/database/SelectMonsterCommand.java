@@ -9,6 +9,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
 
@@ -19,18 +20,24 @@ public class SelectMonsterCommand implements CommandExecutor {
 
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-		if (src instanceof Player && ((Player) src).hasPermission("database_read")) {
-			String monsterName = (args.getOne("name").isPresent()) ? args.<String>getOne("name").get() : "";
-			Optional<MonsterBean> monsterOptional = Brawlator.getMonsterAction().getMonster(monsterName);
-			if(monsterOptional.isPresent()) {
-				MonsterBean monster = monsterOptional.get();
-				((Player) src).sendMessage(Text.of("MONSTER "+monster.getId()+" : "+monster.getName()+" | "+
-					monster.getType()+" | "+monster.getHp()+" | "+monster.getAttackDamage()+" | "+monster.getSpeed()+" | "+
-					monster.getKnockbackResistance()));
-			} else {
-				((Player) src).sendMessage(Text.of("MONSTER "+ monsterName +" not found"));
+		if (src instanceof Player && src.hasPermission("database_read")) {
+
+			Optional<String> idArg = args.getOne("name");
+			if (idArg.isPresent()) {
+				Optional<MonsterBean> monsterOptional = Brawlator.getMonsterAction().getMonster(idArg.get());
+				if (monsterOptional.isPresent()) {
+					MonsterBean monster = monsterOptional.get();
+					 src.sendMessage(Text.of("MONSTER " + monster.getId() + " : " + monster.getName() + " | " +
+							monster.getType() + " | " + monster.getHp() + " | " + monster.getAttackDamage() + " | " + monster.getSpeed() + " | " +
+							monster.getKnockbackResistance()));
+					return CommandResult.success();
+				} else {
+					src.sendMessage(Text.of("MONSTER " + idArg.get() + " not found"));
+				}
 			}
+		} else {
+			src.sendMessage(Text.builder("Monster id is missing").color(TextColors.RED).build());
 		}
-		return CommandResult.success();
+		return CommandResult.empty();
 	}
 }

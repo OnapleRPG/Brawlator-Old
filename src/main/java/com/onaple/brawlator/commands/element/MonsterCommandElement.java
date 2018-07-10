@@ -34,6 +34,6 @@ public class MonsterCommandElement extends CommandElement {
 
     @Override
     public List<String> complete(CommandSource src, CommandArgs args, CommandContext context) {
-        return Brawlator.getMonsterAction().getMonsterList().stream().map(MonsterBean::getName).collect(Collectors.toList());
+        return Brawlator.getConfigurationHandler().getMonsterList().stream().map(MonsterBean::getName).collect(Collectors.toList());
     }
 }

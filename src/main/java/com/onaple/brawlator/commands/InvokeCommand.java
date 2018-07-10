@@ -38,22 +38,29 @@ public class InvokeCommand implements CommandExecutor {
 		if (src instanceof Player) {
 			World world = ((Player) src).getWorld();
 			Location location = ((Player) src).getLocation();
-			String monsterId = (args.getOne("id").isPresent()) ? args.<String>getOne("id").get() : "";
-			Optional<MonsterBean> monster = Brawlator.getMonsterAction().getMonster(monsterId);
 
 
-			if(monster.isPresent()) {
-				try {
-					Brawlator.getMonsterAction().invokeMonster(location, monster.get());
-					src.sendMessage(Text.of("MONSTER " + monster.get().getName() + " spawned."));
-					return CommandResult.empty();
-				} catch (Exception e){
-					((Player) src).sendMessage(Text.builder().append(Text.of(e.getMessage())).color(TextColors.RED).build());
+			Optional<String> idArgs = args.getOne("id");
+			if(idArgs.isPresent()) {
+
+				Optional<MonsterBean> monster = Brawlator.getMonsterAction().getMonster(idArgs.get());
+
+
+				if (monster.isPresent()) {
+					try {
+						Brawlator.getMonsterAction().invokeMonster(location, monster.get());
+						src.sendMessage(Text.of("MONSTER " + monster.get().getName() + " spawned."));
+						return CommandResult.empty();
+					} catch (Exception e) {
+						src.sendMessage(Text.builder().append(Text.of(e.getMessage())).color(TextColors.GREEN).build());
+					}
+
+					return CommandResult.success();
+				} else {
+					src.sendMessage(Text.of("MONSTER " + idArgs.get() + " not found."));
 				}
-
-				return CommandResult.success();
 			} else {
-				((Player) src).sendMessage(Text.of("MONSTER " + monsterId + " not found."));
+				src.sendMessage(Text.builder("Monster id is missing").color(TextColors.RED).build());
 			}
 		}
 		return CommandResult.empty();

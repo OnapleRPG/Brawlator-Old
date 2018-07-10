@@ -41,7 +41,7 @@ sonarqube {
         property "sonar.projectName", "Brawlator"
         property "sonar.organization", "ylinor-github"
         property "sonar.host.url", "https://sonarcloud.io/"
-        property "sonar.login", "dd396ee75825a9f0334d9bccf4adfafe403a8b24"
+
 
     }
 }

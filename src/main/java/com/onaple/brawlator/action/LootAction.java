@@ -25,7 +25,7 @@ public class LootAction {
      * @return the corresponding ItemStack
      */
     public Optional<ItemStack> getloot(String monsterName){
-       Optional<LootTableBean> lootTableOpt = configurationHandler.lootTableList.stream().filter(c->c.getName().equals(monsterName)).findFirst();
+       Optional<LootTableBean> lootTableOpt = configurationHandler.getLootTableList().stream().filter(c->c.getName().equals(monsterName)).findFirst();
         if(lootTableOpt.isPresent()){
             LootTableBean lootTableBean = lootTableOpt.get();
             Optional<IItemService> optionalIItemService = Sponge.getServiceManager().provide(IItemService.class);

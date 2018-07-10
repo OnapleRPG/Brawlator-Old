@@ -173,16 +173,8 @@ public class MonsterAction {
      * @return the monster (optional)
      */
     public Optional<MonsterBean> getMonster(String name){
-        List<String> l =getMonsterList()
-                .stream()
-                .map(MonsterBean::getName)
-                .collect(Collectors.toList());
-        String[] arr = l.toArray(new String[l.size()]);
-        Brawlator.getLogger().info(String.join(",",arr));
-        return configurationHandler.monsterList.stream().filter(monsterBean -> monsterBean.getName().equals(name)).findFirst();
+        return configurationHandler.getMonsterList().stream().filter(monsterBean -> monsterBean.getName().equals(name)).findFirst();
     }
 
-    public List<MonsterBean> getMonsterList(){
-        return configurationHandler.monsterList;
-    }
+
 }
