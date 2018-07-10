@@ -3,7 +3,6 @@ package com.onaple.brawlator;
 import com.onaple.brawlator.action.LootAction;
 import com.onaple.brawlator.commands.ReloadCommand;
 import com.onaple.brawlator.commands.database.SelectMonsterCommand;
-import com.onaple.brawlator.data.beans.MonsterBean;
 import com.onaple.brawlator.data.handler.ConfigurationHandler;
 import com.onaple.brawlator.event.SpawnEvent;
 import com.onaple.brawlator.action.MonsterAction;
@@ -12,7 +11,7 @@ import com.onaple.brawlator.commands.InvokeCommand;
 import com.onaple.brawlator.exception.PluginNotFoundException;
 import com.onaple.brawlator.exception.WorldNotFoundException;
 
-import com.ylinor.itemizer.service.IItemService;
+import com.onaple.itemizer.service.IItemService;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.args.GenericArguments;
