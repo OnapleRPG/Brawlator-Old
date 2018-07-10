@@ -1,14 +1,14 @@
-![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=Brawlator&metric=alert_status)
-# Introduction
+# Brawlator ![Build Status](https://travis-ci.org/OnapleRPG/Brawlator.svg?branch=master) ![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=Brawlator&metric=alert_status)
+## Introduction
 Brawlator is a **sponge** plugin. It provide a system able to create and manage **customs** monsters based on **minecraft entity**. Monsters can be created by in game **command lines** and are stored in a **configuration file**.
 
 This plugin can also manage the spawn of these monsters with custom mob spawner. 
 
 
-# Getting started
-## installation
+## Getting started
+### installation
 Donwload the `.jar` file and place it in the _Mods_ folder of your server.
-## fonctionnement
+### fonctionnement
 With the command ```/monster <custom_name> <type>``` you can create a monster. Now the freshly born monster is stored, you can spawn him with the command ```/invoke <monster_name>```.
 
 The second important element of this plugin is the spawner component. It can spawn creatures around it. To create a simple spawner just type ```/spawner <x><y><z><monstername>```
