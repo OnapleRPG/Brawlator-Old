@@ -10,6 +10,8 @@ import org.spongepowered.api.item.inventory.ItemStack;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 @Singleton
 public class LootAction {
@@ -24,31 +26,24 @@ public class LootAction {
      * @param monsterName monster that you want to get the lootTable
      * @return the corresponding ItemStack
      */
-    public Optional<ItemStack> getloot(String monsterName){
+    public List<ItemStack> getloot(String monsterName){
        Optional<LootTableBean> lootTableOpt = configurationHandler.getLootTableList().stream().filter(c->c.getName().equals(monsterName)).findFirst();
-        if(lootTableOpt.isPresent()){
+       List<ItemStack> loots = new ArrayList<>();
+       if(lootTableOpt.isPresent()){
             LootTableBean lootTableBean = lootTableOpt.get();
 
-            Optional<IItemService> optionalIItemService = Brawlator.getItemService();
-            if (optionalIItemService.isPresent()) {
-                IItemService iItemService = optionalIItemService.get();
-                if(lootTableBean.getItem()>0){
-                   return iItemService.retrieve(lootTableBean.getItem());
 
-                } else if(lootTableBean.getPool()>0){
-                    return iItemService.fetch(lootTableBean.getPool());
+            if(lootTableBean.getPool()>0){
+                if( Brawlator.getItemService().isPresent()){
+                    Optional<ItemStack> fetchedItem = Brawlator.getItemService().get().fetch(lootTableBean.getPool());
+                    fetchedItem.ifPresent(loots::add);
+                } else {
+                    Brawlator.getLogger().error("You must include Itemizer plugin if you want to you item's pool");
                 }
             }
-            if (lootTableBean.getItemname().isEmpty()){
-              Optional<ItemType> itemTypeOptional = Sponge.getRegistry().getType(ItemType.class,lootTableBean.getItemname());
-              if(itemTypeOptional.isPresent()){
-                  return Optional.of(ItemStack.of(itemTypeOptional.get(),1));
-              }
-              Brawlator.getLogger().warn("No item defined");
-              return Optional.empty();
-            }
+            loots.addAll(lootTableBean.getItems());
         }
         Brawlator.getLogger().warn("No loot table defined");
-        return Optional.empty();
+        return loots;
     }
 }

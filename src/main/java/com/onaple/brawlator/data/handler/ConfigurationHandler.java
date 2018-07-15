@@ -66,9 +66,10 @@ public class ConfigurationHandler {
     public int setSpawnerList(CommentedConfigurationNode configNode) throws ObjectMappingException {
         TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(SpawnerBean.class), new SpawnerSerializer());
 
-           spawnerList.addAll(configNode.getNode("spawner").getList(TypeToken.of(SpawnerBean.class)));
+        spawnerList.clear();
+        spawnerList.addAll(configNode.getNode("spawner").getList(TypeToken.of(SpawnerBean.class)));
 
-           return spawnerList.size();
+        return spawnerList.size();
 
 
     }
@@ -82,7 +83,8 @@ public class ConfigurationHandler {
     public int setLootTableList(CommentedConfigurationNode configNode) throws ObjectMappingException {
         TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(LootTableBean.class), new LootTableSerializer());
 
-            lootTableList.addAll(configNode.getNode("loots").getList(TypeToken.of(LootTableBean.class)));
+        lootTableList.clear();
+        lootTableList.addAll(configNode.getNode("loots").getList(TypeToken.of(LootTableBean.class)));
         return lootTableList.size();
     }
 
@@ -96,8 +98,8 @@ public class ConfigurationHandler {
         TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(MonsterBean.class), new MonsterSerializer())
                 .registerType(TypeToken.of(EffectBean.class), new EffectSerializer())
                 .registerType(TypeToken.of(EquipementBean.class), new EquipementSerialiser());
-
-           monsterList.addAll(configNode.getNode("monster").getList(TypeToken.of(MonsterBean.class)));
+        monsterList.clear();
+        monsterList.addAll(configNode.getNode("monster").getList(TypeToken.of(MonsterBean.class)));
         return monsterList.size();
     }
 }

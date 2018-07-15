@@ -11,9 +11,11 @@ import com.onaple.brawlator.commands.InvokeCommand;
 import com.onaple.brawlator.exception.PluginNotFoundException;
 import com.onaple.brawlator.exception.WorldNotFoundException;
 
+import com.onaple.itemizer.Itemizer;
 import com.onaple.itemizer.service.IItemService;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.asset.Asset;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
@@ -32,14 +34,14 @@ import org.spongepowered.api.world.World;
 
 import javax.inject.Inject;
 import javax.swing.tree.ExpandVetoException;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-@Plugin(id = "brawlator", name = "Brawlator", version = "0.0.1", dependencies = {
-		@Dependency(id="itemizer",version = "0.0.1")
-}
-)
+@Plugin(id = "brawlator", name = "Brawlator", version = "0.0.1")
 public class Brawlator {
 
 	private static Logger logger;
@@ -83,11 +85,14 @@ public class Brawlator {
 	private static Brawlator brawlator;
 	public static Brawlator getBrawlator(){return brawlator;}
 
+
+
 	@Inject
 	private SpawnerAction spawnerAction;
 
 
 	private static LootAction lootAction;
+
 
 	@Inject
 	private void setLogger(LootAction lootAction) {
@@ -108,9 +113,14 @@ public class Brawlator {
 		Sponge.getEventManager().registerListeners(this, new BrawlatorListener());
 
 
-		Optional itemServiceOptional =  Sponge.getServiceManager().provide(IItemService.class);
-		if(itemServiceOptional.isPresent()){
-			itemService =  itemServiceOptional;
+		if(Sponge.getPluginManager().getPlugin("Itemizer").isPresent()) {
+			Optional itemServiceOptional = Sponge.getServiceManager().provide(IItemService.class);
+			if (itemServiceOptional.isPresent()) {
+				itemService = itemServiceOptional;
+			} else {
+				itemService = Optional.empty();
+				logger.warn("Itemizer dependency not found");
+			}
 		} else {
 			itemService = Optional.empty();
 			logger.warn("Itemizer dependency not found");
@@ -195,15 +205,44 @@ public class Brawlator {
 	}
 
 	public int loadMonsters() throws Exception {
+		initDefaultConfig("monster.conf");
 		return configurationHandler.setMonsterList(configurationHandler.loadConfiguration(configDir + "/brawlator/monster.conf"));
 	}
 
 	public int loadSpawners() throws Exception {
+		initDefaultConfig("spawner.conf");
 		return configurationHandler.setSpawnerList(configurationHandler.loadConfiguration(configDir + "/brawlator/spawner.conf"));
 	}
 
 	public int loadLootTables() throws Exception {
+		initDefaultConfig("loot_table.conf");
 		return configurationHandler.setLootTableList(configurationHandler.loadConfiguration(configDir + "/brawlator/loot_table.conf"));
+	}
+
+	public void initDefaultConfig(String path){
+		if (Files.notExists(Paths.get(configDir+ "/brawlator/" + path))) {
+			PluginContainer pluginInstance = null;
+			try {
+				pluginInstance = getInstance();
+
+
+			if (pluginInstance!= null) {
+				Optional<Asset> itemsDefaultConfigFile = pluginInstance.getAsset(path);
+				getLogger().info("No config file set for " + path + " default config will be loaded");
+				if (itemsDefaultConfigFile.isPresent()) {
+					try {
+						itemsDefaultConfigFile.get().copyToDirectory(Paths.get(configDir+"/brawlator/"));
+					} catch (IOException e) {
+						Itemizer.getLogger().error("Error while setting default configuration : " + e.getMessage());
+					}
+				} else {
+					logger.warn("Item default config not found");
+				}
+			}
+			} catch (PluginNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

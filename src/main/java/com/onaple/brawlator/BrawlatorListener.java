@@ -3,8 +3,11 @@ package com.onaple.brawlator;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityTypes;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.cause.EventContextKeys;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
+import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
@@ -16,10 +19,9 @@ import java.util.Optional;
 
 public class BrawlatorListener {
 
-
     @Listener
     public void onDropItemEvent(DropItemEvent.Destruct event){
-        if( event.getSource() instanceof Entity) {
+        Brawlator.getLogger().info(event.getSource().toString());
             event.getEntities().clear();
             Optional<Entity> entityOptional = event.getCause().first(Entity.class);
             if (entityOptional.isPresent()) {
@@ -29,11 +31,10 @@ public class BrawlatorListener {
                 if (nameOptional.isPresent()) {
                     String name = nameOptional.get().toPlain();
                     Brawlator.getLogger().info(name);
-                    Optional<ItemStack> itemStackOptional = Brawlator.getLootAction().getloot(name);
-                    itemStackOptional.ifPresent(itemStack -> event.getEntities().add(cretateItemEntity(itemStack, entity.getLocation())));
+                    Brawlator.getLootAction().getloot(name).forEach(itemStack -> event.getEntities()
+                                .add(cretateItemEntity(itemStack, entity.getLocation())));
                 }
             }
-        }
     }
 
     @Listener

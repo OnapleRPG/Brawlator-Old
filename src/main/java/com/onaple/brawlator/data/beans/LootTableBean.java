@@ -1,19 +1,27 @@
 package com.onaple.brawlator.data.beans;
 
+import org.spongepowered.api.item.inventory.ItemStack;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class LootTableBean {
     private Integer pool;
-    private Integer item;
-    private String itemname;
+    private List<ItemStack> items;
+
     private String name;
 
-    public LootTableBean(Integer pool, Integer item, String itemname, String name) {
+    public LootTableBean(String name) {
+        this.name = name;
+    }
+    public LootTableBean(String name, List<ItemStack> items){
+        this.name = name;
+        this.items= items;
+    }
+
+    public LootTableBean(Integer pool, String name) {
         this.pool = pool;
-        this.item = item;
-        this.itemname = itemname;
         this.name = name;
     }
 
@@ -30,20 +38,21 @@ public class LootTableBean {
         this.pool = pool;
     }
 
-    public Integer getItem() {
-        return item;
+    @Override
+    public String toString() {
+        return "LootTableBean{" +
+                "pool=" + pool +
+                ", items=" + items +
+                ", name='" + name + '\'' +
+                '}';
     }
 
-    public void setItem(Integer item) {
-        this.item = item;
+    public List<ItemStack> getItems() {
+        return items;
     }
 
-    public String getItemname() {
-        return itemname;
-    }
-
-    public void setItemname(String itemname) {
-        this.itemname = itemname;
+    public void setItems(List<ItemStack> items) {
+        this.items = items;
     }
 
     public String getName() {
