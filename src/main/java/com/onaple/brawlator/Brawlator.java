@@ -240,7 +240,7 @@ public class Brawlator {
 				}
 			}
 			} catch (PluginNotFoundException e) {
-				e.printStackTrace();
+				Brawlator.getLogger().error(e.toString());
 			}
 		}
 	}

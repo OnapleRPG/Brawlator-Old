@@ -34,8 +34,9 @@ public class LootAction {
 
 
             if(lootTableBean.getPool()>0){
-                if( Brawlator.getItemService().isPresent()){
-                    Optional<ItemStack> fetchedItem = Brawlator.getItemService().get().fetch(lootTableBean.getPool());
+                Optional<IItemService> serviceOptional = Brawlator.getItemService();
+                if( serviceOptional.isPresent()){
+                    Optional<ItemStack> fetchedItem = serviceOptional.get().fetch(lootTableBean.getPool());
                     fetchedItem.ifPresent(loots::add);
                 } else {
                     Brawlator.getLogger().error("You must include Itemizer plugin if you want to you item's pool");
