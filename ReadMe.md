@@ -16,8 +16,13 @@ This will create a *barrier block* at the specified position And periodicly spaw
 
 ## Customisation
 ### Monster
-#### Stats
-_Arriving soon_
+#### Attributes
+ You can edit monster attributes to customize their power. You can modify :
+ * speed
+ * health points
+ * knockback resistance
+ * display name
+
 #### Effects
 Several effects can be added to monsters.   
 * ```RESISTANCE```
