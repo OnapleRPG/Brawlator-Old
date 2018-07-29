@@ -53,7 +53,9 @@ sample of configuration file :
        speed=1.0  
        type=skeleton  
     }  
-] ```
+] 
+```
+  
 ### Spawner 
 
 To automatically invoke monster in your world, you can use spawners. They're defined by coordinates and a kind of monster. Then it will periodically summon a new monster. 
