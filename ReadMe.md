@@ -9,7 +9,7 @@ This plugin can also manage the spawn of these monsters with custom mob spawner.
 ### installation
 Donwload the `.jar` file and place it in the _Mods_ folder of your server.
 ### fonctionnement
-With the command ```/monster <custom_name> <type>``` you can create a monster. Now the freshly born monster is stored, you can spawn him with the command ```/invoke <monster_name>```.
+monster are created in configuration file and they can be summoned in the real world with the command ```/invoke <monster_name>```.
 
 The second important element of this plugin is the spawner component. It can spawn creatures around it. To create a simple spawner just type ```/spawner <x><y><z><monstername>```
 This will create a *barrier block* at the specified position And periodicly spawn a monster when the spawntime come to 0. 
@@ -17,22 +17,36 @@ This will create a *barrier block* at the specified position And periodicly spaw
 ## Customisation
 ### Monster
 #### Attributes
- You can edit monster attributes to customize their power. You can modify :
+ You can edit monster attributes to customize their power and behaviour.
+ * The **type** of the monster. it's mandatory and it take a *entityType* like zombie,skelton ,etc .. a complete list of monster is aviable [here](https://minecraft.gamepedia.com/Mob)
+ * Monster **display name** is a mandatory parameter,it used to identify custom monsters so it must be unique. Whereas it a string and space are allowed. 
  * speed
  * health points
  * knockback resistance
- * display name
+
+ 
 
 #### Effects
-Several effects can be added to monsters.   
+All minecraft potion's effects can be applied to monsters. when the monster appear, effect are active for the maximum *duration*.
+about the potion *amplifier* you can indicate any positive integer. the most common appliable effects are :
 * ```RESISTANCE```
 * ```FIRE_RESISTANCE```
 * ```INVISIBILITY```
-* ```REGENERATION```  
-
-To add effects to a monster just type this command : ```/effect <monster_name> <effect> [duration] [amplifier] ```. The monster name must be renseigned and it refers to the monster you want to add effect.  
-The effect is the effect you want to apply.   
-Duration is how long the effect will be effective on the spawned monster default value is *99999* and amplifier is the power of the effect, the default value is *1*.
+* ```REGENERATION```   
+see the complete list of effect [here](https://minecraft.gamepedia.com/Status_effect).
+to use effects in configguration see the the sample of configurattion below 
+ ```
+effects = [
+    {
+        type = minecraft:speed
+        amplifier = 5 # this parameter is optionnal (default 1)
+    },
+    {
+        type = minecraft:strength
+        amplifier = 2 
+    }
+] 
+```  
 #### Equipement
 Some monsters like *zombie* or *skeleton* can be equiped with stuff. To equipe monster with stuff type  the following command : ```/equipment <monster_name> <emplacement > <equipment >```
 #### Configuration file
