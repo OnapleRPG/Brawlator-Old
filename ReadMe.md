@@ -18,11 +18,12 @@ This will create a *barrier block* at the specified position And periodicly spaw
 ### Monster
 #### Attributes
  You can edit monster attributes to customize their power and behaviour.
- * The **type** of the monster. it's mandatory and it take a *entityType* like zombie,skelton ,etc .. a complete list of monster is aviable [here](https://minecraft.gamepedia.com/Mob)
- * Monster **display name** is a mandatory parameter,it used to identify custom monsters so it must be unique. Whereas it a string and space are allowed. 
- * speed
- * health points
- * knockback resistance
+ * The **type** of the monster. it's mandatory and it take a `EntityType` like zombie,skelton ,etc .. a complete list of monster is aviable [here](https://minecraft.gamepedia.com/Mob)
+ * Monster **display name** is a mandatory parameter,it used to identify custom monsters so it must be unique. Whereas it a `String` d space are allowed. 
+ * the **speed** at the monster walk, the default is 1 and it take a `Double`
+ * **health points** is the monster quantity of health, the default is 20. it take only `Integer`
+ * **knockback resistance** is the resitance of attack knockback. it take an `Integer`
+ 
 
  
 
@@ -48,7 +49,7 @@ effects = [
 ] 
 ```  
 #### Equipement
-Some monsters like *zombie* or *skeleton* can be equiped with stuff. To equipe monster with stuff type  the following command : ```/equipment <monster_name> <emplacement > <equipment >```
+Some monsters like *zombie* or *skeleton* can be equiped with stuff.
 #### Configuration file
 sample of configuration file :  
 ``` Monster[  
