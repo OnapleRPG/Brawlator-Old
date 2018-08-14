@@ -3,9 +3,14 @@ package com.onaple.brawlator.data.beans;
 import com.flowpowered.math.vector.Vector3i;
 import com.onaple.brawlator.Brawlator;
 import com.onaple.brawlator.event.SpawnEvent;
+import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 
+import javax.inject.Inject;
+
 public class SpawnerBean {
+    @Inject
+    Logger logger;
 
     private int id ;
     private Vector3i position;
@@ -101,7 +106,7 @@ public class SpawnerBean {
     public void updateTime(){
         if(this.time > 0){
             time--;
-            Brawlator.getLogger().info("Spawner at " + position.toString() + " have "+ time);
+            logger.info("Spawner at " + position.toString() + " have "+ time);
         } else {
             time = spawnRate;
 

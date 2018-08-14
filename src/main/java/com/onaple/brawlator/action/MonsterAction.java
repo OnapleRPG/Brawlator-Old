@@ -6,6 +6,7 @@ import com.onaple.brawlator.data.beans.EquipementBean;
 import com.onaple.brawlator.data.beans.MonsterBean;
 import com.onaple.brawlator.data.handler.ConfigurationHandler;
 import com.onaple.brawlator.exception.EntityTypeNotFound;
+import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataHolder;
 import org.spongepowered.api.data.key.Keys;
@@ -29,6 +30,9 @@ import java.util.stream.Collectors;
 
 @Singleton
 public class MonsterAction {
+    @Inject
+    private Logger logger;
+
     public MonsterAction() {}
 
     @Inject
@@ -44,7 +48,7 @@ public class MonsterAction {
     public Optional<Entity> invokeMonster(Location location, MonsterBean monster) throws EntityTypeNotFound {
 
         //  Création de l'entité
-       Brawlator.getLogger().info(monster.toString());
+        logger.info(monster.toString());
         Optional<EntityType> entityTypeOptional = Sponge.getRegistry().getType(EntityType.class,monster.getType());
 
         if( entityTypeOptional.isPresent()){

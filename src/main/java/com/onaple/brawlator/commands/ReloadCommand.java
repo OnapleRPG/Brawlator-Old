@@ -9,12 +9,16 @@ import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import javax.inject.Inject;
+
 public class ReloadCommand implements CommandExecutor{
+    @Inject
+    Brawlator brawlator;
 
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
         try{
-            int qte = Brawlator.getBrawlator().loadMonsters();
+            int qte = brawlator.loadMonsters();
             src.sendMessage(Text.builder()
                     .append(Text.builder("Monsters configuration successfully reloaded. ").color(TextColors.GREEN).build())
                     .append(Text.builder("" + qte).color(TextColors.GOLD).build())
@@ -25,7 +29,7 @@ public class ReloadCommand implements CommandExecutor{
            writeError(src,e);
         }
         try{
-           int spawnerQte = Brawlator.getBrawlator().loadSpawners();
+           int spawnerQte = brawlator.loadSpawners();
             src.sendMessage(Text.builder()
                     .append(Text.builder("Spawner configuration successfully reloaded. ").color(TextColors.GREEN).build())
                     .append(Text.builder("" + spawnerQte).color(TextColors.GOLD).build())
@@ -35,7 +39,7 @@ public class ReloadCommand implements CommandExecutor{
             writeError(src,e);
         }
         try {
-            int lootQte = Brawlator.getBrawlator().loadLootTables();
+            int lootQte = brawlator.loadLootTables();
             src.sendMessage(Text.builder()
                     .append(Text.builder("LootTable configuration successfully reloaded.. ").color(TextColors.GREEN).build())
                     .append(Text.builder("" + lootQte).color(TextColors.GOLD).build())

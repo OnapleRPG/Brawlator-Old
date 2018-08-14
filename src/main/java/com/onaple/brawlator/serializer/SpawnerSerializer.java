@@ -3,22 +3,26 @@ package com.onaple.brawlator.serializer;
 import com.flowpowered.math.vector.Vector3i;
 import com.google.common.reflect.TypeToken;
 import com.onaple.brawlator.Brawlator;
+import com.onaple.brawlator.action.MonsterAction;
 import com.onaple.brawlator.data.beans.MonsterBean;
 import com.onaple.brawlator.data.beans.SpawnerBean;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializer;
 
+import javax.inject.Inject;
 import java.util.Optional;
 
 public class SpawnerSerializer implements TypeSerializer<SpawnerBean> {
+    @Inject
+    MonsterAction monsterAction;
 
     @Override
     public SpawnerBean deserialize(TypeToken<?> type, ConfigurationNode value) throws ObjectMappingException {
        int id = value.getNode("id").getInt();
         String[] position = value.getNode("position").getString().split(" ");
 
-        Optional<MonsterBean> monsterBeanOptional = Brawlator.getMonsterAction().getMonster(value.getNode("monster").getString());
+        Optional<MonsterBean> monsterBeanOptional = monsterAction.getMonster(value.getNode("monster").getString());
         if(!monsterBeanOptional.isPresent()){
             throw new  ObjectMappingException();
         }

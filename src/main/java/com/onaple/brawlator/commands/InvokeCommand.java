@@ -1,6 +1,7 @@
 package com.onaple.brawlator.commands;
 
 import com.onaple.brawlator.Brawlator;
+import com.onaple.brawlator.action.MonsterAction;
 import com.onaple.brawlator.data.beans.MonsterBean;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -13,6 +14,7 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import javax.inject.Inject;
 import java.util.Optional;
 
 
@@ -20,6 +22,9 @@ import java.util.Optional;
  * Command to invoke a monster present in the database
  */
 public class InvokeCommand implements CommandExecutor {
+	@Inject
+	MonsterAction monsterAction;
+
 	/**
 	 * Constructeur par defaut
 	 */
@@ -43,12 +48,12 @@ public class InvokeCommand implements CommandExecutor {
 			Optional<String> idArgs = args.getOne("id");
 			if(idArgs.isPresent()) {
 
-				Optional<MonsterBean> monster = Brawlator.getMonsterAction().getMonster(idArgs.get());
+				Optional<MonsterBean> monster = monsterAction.getMonster(idArgs.get());
 
 
 				if (monster.isPresent()) {
 					try {
-						Brawlator.getMonsterAction().invokeMonster(location, monster.get());
+						monsterAction.invokeMonster(location, monster.get());
 						src.sendMessage(Text.of("MONSTER " + monster.get().getName() + " spawned."));
 						return CommandResult.empty();
 					} catch (Exception e) {

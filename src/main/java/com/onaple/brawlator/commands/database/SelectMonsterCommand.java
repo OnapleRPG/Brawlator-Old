@@ -1,6 +1,7 @@
 package com.onaple.brawlator.commands.database;
 
 import com.onaple.brawlator.Brawlator;
+import com.onaple.brawlator.action.MonsterAction;
 import com.onaple.brawlator.data.beans.MonsterBean;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -11,10 +12,13 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import javax.inject.Inject;
 import java.util.Optional;
 
 
 public class SelectMonsterCommand implements CommandExecutor {
+	@Inject
+	MonsterAction monsterAction;
 
 	public SelectMonsterCommand() {}
 
@@ -24,7 +28,7 @@ public class SelectMonsterCommand implements CommandExecutor {
 
 			Optional<String> idArg = args.getOne("name");
 			if (idArg.isPresent()) {
-				Optional<MonsterBean> monsterOptional = Brawlator.getMonsterAction().getMonster(idArg.get());
+				Optional<MonsterBean> monsterOptional = monsterAction.getMonster(idArg.get());
 				if (monsterOptional.isPresent()) {
 					MonsterBean monster = monsterOptional.get();
 					 src.sendMessage(Text.of("MONSTER " + monster.getId() + " : " + monster.getName() + " | " +

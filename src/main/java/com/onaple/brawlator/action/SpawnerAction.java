@@ -6,6 +6,7 @@ import com.onaple.brawlator.Brawlator;
 import com.onaple.brawlator.data.beans.SpawnerBean;
 import com.onaple.brawlator.data.handler.ConfigurationHandler;
 import com.onaple.brawlator.exception.WorldNotFoundException;
+import org.slf4j.Logger;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.data.key.Keys;
@@ -21,7 +22,10 @@ import java.util.Optional;
 @Singleton
 public class SpawnerAction {
     @Inject
-    ConfigurationHandler configurationHandler;
+    private Logger logger;
+
+    @Inject
+    private ConfigurationHandler configurationHandler;
 
     public SpawnerAction() {
     }
@@ -66,10 +70,10 @@ public class SpawnerAction {
                 return false;
             }
         } catch (NullPointerException e) {
-            Brawlator.getLogger().error(e.getMessage());
+            logger.error(e.getMessage());
             return false;
         } catch (WorldNotFoundException e) {
-            Brawlator.getLogger().error(e.toString());
+            logger.error(e.toString());
             return false;
         }
     }
@@ -88,7 +92,7 @@ public class SpawnerAction {
                     }
                 }
             } catch (WorldNotFoundException e) {
-                Brawlator.getLogger().error(e.toString());
+                logger.error(e.toString());
 
             }
         }
@@ -106,9 +110,9 @@ public class SpawnerAction {
             qte = Brawlator.getWorld("world").getLocation(spawnerBean.getPosition()).getExtent().getEntities(
                     entity -> compare(entity, spawnerBean)).size();
         } catch (WorldNotFoundException e) {
-            Brawlator.getLogger().error(e.toString());
+            logger.error(e.toString());
         }
-        Brawlator.getLogger().info("there is " + qte + " entities near " + spawnerBean.getPosition().toString());
+        logger.info("there is " + qte + " entities near " + spawnerBean.getPosition().toString());
         return qte;
     }
 

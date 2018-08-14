@@ -8,16 +8,23 @@ import com.onaple.itemizer.service.IItemService;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializer;
+import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.entity.Item;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class LootTableSerializer implements TypeSerializer<LootTableBean> {
+    @Inject
+    private Logger logger;
+
+    @Inject
+    private Brawlator brawlator;
+
     @Override
     public LootTableBean deserialize(TypeToken<?> type, ConfigurationNode value) throws ObjectMappingException {
 
@@ -33,20 +40,20 @@ public class LootTableSerializer implements TypeSerializer<LootTableBean> {
             try {
                 loots.add(getItemstack(o));
             } catch (ObjectMappingException | PluginNotFoundException e) {
-               Brawlator.getLogger().error(e.getMessage());
+                logger.error(e.getMessage());
             }
         });
 
-            lootTable.setItems(loots);
-            Brawlator.getLogger().info(lootTable.toString());
-            return lootTable;
+        lootTable.setItems(loots);
+        logger.info(lootTable.toString());
+        return lootTable;
     }
 
 
     public ItemStack getItemstack(ConfigurationNode value) throws ObjectMappingException, PluginNotFoundException {
 
         if(value.getNode("ref").getInt() != 0){
-            Optional<IItemService> optionalIItemService = Brawlator.getItemService();
+            Optional<IItemService> optionalIItemService = brawlator.getItemService();
             if (optionalIItemService.isPresent()) {
                 IItemService iItemService = optionalIItemService.get();
                 Optional<ItemStack> itemOptional =  iItemService.retrieve(value.getNode("ref").getInt());

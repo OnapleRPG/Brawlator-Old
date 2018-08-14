@@ -12,12 +12,9 @@ public class SpawnEvent extends AbstractEvent {
 
     private final SpawnerBean spawnerBean;
 
-
     public SpawnEvent(SpawnerBean spawnerBean) {
-
         this.spawnerBean = spawnerBean;
     }
-
 
     public SpawnerBean getSpawnerBean() {
         return spawnerBean;

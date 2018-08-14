@@ -10,7 +10,9 @@ import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
+import org.slf4j.Logger;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -18,6 +20,8 @@ import java.util.*;
 
 @Singleton
 public class ConfigurationHandler {
+    @Inject
+    private Logger logger;
 
     public ConfigurationHandler() {}
 
@@ -44,14 +48,14 @@ public class ConfigurationHandler {
      * @return A commented configuration node
      * @throws Exception
      */
-    public CommentedConfigurationNode loadConfiguration(String configName) throws Exception {
+    public CommentedConfigurationNode loadConfiguration(String configName) throws IOException {
         ConfigurationLoader<CommentedConfigurationNode> ConfigLoader = HoconConfigurationLoader.builder().setPath(Paths.get(configName)).build();
         CommentedConfigurationNode configNode = null;
         try {
             configNode = ConfigLoader.load();
-            Brawlator.getLogger().info(configName + " was loaded successfully");
+            logger.info(configName + " was loaded successfully");
         } catch (IOException e) {
-            throw new Exception("Error while loading configuration " + configName + " : " + e.getMessage());
+            throw new IOException("Error while loading configuration " + configName + " : " + e.getMessage());
         }
         return configNode;
     }
