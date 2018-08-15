@@ -24,7 +24,6 @@ import org.spongepowered.api.entity.Entity;
 
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
-import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
@@ -33,7 +32,6 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.World;
 
 import javax.inject.Inject;
-import javax.swing.tree.ExpandVetoException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -41,7 +39,7 @@ import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-@Plugin(id = "brawlator", name = "Brawlator", version = "0.0.1")
+@Plugin(id = "brawlator", name = "Brawlator", version = "1.1.0")
 public class Brawlator {
 
 	private static Logger logger;
