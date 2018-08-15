@@ -1,9 +1,6 @@
 package com.onaple.brawlator.data.beans;
 
 import org.spongepowered.api.effect.potion.PotionEffectType;
-import org.spongepowered.api.effect.potion.PotionEffectTypes;
-
-import java.util.HashMap;
 
 public class EffectBean {
 

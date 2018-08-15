@@ -1,6 +1,5 @@
 package com.onaple.brawlator.commands.element;
 
-import com.onaple.brawlator.Brawlator;
 import com.onaple.brawlator.action.MonsterAction;
 import com.onaple.brawlator.data.beans.MonsterBean;
 import com.onaple.brawlator.data.handler.ConfigurationHandler;

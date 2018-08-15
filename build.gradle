@@ -2,12 +2,10 @@ buildscript {
     repositories {
         // Using Bintray repository:
         maven { url "http://dl.bintray.com/davideas/maven" }
-
     }
     dependencies {
         // Using Bintray repository:
         classpath 'eu.davidea:grabver:1.0.0'
-
     }
 }
 plugins {
@@ -53,21 +51,15 @@ repositories {
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 dependencies {
-
     compile 'org.spongepowered:spongeapi:7.0.0'
     testCompile "junit:junit:4.11"
     implementation 'com.github.OnapleRPG:Itemizer:V1.0.0'
-
-
 }
-
 
 sonarqube {
     properties {
         property "sonar.projectName", "Brawlator"
         property "sonar.organization", "ylinor-github"
         property "sonar.host.url", "https://sonarcloud.io/"
-
-
     }
 }

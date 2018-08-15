@@ -1,6 +1,5 @@
 package com.onaple.brawlator.action;
 
-import com.onaple.brawlator.Brawlator;
 import com.onaple.brawlator.data.beans.EffectBean;
 import com.onaple.brawlator.data.beans.EquipementBean;
 import com.onaple.brawlator.data.beans.MonsterBean;
@@ -13,7 +12,6 @@ import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.PotionEffectData;
 import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.effect.potion.PotionEffect;
-import org.spongepowered.api.effect.potion.PotionEffectType;
 import org.spongepowered.api.entity.ArmorEquipable;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityType;
@@ -21,12 +19,10 @@ import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
-import org.spongepowered.api.world.World;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Singleton
 public class MonsterAction {

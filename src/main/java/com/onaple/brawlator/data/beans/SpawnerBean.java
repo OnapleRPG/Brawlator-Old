@@ -1,7 +1,6 @@
 package com.onaple.brawlator.data.beans;
 
 import com.flowpowered.math.vector.Vector3i;
-import com.onaple.brawlator.Brawlator;
 import com.onaple.brawlator.event.SpawnEvent;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
@@ -12,7 +11,7 @@ public class SpawnerBean {
     @Inject
     Logger logger;
 
-    private int id ;
+    private int id;
     private Vector3i position;
     private MonsterBean monsterBean;
     private int quantity;
@@ -21,9 +20,22 @@ public class SpawnerBean {
 
     private int time;
 
-    public int getId() { return id; }
+    public SpawnerBean(Vector3i position, MonsterBean monsterBean, int quantity, int spawnRate, int range) {
+        this.position = position;
+        this.monsterBean = monsterBean;
+        this.quantity = quantity;
+        this.spawnRate = spawnRate;
+        this.range = range;
+        this.time = spawnRate;
+    }
 
-    public void setId(int id) { this.id = id; }
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public Vector3i getPosition() {
         return position;
@@ -65,15 +77,6 @@ public class SpawnerBean {
         this.range = range;
     }
 
-    public SpawnerBean(Vector3i position, MonsterBean monsterBean, int quantity, int spawnRate, int range) {
-        this.position = position;
-        this.monsterBean = monsterBean;
-        this.quantity = quantity;
-        this.spawnRate = spawnRate;
-        this.range = range;
-        this.time = spawnRate;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -87,12 +90,12 @@ public class SpawnerBean {
 
     @Override
     public String toString() {
-        return "SpawnerBean{" + "\n"+
-                "position=" + position + "\n"+
-                ", monsterBean=" + monsterBean +"\n"+
-                ", quantity=" + quantity +"\n"+
-                ", spawnRate=" + spawnRate +"\n"+
-                ", range=" + range +"\n"+
+        return "SpawnerBean{" + "\n" +
+                "position=" + position + "\n" +
+                ", monsterBean=" + monsterBean + "\n" +
+                ", quantity=" + quantity + "\n" +
+                ", spawnRate=" + spawnRate + "\n" +
+                ", range=" + range + "\n" +
                 '}';
     }
 
@@ -103,10 +106,10 @@ public class SpawnerBean {
         return result;
     }
 
-    public void updateTime(){
-        if(this.time > 0){
+    public void updateTime() {
+        if (this.time > 0) {
             time--;
-            logger.info("Spawner at " + position.toString() + " have "+ time);
+            logger.info("Spawner at " + position.toString() + " have " + time);
         } else {
             time = spawnRate;
 

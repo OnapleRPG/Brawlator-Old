@@ -1,6 +1,5 @@
 package com.onaple.brawlator.commands;
 
-import com.onaple.brawlator.Brawlator;
 import com.onaple.brawlator.action.MonsterAction;
 import com.onaple.brawlator.data.beans.MonsterBean;
 import org.spongepowered.api.command.CommandException;

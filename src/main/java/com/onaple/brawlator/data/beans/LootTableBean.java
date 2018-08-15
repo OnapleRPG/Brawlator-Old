@@ -2,9 +2,7 @@ package com.onaple.brawlator.data.beans;
 
 import org.spongepowered.api.item.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class LootTableBean {
     private Integer pool;

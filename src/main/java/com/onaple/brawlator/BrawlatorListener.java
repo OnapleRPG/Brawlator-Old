@@ -27,19 +27,19 @@ public class BrawlatorListener {
     @Listener
     public void onDropItemEvent(DropItemEvent.Destruct event){
         logger.info(event.getSource().toString());
-            event.getEntities().clear();
-            Optional<Entity> entityOptional = event.getCause().first(Entity.class);
-            if (entityOptional.isPresent()) {
-                Entity entity = entityOptional.get();
-                logger.info(entity.getType().getName());
-                Optional<Text> nameOptional = entity.get(Keys.DISPLAY_NAME);
-                if (nameOptional.isPresent()) {
-                    String name = nameOptional.get().toPlain();
-                    logger.info(name);
-                    lootAction.getloot(name).forEach(itemStack -> event.getEntities()
-                                .add(createItemEntity(itemStack, entity.getLocation())));
-                }
+        event.getEntities().clear();
+        Optional<Entity> entityOptional = event.getCause().first(Entity.class);
+        if (entityOptional.isPresent()) {
+            Entity entity = entityOptional.get();
+            logger.info(entity.getType().getName());
+            Optional<Text> nameOptional = entity.get(Keys.DISPLAY_NAME);
+            if (nameOptional.isPresent()) {
+                String name = nameOptional.get().toPlain();
+                logger.info(name);
+                lootAction.getloot(name).forEach(itemStack -> event.getEntities()
+                        .add(createItemEntity(itemStack, entity.getLocation())));
             }
+        }
     }
 
     @Listener

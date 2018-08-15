@@ -13,7 +13,7 @@ import javax.inject.Inject;
 
 public class ReloadCommand implements CommandExecutor{
     @Inject
-    Brawlator brawlator;
+    private Brawlator brawlator;
 
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {

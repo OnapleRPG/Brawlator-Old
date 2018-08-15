@@ -6,6 +6,7 @@ import org.spongepowered.api.item.ItemType;
 
 import java.util.Optional;
 
+
 public class EquipementAction {
     /**
      * get the ItemType from the equipement bean

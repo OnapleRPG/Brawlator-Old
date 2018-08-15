@@ -27,18 +27,17 @@ public class LootTableSerializer implements TypeSerializer<LootTableBean> {
 
     @Override
     public LootTableBean deserialize(TypeToken<?> type, ConfigurationNode value) throws ObjectMappingException {
-
-        if(value.getNode("name") == null ){
+        if (value.getNode("name") == null) {
             throw new ObjectMappingException("name");
         }
         LootTableBean lootTable = new LootTableBean(value.getNode("name").getString());
-        if(value.getNode("pool") != null){
+        if (value.getNode("pool") != null) {
             lootTable.setPool(value.getNode("pool").getInt());
         }
         List<ItemStack> loots = new ArrayList<>();
-        value.getNode("items").getChildrenList().forEach(o -> {
+        value.getNode("items").getChildrenList().forEach(item -> {
             try {
-                loots.add(getItemstack(o));
+                loots.add(getItemstack(item));
             } catch (ObjectMappingException | PluginNotFoundException e) {
                 logger.error(e.getMessage());
             }
@@ -49,15 +48,13 @@ public class LootTableSerializer implements TypeSerializer<LootTableBean> {
         return lootTable;
     }
 
-
     public ItemStack getItemstack(ConfigurationNode value) throws ObjectMappingException, PluginNotFoundException {
-
-        if(value.getNode("ref").getInt() != 0){
+        if (value.getNode("ref").getInt() != 0) {
             Optional<IItemService> optionalIItemService = brawlator.getItemService();
             if (optionalIItemService.isPresent()) {
                 IItemService iItemService = optionalIItemService.get();
-                Optional<ItemStack> itemOptional =  iItemService.retrieve(value.getNode("ref").getInt());
-                if(itemOptional.isPresent()){
+                Optional<ItemStack> itemOptional = iItemService.retrieve(value.getNode("ref").getInt());
+                if (itemOptional.isPresent()) {
                     return itemOptional.get();
                 } else {
                     throw new ObjectMappingException("Wrong item references : " + value.getNode("ref").getInt()
@@ -66,23 +63,21 @@ public class LootTableSerializer implements TypeSerializer<LootTableBean> {
             } else {
                 throw new PluginNotFoundException("Itemizer");
             }
-        } else if (value.getNode("name").getString() != null){
-           Optional<ItemType> itemTypeOptional = Sponge.getRegistry().getType(ItemType.class,value.getNode("name").getString());
-           if (itemTypeOptional.isPresent()) {
-              return ItemStack.builder().itemType(itemTypeOptional.get()).build();
-           } else {
-               throw new ObjectMappingException("Wrong item name : " + value.getNode("name").getString()
-                       + "check the right minecraft name of the item");
-           }
+        } else if (value.getNode("name").getString() != null) {
+            Optional<ItemType> itemTypeOptional = Sponge.getRegistry().getType(ItemType.class, value.getNode("name").getString());
+            if (itemTypeOptional.isPresent()) {
+                return ItemStack.builder().itemType(itemTypeOptional.get()).build();
+            } else {
+                throw new ObjectMappingException("Wrong item name : " + value.getNode("name").getString()
+                        + "check the right minecraft name of the item");
+            }
         } else {
             return null;
         }
-
-
     }
 
     @Override
     public void serialize(TypeToken<?> type, LootTableBean obj, ConfigurationNode value) throws ObjectMappingException {
-
+        throw new UnsupportedOperationException("LootTable serialize not implemented.");
     }
 }

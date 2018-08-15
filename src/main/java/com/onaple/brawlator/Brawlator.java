@@ -13,6 +13,7 @@ import com.onaple.brawlator.exception.WorldNotFoundException;
 import com.onaple.itemizer.Itemizer;
 import com.onaple.itemizer.service.IItemService;
 
+import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.asset.Asset;
 import org.spongepowered.api.command.args.GenericArguments;
@@ -63,6 +64,7 @@ public class Brawlator {
 	public void onServerStart(GameStartedServerEvent event) {
 		Sponge.getEventManager().registerListeners(this, new BrawlatorListener());
 
+		// Try to load Itemizer plugin dependency
 		Optional<PluginContainer> itemServiceContainer = Sponge.getPluginManager().getPlugin("Itemizer");
 		if (itemServiceContainer.isPresent()) {
 		    itemService = Sponge.getServiceManager().provide(IItemService.class);
@@ -70,6 +72,7 @@ public class Brawlator {
             logger.warn("Itemizer dependency not found");
         }
 
+        // Load configuration files
 		try {
 			int monsterLoadedCount = loadMonsters();
 			logger.info("Monsters loaded : " + monsterLoadedCount);
@@ -77,10 +80,13 @@ public class Brawlator {
 			logger.info("Spawners loaded : " + spawnerLoadedCount);
 			int lootTableLoadedCount = loadLootTables();
 			logger.info("Loot tables loaded : " + lootTableLoadedCount);
-		} catch (Exception e) {
-			logger.error("Configuration load error : " + e.getMessage());
-		}
+		} catch (IOException e) {
+			logger.error("IOException : " + e.getMessage());
+		} catch (ObjectMappingException e) {
+		    logger.error("ObjectMappingException : " + e.getMessage());
+        }
 
+		// Load Brawlator commands
 		CommandSpec invokeCommand = CommandSpec.builder()
 				.description(Text.of("Invoke a monster whose id is registered into the database"))
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("id"))))
@@ -104,6 +110,7 @@ public class Brawlator {
 				.executor(new ReloadCommand()).build();
 		Sponge.getCommandManager().register(this, reloadCommand, "reload-brawlator");
 
+		// Register spawner routine
 		Task.builder().execute(()-> spawnerAction.updateSpawner()).delay(20, TimeUnit.SECONDS)
 				.interval(10,TimeUnit.SECONDS).name("Spawn monster").submit(this);
 
@@ -140,9 +147,10 @@ public class Brawlator {
 	/**
 	 * Load monsters from configuration
 	 * @return Amount of monsters loaded
-	 * @throws Exception
+     * @throws IOException error when copying default config in config/brawlator/ folder
+     * @throws ObjectMappingException error when the configuration file have an syntax error
 	 */
-	public int loadMonsters() throws Exception {
+	public int loadMonsters() throws IOException, ObjectMappingException {
 		initDefaultConfig("monster.conf");
 		return configurationHandler.setMonsterList(configurationHandler.loadConfiguration(configDir + "/brawlator/monster.conf"));
 	}
@@ -150,9 +158,10 @@ public class Brawlator {
 	/**
 	 * Load spawners from configuration
 	 * @return Amount of spawners loaded
-	 * @throws Exception
+     * @throws IOException error when copying default config in config/brawlator/ folder
+     * @throws ObjectMappingException error when the configuration file have an syntax error
 	 */
-	public int loadSpawners() throws Exception {
+	public int loadSpawners() throws IOException, ObjectMappingException {
 		initDefaultConfig("spawner.conf");
 		return configurationHandler.setSpawnerList(configurationHandler.loadConfiguration(configDir + "/brawlator/spawner.conf"));
 	}
@@ -160,13 +169,18 @@ public class Brawlator {
 	/**
 	 * Load loot tables from configuration
 	 * @return Amount of loot tables loaded
-	 * @throws Exception
+     * @throws IOException error when copying default config in config/brawlator/ folder
+     * @throws ObjectMappingException error when the configuration file have an syntax error
 	 */
-	public int loadLootTables() throws Exception {
+	public int loadLootTables() throws IOException, ObjectMappingException {
 		initDefaultConfig("loot_table.conf");
 		return configurationHandler.setLootTableList(configurationHandler.loadConfiguration(configDir + "/brawlator/loot_table.conf"));
 	}
 
+    /**
+     * Load the default configuration from resources if file is not found
+     * @param path Configuration path within the config/bralawtor/ folder
+     */
 	private void initDefaultConfig(String path){
 		if (Files.notExists(Paths.get(configDir+ "/brawlator/" + path))) {
 			PluginContainer pluginInstance = null;
@@ -188,5 +202,4 @@ public class Brawlator {
 			}
 		}
 	}
-
 }

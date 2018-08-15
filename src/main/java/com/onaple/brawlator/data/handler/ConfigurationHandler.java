@@ -2,7 +2,6 @@ package com.onaple.brawlator.data.handler;
 
 
 import com.google.common.reflect.TypeToken;
-import com.onaple.brawlator.Brawlator;
 import com.onaple.brawlator.data.beans.*;
 import com.onaple.brawlator.serializer.*;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
@@ -16,7 +15,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Singleton
 public class ConfigurationHandler {
@@ -24,7 +24,6 @@ public class ConfigurationHandler {
     private Logger logger;
 
     public ConfigurationHandler() {}
-
 
     private static final List<LootTableBean> lootTableList = new ArrayList<>();
     private static final List<MonsterBean> monsterList = new ArrayList<>();
@@ -74,8 +73,6 @@ public class ConfigurationHandler {
         spawnerList.addAll(configNode.getNode("spawner").getList(TypeToken.of(SpawnerBean.class)));
 
         return spawnerList.size();
-
-
     }
 
     /**
