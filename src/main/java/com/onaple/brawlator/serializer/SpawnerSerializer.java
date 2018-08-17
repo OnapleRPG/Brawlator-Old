@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public class SpawnerSerializer implements TypeSerializer<SpawnerBean> {
     @Inject
-    MonsterAction monsterAction;
+    private MonsterAction monsterAction;
 
     @Override
     public SpawnerBean deserialize(TypeToken<?> type, ConfigurationNode value) throws ObjectMappingException {
@@ -28,9 +28,9 @@ public class SpawnerSerializer implements TypeSerializer<SpawnerBean> {
         MonsterBean monsterBean = monsterBeanOptional.get();
         int quantity = value.getNode("quantity").getInt();
         int range = value.getNode("range").getInt();
-        int spawnrate = value.getNode("spawnrate").getInt();
+        int spawnRate = value.getNode("spawnrate").getInt();
 
-        return new SpawnerBean(new Vector3i(Integer.parseInt(position[0]), Integer.parseInt(position[1]), Integer.parseInt(position[2])), monsterBean, quantity, spawnrate, range);
+        return new SpawnerBean(new Vector3i(Integer.parseInt(position[0]), Integer.parseInt(position[1]), Integer.parseInt(position[2])), monsterBean, quantity, spawnRate, range);
     }
 
     @Override

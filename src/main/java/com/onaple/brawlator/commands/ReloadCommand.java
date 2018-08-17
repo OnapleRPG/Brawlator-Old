@@ -15,6 +15,14 @@ public class ReloadCommand implements CommandExecutor{
     @Inject
     private Brawlator brawlator;
 
+    /**
+     * Reload the different configuration files
+     *
+     * @param src Source of the command
+     * @param args Arguments given to the command
+     * @return Command result
+     * @throws CommandException Command exception
+     */
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
         try{
@@ -51,9 +59,14 @@ public class ReloadCommand implements CommandExecutor{
         return CommandResult.success();
     }
 
-    private void writeError(CommandSource src,Exception e) {
+    /**
+     * Send an error to the command executor
+     * @param src Source of the command
+     * @param e Exception to report
+     */
+    private void writeError(CommandSource src, Exception e) {
         src.sendMessage(Text.builder()
-                .append(Text.builder("configuration reload failed. ").color(TextColors.DARK_RED).build())
+                .append(Text.builder("Configuration reload failed : ").color(TextColors.DARK_RED).build())
                 .append(Text.builder(e.getMessage()).color(TextColors.RED).build())
                 .build());
     }

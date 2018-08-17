@@ -8,11 +8,11 @@ import org.spongepowered.api.event.impl.AbstractEvent;
 /**
  * Event rised when a time of a Spawner come to 0
  */
-public class SpawnEvent extends AbstractEvent {
+public class BrawlatorSpawnEvent extends AbstractEvent {
 
     private final SpawnerBean spawnerBean;
 
-    public SpawnEvent(SpawnerBean spawnerBean) {
+    public BrawlatorSpawnEvent(SpawnerBean spawnerBean) {
         this.spawnerBean = spawnerBean;
     }
 

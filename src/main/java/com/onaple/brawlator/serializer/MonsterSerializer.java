@@ -34,23 +34,15 @@ public class MonsterSerializer implements TypeSerializer<MonsterBean> {
 
         MonsterBuilder monsterBuilder = new MonsterBuilder();
 
+        monsterBuilder.hp(hp);
+        monsterBuilder.attackDamage(damage);
+        monsterBuilder.knockbackResistance(knockbackResistance);
+        monsterBuilder.speed(speed);
         if (name != null) {
             monsterBuilder.name(name);
         }
         if (type != null) {
             monsterBuilder.type(entityType);
-        }
-        if (hp != null) {
-            monsterBuilder.hp(hp);
-        }
-        if (damage != null) {
-            monsterBuilder.attackDamage(damage);
-        }
-        if (knockbackResistance != null) {
-            monsterBuilder.knockbackResistance(knockbackResistance);
-        }
-        if (speed != null) {
-            monsterBuilder.speed(speed);
         }
         if (effects != null) {
             monsterBuilder.effects(effects);
@@ -84,8 +76,7 @@ public class MonsterSerializer implements TypeSerializer<MonsterBean> {
         value.getNode("knockbackResistance").setValue(obj.getKnockbackResistance());
         value.getNode("damage").setValue(obj.getAttackDamage());
 
-        final TypeToken<List<EffectBean>> token = new TypeToken<List<EffectBean>>() {
-        };
+        final TypeToken<List<EffectBean>> token = new TypeToken<List<EffectBean>>() {};
         value.getNode("effects").setValue(token, obj.getEffectLists());
 
         for (Map.Entry<String, EquipementBean> entry : obj.getEquipement().entrySet()) {

@@ -22,34 +22,23 @@ import java.util.Optional;
  */
 public class InvokeCommand implements CommandExecutor {
 	@Inject
-	MonsterAction monsterAction;
+	private MonsterAction monsterAction;
 
 	/**
-	 * Constructeur par defaut
-	 */
-	public InvokeCommand() {
-	}
-
-	/**
-	 * Invoke un monstre en fonction de son Nom
-	 * @param src source qui a effecteur la commande
-	 * @param args liste des argument
-	 * @return resultat de l'execution
-	 * @throws CommandException
+	 * Invoke a monster given its name
+	 * @param src Source which executed the command
+	 * @param args Argument list
+	 * @return Command result
+	 * @throws CommandException Command exception
 	 */
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
 		if (src instanceof Player) {
 			World world = ((Player) src).getWorld();
 			Location location = ((Player) src).getLocation();
-
-
 			Optional<String> idArgs = args.getOne("id");
 			if(idArgs.isPresent()) {
-
 				Optional<MonsterBean> monster = monsterAction.getMonster(idArgs.get());
-
-
 				if (monster.isPresent()) {
 					try {
 						monsterAction.invokeMonster(location, monster.get());
@@ -58,7 +47,6 @@ public class InvokeCommand implements CommandExecutor {
 					} catch (Exception e) {
 						src.sendMessage(Text.builder().append(Text.of(e.getMessage())).color(TextColors.GREEN).build());
 					}
-
 					return CommandResult.success();
 				} else {
 					src.sendMessage(Text.of("MONSTER " + idArgs.get() + " not found."));

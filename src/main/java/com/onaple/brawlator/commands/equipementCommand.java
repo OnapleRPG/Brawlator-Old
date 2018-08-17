@@ -7,13 +7,6 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 
 public class equipementCommand implements CommandExecutor {
-    /**
-     * Command to add Stuff to a monster
-     */
-    public equipementCommand() {
-
-    }
-
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
        /* Optional<MonsterBean> monsterBeanOptional = args.<MonsterBean>getOne("monster");

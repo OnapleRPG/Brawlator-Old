@@ -37,7 +37,7 @@ public class LootTableSerializer implements TypeSerializer<LootTableBean> {
         List<ItemStack> loots = new ArrayList<>();
         value.getNode("items").getChildrenList().forEach(item -> {
             try {
-                loots.add(getItemstack(item));
+                loots.add(deserializeItemStack(item));
             } catch (ObjectMappingException | PluginNotFoundException e) {
                 logger.error(e.getMessage());
             }
@@ -48,7 +48,12 @@ public class LootTableSerializer implements TypeSerializer<LootTableBean> {
         return lootTable;
     }
 
-    public ItemStack getItemstack(ConfigurationNode value) throws ObjectMappingException, PluginNotFoundException {
+    @Override
+    public void serialize(TypeToken<?> type, LootTableBean obj, ConfigurationNode value) throws ObjectMappingException {
+        throw new UnsupportedOperationException("LootTable serialize not implemented.");
+    }
+
+    private ItemStack deserializeItemStack(ConfigurationNode value) throws ObjectMappingException, PluginNotFoundException {
         if (value.getNode("ref").getInt() != 0) {
             Optional<IItemService> optionalIItemService = brawlator.getItemService();
             if (optionalIItemService.isPresent()) {
@@ -69,15 +74,10 @@ public class LootTableSerializer implements TypeSerializer<LootTableBean> {
                 return ItemStack.builder().itemType(itemTypeOptional.get()).build();
             } else {
                 throw new ObjectMappingException("Wrong item name : " + value.getNode("name").getString()
-                        + "check the right minecraft name of the item");
+                        + ". Check the right minecraft name of the item");
             }
         } else {
             return null;
         }
-    }
-
-    @Override
-    public void serialize(TypeToken<?> type, LootTableBean obj, ConfigurationNode value) throws ObjectMappingException {
-        throw new UnsupportedOperationException("LootTable serialize not implemented.");
     }
 }

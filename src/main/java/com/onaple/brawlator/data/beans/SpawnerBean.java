@@ -1,7 +1,7 @@
 package com.onaple.brawlator.data.beans;
 
 import com.flowpowered.math.vector.Vector3i;
-import com.onaple.brawlator.event.SpawnEvent;
+import com.onaple.brawlator.event.BrawlatorSpawnEvent;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 
@@ -113,7 +113,7 @@ public class SpawnerBean {
         } else {
             time = spawnRate;
 
-            SpawnEvent event = new SpawnEvent(this);
+            BrawlatorSpawnEvent event = new BrawlatorSpawnEvent(this);
             Sponge.getEventManager().post(event);
         }
 

@@ -3,7 +3,7 @@ package com.onaple.brawlator;
 import com.onaple.brawlator.commands.ReloadCommand;
 import com.onaple.brawlator.commands.database.SelectMonsterCommand;
 import com.onaple.brawlator.data.handler.ConfigurationHandler;
-import com.onaple.brawlator.event.SpawnEvent;
+import com.onaple.brawlator.event.BrawlatorSpawnEvent;
 import com.onaple.brawlator.action.MonsterAction;
 import com.onaple.brawlator.action.SpawnerAction;
 import com.onaple.brawlator.commands.InvokeCommand;
@@ -38,7 +38,7 @@ import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-@Plugin(id = "brawlator", name = "Brawlator", version = "0.0.1")
+@Plugin(id = "brawlator", name = "Brawlator", version = "1.1.0")
 public class Brawlator {
 	@Inject
 	private Logger logger;
@@ -122,7 +122,7 @@ public class Brawlator {
 	 * @param event Spawning event
 	 */
 	@Listener
-	public void onSpawnEvent(SpawnEvent event){
+	public void onSpawnEvent(BrawlatorSpawnEvent event){
 		try {
 			Optional<Entity> monster = monsterAction.invokeMonster(
 					getWorld("world").getLocation(event.getSpawnerBean().getPosition()),

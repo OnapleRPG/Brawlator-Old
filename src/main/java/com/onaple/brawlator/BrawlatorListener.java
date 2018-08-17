@@ -42,30 +42,13 @@ public class BrawlatorListener {
         }
     }
 
-    @Listener
-    public void onEntityDeath(DestructEntityEvent.Death event){
-
-    }
-
     /**
      * Spawn an itemstack at a given block position
      * @param itemStack Item to spawn
      * @param location Location of the block
+     * @return Entity spawned
      */
-    public static void spawnItemStack(ItemStack itemStack, Location<World> location) {
-        location = location.add(0.5, 0.25, 0.5);
-        Extent extent = location.getExtent();
-        Entity itemEntity = extent.createEntity(EntityTypes.ITEM, location.getPosition());
-        itemEntity.offer(Keys.REPRESENTED_ITEM, itemStack.createSnapshot());
-        extent.spawnEntity(itemEntity);
-    }
-
-    /**
-     * Spawn an itemstack at a given block position
-     * @param itemStack Item to spawn
-     * @param location Location of the block
-     */
-    public Entity createItemEntity(ItemStack itemStack, Location<World> location) {
+    private Entity createItemEntity(ItemStack itemStack, Location<World> location) {
         location = location.add(0.5, 0.25, 0.5);
         Extent extent = location.getExtent();
         Entity itemEntity = extent.createEntity(EntityTypes.ITEM, location.getPosition());

@@ -23,7 +23,7 @@ public class MonsterBuilder {
 
     private List<EffectBean> effectList = new ArrayList<>();
 
-;    private HashMap<String,EquipementBean> equipement = new HashMap<>();
+    private HashMap<String,EquipementBean> equipement = new HashMap<>();
 
     public MonsterBuilder effect(PotionEffectType type, int amplifier){
         this.effectList.add(new EffectBean(type,amplifier));

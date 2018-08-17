@@ -1,6 +1,5 @@
 package com.onaple.brawlator.commands;
 
-import com.onaple.brawlator.Brawlator;
 import com.onaple.brawlator.data.beans.MonsterBean;
 import com.onaple.brawlator.data.beans.SpawnerBean;
 import org.spongepowered.api.block.BlockState;
@@ -25,53 +24,50 @@ import java.util.Optional;
  */
 public class CreateSpawnerCommand implements CommandExecutor {
 
+    /**
+     * Generate a spawner at the given position for the given monster
+     * @param src Source which executed the command
+     * @param args List of arguments
+     * @return Command result
+     * @throws CommandException Command exception
+     */
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
         Optional<Location> position = args.<Location>getOne("position");
         Optional<MonsterBean> monsterBeanOptional = args.<MonsterBean>getOne("monster");
-        Optional<Integer>  range = args.<Integer>getOne("range");
-        Optional<Integer>  spawnRate = args.<Integer>getOne("spawnrate");
-        Optional<Integer> quantity = args.<Integer>getOne("quantity");
+        Optional<Integer> rangeOptional = args.<Integer>getOne("range");
+        Optional<Integer> spawnRateOptional = args.<Integer>getOne("spawnrate");
+        Optional<Integer> quantityOptional = args.<Integer>getOne("quantity");
 
-        int sp,ran,qua;
+        int spawnRate, range, quantity;
 
         BlockRay<World> blockRay = BlockRay.from((Player) src).skipFilter(BlockRay.onlyAirFilter()).build();
         Optional<BlockRayHit<World>> hitOptional = blockRay.end();
-        if(hitOptional.isPresent()){
+        if (hitOptional.isPresent()) {
             hitOptional.get().getBlockPosition();
             src.sendMessage(Text.of("look at block at " + hitOptional.get().getBlockPosition().toString()));
-        if (!monsterBeanOptional.isPresent()) {
+            if (!monsterBeanOptional.isPresent()) {
+                return CommandResult.empty();
+            }
+            spawnRate = spawnRateOptional.orElse(5); // Default rate if spawnRateOptional is empty
+            range = rangeOptional.orElse(20); // Default range if rangeOptional is empty
+            quantity = quantityOptional.orElse(5); // Default quantity if quantityOptional is empty
+
+            SpawnerBean spawnerBean = new SpawnerBean(hitOptional.get().getBlockPosition(),
+                    monsterBeanOptional.get(), quantity, spawnRate, range);
+
+            hitOptional.get().getLocation().setBlock(BlockState.builder().blockType(BlockTypes.BARRIER).build());
+
+            if(src instanceof Player){
+                src.sendMessage(Text.builder().append(Text.of("Spawner successfully created with the following parameters :"))
+                        .color(TextColors.GREEN).build());
+                src.sendMessage(Text.builder().append(Text.of(spawnerBean.toString())).color(TextColors.GOLD).build());
+            }
+
+            return CommandResult.builder().build();
+        } else {
+            src.sendMessage(Text.builder("You must look at the block you want to change to a spawner").color(TextColors.RED).build());
             return CommandResult.empty();
         }
-        if (spawnRate.isPresent()) {
-            sp = spawnRate.get();
-        } else {
-            sp = 5;//default value if spawnRate is empty
-        }
-        if (quantity.isPresent()) {
-            qua = quantity.get();
-        } else {
-            qua = 5;//default value if quantity is empty
-        }
-        if (range.isPresent()) {
-            ran = range.get();
-        } else {
-            ran = 20;//default value if range is empty
-        }
-        SpawnerBean spawnerBean = new SpawnerBean(hitOptional.get().getBlockPosition(),monsterBeanOptional.get(),qua,sp,ran);
-        //SpawnerDAO.insert(spawnerBean);
-
-        hitOptional.get().getLocation().setBlock(BlockState.builder().blockType(BlockTypes.BARRIER).build());
-
-        if( src instanceof Player){
-            src.sendMessage(Text.builder().append(Text.of("Spawner successfully created with this parameter"))
-                    .color(TextColors.GREEN).build());
-            src.sendMessage(Text.builder().append(Text.of(spawnerBean.toString())).color(TextColors.GOLD).build());
-        }
-
-        return CommandResult.builder().build();
-        }
-        src.sendMessage(Text.builder("You must look at the block you want to change to a spawner").color(TextColors.RED).build());
-        return  CommandResult.empty();
     }
 }
