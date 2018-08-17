@@ -105,36 +105,38 @@ public class SpawnerAction {
      * @return
      */
     private int getEntities(SpawnerBean spawnerBean) {
-        int qte = 0;
+        int quantity = 0;
         try {
-            qte = Brawlator.getWorld("world").getLocation(spawnerBean.getPosition()).getExtent().getEntities(
-                    entity -> compare(entity, spawnerBean)).size();
+            quantity = Brawlator.getWorld("world").getLocation(spawnerBean.getPosition()).getExtent().getEntities(
+                    entity -> compareSpawnerToEntity(entity, spawnerBean)).size();
         } catch (WorldNotFoundException e) {
             logger.error(e.toString());
         }
-        logger.info("there is " + qte + " entities near " + spawnerBean.getPosition().toString());
-        return qte;
+        return quantity;
     }
 
     /**
-     * Check if there is enough entity spawned  around a spawner
+     * Check if there are enough entities spawned around a spawner
      *
-     * @param spawnerBean the spawner to check
-     * @return true if is enough false if not
+     * @param spawnerBean The spawner to check
+     * @return true if is enough, else false
      */
     private Boolean isEnoughEntity(SpawnerBean spawnerBean) {
         return getEntities(spawnerBean) >= spawnerBean.getQuantity();
     }
 
-    private boolean compare(Entity entity, SpawnerBean spawnerBean) {
+    /**
+     * Check that an entity is close enough from a spawner and that the entity matches the spawner content
+     * @param entity Entity to compare
+     * @param spawnerBean Spawner to compare
+     * @return Boolean true if entity can be from the spawner
+     */
+    private boolean compareSpawnerToEntity(Entity entity, SpawnerBean spawnerBean) {
         Optional<Text> nameOpt = entity.get(Keys.DISPLAY_NAME);
         if (entity.getLocation().getPosition().distance(spawnerBean.getPosition().toDouble()) < spawnerBean.getRange() * 1.50) {
             if (nameOpt.isPresent()) {
                 Text name = nameOpt.get();
-                boolean eqname = name.toPlain().equals(spawnerBean.getMonsterBean().getName());
-                return eqname;
-            } else {
-                return false;
+                return name.toPlain().equals(spawnerBean.getMonsterBean().getName());
             }
         }
         return false;
