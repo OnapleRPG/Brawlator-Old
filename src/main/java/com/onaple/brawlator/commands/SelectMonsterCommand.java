@@ -1,4 +1,4 @@
-package com.onaple.brawlator.commands.database;
+package com.onaple.brawlator.commands;
 
 import com.onaple.brawlator.action.MonsterAction;
 import com.onaple.brawlator.data.beans.MonsterBean;
@@ -7,7 +7,6 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 

@@ -58,11 +58,9 @@ public class CreateSpawnerCommand implements CommandExecutor {
 
             hitOptional.get().getLocation().setBlock(BlockState.builder().blockType(BlockTypes.BARRIER).build());
 
-            if(src instanceof Player){
-                src.sendMessage(Text.builder().append(Text.of("Spawner successfully created with the following parameters :"))
-                        .color(TextColors.GREEN).build());
-                src.sendMessage(Text.builder().append(Text.of(spawnerBean.toString())).color(TextColors.GOLD).build());
-            }
+            src.sendMessage(Text.builder().append(Text.of("Spawner successfully created with the following parameters :"))
+                    .color(TextColors.GREEN).build());
+            src.sendMessage(Text.builder().append(Text.of(spawnerBean.toString())).color(TextColors.GOLD).build());
 
             return CommandResult.builder().build();
         } else {

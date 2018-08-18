@@ -38,7 +38,7 @@ public class MonsterAction {
      * @param monster Bean of the monster and his characteristic
      * @return Optional entity spawned
      */
-    public Optional<Entity> invokeMonster(Location location, MonsterBean monster) throws EntityTypeNotFound {
+    public Optional<Entity> invokeMonster(Location location, MonsterBean monster) {
         //  Creating entity
         Optional<EntityType> entityTypeOptional = Sponge.getRegistry().getType(EntityType.class,monster.getType());
         if (entityTypeOptional.isPresent()) {

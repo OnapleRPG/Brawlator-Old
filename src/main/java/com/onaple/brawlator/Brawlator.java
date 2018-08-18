@@ -1,7 +1,7 @@
 package com.onaple.brawlator;
 
 import com.onaple.brawlator.commands.ReloadCommand;
-import com.onaple.brawlator.commands.database.SelectMonsterCommand;
+import com.onaple.brawlator.commands.SelectMonsterCommand;
 import com.onaple.brawlator.data.handler.ConfigurationHandler;
 import com.onaple.brawlator.event.BrawlatorSpawnEvent;
 import com.onaple.brawlator.action.MonsterAction;
@@ -137,7 +137,7 @@ public class Brawlator {
 			if(!monster.isPresent()){
 				logger.error("Monster invocation failed !");
 			}
-		} catch (Exception e) {
+		} catch (WorldNotFoundException e) {
 			logger.warn(e.getMessage());
 		}
 	}
