@@ -26,9 +26,6 @@ import java.util.*;
 
 @Singleton
 public class MonsterAction {
-    @Inject
-    private Logger logger;
-
     public MonsterAction() {}
 
     @Inject
@@ -42,30 +39,21 @@ public class MonsterAction {
      * @return Optional entity spawned
      */
     public Optional<Entity> invokeMonster(Location location, MonsterBean monster) throws EntityTypeNotFound {
-
-        //  Création de l'entité
-        logger.info(monster.toString());
+        //  Creating entity
         Optional<EntityType> entityTypeOptional = Sponge.getRegistry().getType(EntityType.class,monster.getType());
-
-        if( entityTypeOptional.isPresent()){
+        if (entityTypeOptional.isPresent()) {
             Entity baseEntity = location.createEntity(entityTypeOptional.get());
-
             Entity customedEntity  = editCharacteristics( baseEntity, monster.getName(), monster.getHp(), monster.getAttackDamage(), monster.getSpeed(), monster.getKnockbackResistance());
-
-            //  Gestion des effets de potion à donner au monstre
+            // Adding effects to the monster
             Entity effectedEntity = addEffects(customedEntity, monster.getEffectLists());
-
-            //  Gestion des objets appartenant au monstre
-            Entity equipedEntity = equip( effectedEntity, monster);
-
-
-            /** Spawn de l'entité dans le monde*/
+            // Equiping monster with items
+            Entity equipedEntity = equip(effectedEntity, monster);
+            // Spawning entity within world
             location.spawnEntity(equipedEntity);
-            //  Spawn de l'entité dans le monde
-            return Optional.ofNullable(equipedEntity);
+            return Optional.of(equipedEntity);
+        } else {
+            return Optional.empty();
         }
-
-        return Optional.empty();
     }
 
 

@@ -146,9 +146,9 @@ public class Brawlator {
 	 * Get the current world
 	 * @return the world
 	 */
-	public static World getWorld(String WorldName) throws WorldNotFoundException {
-		Optional<World> worldOptional = Sponge.getServer().getWorld(WorldName);
-		return worldOptional.orElseThrow(() -> new WorldNotFoundException(WorldName));
+	public static World getWorld(String worldName) throws WorldNotFoundException {
+		Optional<World> worldOptional = Sponge.getServer().getWorld(worldName);
+		return worldOptional.orElseThrow(() -> new WorldNotFoundException(worldName));
 	}
 
 	/**
