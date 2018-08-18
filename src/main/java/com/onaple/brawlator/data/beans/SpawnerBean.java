@@ -115,7 +115,5 @@ public class SpawnerBean {
             BrawlatorSpawnEvent event = new BrawlatorSpawnEvent(this);
             Sponge.getEventManager().post(event);
         }
-
     }
-
 }

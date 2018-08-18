@@ -68,17 +68,10 @@ public class MonsterBean {
         this.speed = speed;
         this.attackDamage = attackDamage;
         this.knockbackResistance = knockbackResistance;
-
         this.effectLists = effectLists;
         this.equipement = equipement;
     }
 
-    public void addEquipement(String emplacement,EquipmentBean equipementBean){
-        this.equipement.put(emplacement,equipementBean);
-
-  //      this.effectLists = effectLists;
-
-    }
 
     public HashMap<String, EquipmentBean> getEquipement() {
         return equipement;
@@ -88,7 +81,9 @@ public class MonsterBean {
         return new MonsterBuilder();
     }
 
-
+    public void addEquipement(String emplacement, EquipmentBean equipementBean) {
+        this.equipement.put(emplacement, equipementBean);
+    }
     public void addEffect(EffectBean effect){
         this.effectLists.add(effect);
     }

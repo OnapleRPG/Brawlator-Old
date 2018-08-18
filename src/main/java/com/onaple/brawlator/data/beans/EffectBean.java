@@ -30,9 +30,4 @@ public class EffectBean {
         this.type = type;
         this.amplifier = amplifier;
     }
-
-
-
-
-
 }
