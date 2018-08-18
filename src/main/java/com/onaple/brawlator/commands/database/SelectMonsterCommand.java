@@ -17,30 +17,25 @@ import java.util.Optional;
 
 public class SelectMonsterCommand implements CommandExecutor {
 	@Inject
-	MonsterAction monsterAction;
-
-	public SelectMonsterCommand() {}
+	private MonsterAction monsterAction;
 
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-		if (src instanceof Player && src.hasPermission("database_read")) {
-
-			Optional<String> idArg = args.getOne("name");
-			if (idArg.isPresent()) {
-				Optional<MonsterBean> monsterOptional = monsterAction.getMonster(idArg.get());
-				if (monsterOptional.isPresent()) {
-					MonsterBean monster = monsterOptional.get();
-					 src.sendMessage(Text.of("MONSTER " + monster.getId() + " : " + monster.getName() + " | " +
-							monster.getType() + " | " + monster.getHp() + " | " + monster.getAttackDamage() + " | " + monster.getSpeed() + " | " +
-							monster.getKnockbackResistance()));
-					return CommandResult.success();
-				} else {
-					src.sendMessage(Text.of("MONSTER " + idArg.get() + " not found"));
-				}
-			}
-		} else {
-			src.sendMessage(Text.builder("Monster id is missing").color(TextColors.RED).build());
-		}
+		Optional<String> idArg = args.getOne("name");
+        if (idArg.isPresent()) {
+            Optional<MonsterBean> monsterOptional = monsterAction.getMonster(idArg.get());
+            if (monsterOptional.isPresent()) {
+                MonsterBean monster = monsterOptional.get();
+                src.sendMessage(Text.of("MONSTER " + monster.getId() + " : " + monster.getName() + " | " +
+                        monster.getType() + " | " + monster.getHp() + " | " + monster.getAttackDamage() + " | " + monster.getSpeed() + " | " +
+                        monster.getKnockbackResistance()));
+                return CommandResult.success();
+            } else {
+                src.sendMessage(Text.of("MONSTER " + idArg.get() + " not found"));
+            }
+        } else {
+            src.sendMessage(Text.builder("Monster id is missing").color(TextColors.RED).build());
+        }
 		return CommandResult.empty();
 	}
 }

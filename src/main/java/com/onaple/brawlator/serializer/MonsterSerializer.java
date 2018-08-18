@@ -2,7 +2,7 @@ package com.onaple.brawlator.serializer;
 
 import com.google.common.reflect.TypeToken;
 import com.onaple.brawlator.data.beans.EffectBean;
-import com.onaple.brawlator.data.beans.EquipementBean;
+import com.onaple.brawlator.data.beans.EquipmentBean;
 import com.onaple.brawlator.data.beans.MonsterBean;
 import com.onaple.brawlator.data.beans.MonsterBuilder;
 import ninja.leaping.configurate.ConfigurationNode;
@@ -26,11 +26,11 @@ public class MonsterSerializer implements TypeSerializer<MonsterBean> {
 
         List<EffectBean> effects = value.getNode("effects").getList(TypeToken.of(EffectBean.class));
 
-        EquipementBean hand = value.getNode("equipement", "hand").getValue(TypeToken.of(EquipementBean.class));
-        EquipementBean helmet = value.getNode("equipement", "helmet").getValue(TypeToken.of(EquipementBean.class));
-        EquipementBean chestplate = value.getNode("equipement", "chestplate").getValue(TypeToken.of(EquipementBean.class));
-        EquipementBean leggings = value.getNode("equipement", "leggings").getValue(TypeToken.of(EquipementBean.class));
-        EquipementBean boots = value.getNode("equipement", "boots").getValue(TypeToken.of(EquipementBean.class));
+        EquipmentBean hand = value.getNode("equipement", "hand").getValue(TypeToken.of(EquipmentBean.class));
+        EquipmentBean helmet = value.getNode("equipement", "helmet").getValue(TypeToken.of(EquipmentBean.class));
+        EquipmentBean chestplate = value.getNode("equipement", "chestplate").getValue(TypeToken.of(EquipmentBean.class));
+        EquipmentBean leggings = value.getNode("equipement", "leggings").getValue(TypeToken.of(EquipmentBean.class));
+        EquipmentBean boots = value.getNode("equipement", "boots").getValue(TypeToken.of(EquipmentBean.class));
 
         MonsterBuilder monsterBuilder = new MonsterBuilder();
 
@@ -79,8 +79,8 @@ public class MonsterSerializer implements TypeSerializer<MonsterBean> {
         final TypeToken<List<EffectBean>> token = new TypeToken<List<EffectBean>>() {};
         value.getNode("effects").setValue(token, obj.getEffectLists());
 
-        for (Map.Entry<String, EquipementBean> entry : obj.getEquipement().entrySet()) {
-            value.getNode("equipement", entry.getKey()).setValue(TypeToken.of(EquipementBean.class), entry.getValue());
+        for (Map.Entry<String, EquipmentBean> entry : obj.getEquipement().entrySet()) {
+            value.getNode("equipement", entry.getKey()).setValue(TypeToken.of(EquipmentBean.class), entry.getValue());
         }
     }
 }

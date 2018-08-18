@@ -1,7 +1,7 @@
 package com.onaple.brawlator.action;
 
 import com.onaple.brawlator.data.beans.EffectBean;
-import com.onaple.brawlator.data.beans.EquipementBean;
+import com.onaple.brawlator.data.beans.EquipmentBean;
 import com.onaple.brawlator.data.beans.MonsterBean;
 import com.onaple.brawlator.data.handler.ConfigurationHandler;
 import com.onaple.brawlator.exception.EntityTypeNotFound;
@@ -118,7 +118,7 @@ public class MonsterAction {
      * Add objects to a monster , and send back the entity
      * @param entity Monster to equip
      * @param items Hashmap of objects to equip with their emplacements
-     * @@return Modified entity
+     * @return Modified entity
      */
     private Entity addItems(Entity entity, HashMap<String, ItemType> items) {
         if (entity instanceof ArmorEquipable ) {
@@ -156,8 +156,8 @@ public class MonsterAction {
      */
     private Entity equip(Entity entity, MonsterBean monster){
         HashMap<String, ItemType> equipement = new HashMap<>();
-        for(Map.Entry<String,EquipementBean> entry : monster.getEquipement().entrySet()){
-           Optional<ItemType> itemType = EquipementAction.getEquipement(entry.getValue());
+        for(Map.Entry<String,EquipmentBean> entry : monster.getEquipement().entrySet()){
+           Optional<ItemType> itemType = EquipementAction.getEquipment(entry.getValue());
            if(itemType.isPresent()){
                equipement.put(entry.getKey(),itemType.get());
            }

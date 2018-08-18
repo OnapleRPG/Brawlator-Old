@@ -1,10 +1,10 @@
 package com.onaple.brawlator.data.beans;
 
-public class EquipementBean {
-    /** Nom de l'Equpiement **/
+public class EquipmentBean {
+    /** Equipment name **/
     private String name;
 
-    /** Id du modifier **/
+    /** Modifier id **/
     private int modifierId;
 
     public String getName() {
@@ -23,7 +23,7 @@ public class EquipementBean {
         this.modifierId = modifierId;
     }
 
-    public EquipementBean(String name, int modifierId) {
+    public EquipmentBean(String name, int modifierId) {
         this.name = name;
         this.modifierId = modifierId;
     }

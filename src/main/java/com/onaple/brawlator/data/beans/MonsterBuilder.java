@@ -23,7 +23,7 @@ public class MonsterBuilder {
 
     private List<EffectBean> effectList = new ArrayList<>();
 
-    private HashMap<String,EquipementBean> equipement = new HashMap<>();
+    private HashMap<String,EquipmentBean> equipement = new HashMap<>();
 
     public MonsterBuilder effect(PotionEffectType type, int amplifier){
         this.effectList.add(new EffectBean(type,amplifier));
@@ -62,7 +62,7 @@ public class MonsterBuilder {
         this.knockbackResistance = knockbackResistance;
         return  this;
     }
-    public MonsterBuilder addEquipement(String emplacement,EquipementBean equipement){
+    public MonsterBuilder addEquipement(String emplacement,EquipmentBean equipement){
         this.equipement.put(emplacement,equipement);
         return this;
     }

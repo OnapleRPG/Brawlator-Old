@@ -86,7 +86,20 @@ public class Brawlator {
 		    logger.error("ObjectMappingException : " + e.getMessage());
         }
 
-		// Load Brawlator commands
+        // Register Brawlator commands
+        registerCommands();
+
+		// Register spawner routine
+		Task.builder().execute(()-> spawnerAction.updateSpawner()).delay(20, TimeUnit.SECONDS)
+				.interval(10,TimeUnit.SECONDS).name("Spawn monster").submit(this);
+
+		logger.info("Brawlator plugin initialized.");
+	}
+
+	/**
+	 * Register the different Brawlator commands to the command manager
+	 */
+	private void registerCommands() {
 		CommandSpec invokeCommand = CommandSpec.builder()
 				.description(Text.of("Invoke a monster whose id is registered into the database"))
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("id"))))
@@ -109,12 +122,6 @@ public class Brawlator {
 				.permission("brawlator.command.reload")
 				.executor(new ReloadCommand()).build();
 		Sponge.getCommandManager().register(this, reloadCommand, "reload-brawlator");
-
-		// Register spawner routine
-		Task.builder().execute(()-> spawnerAction.updateSpawner()).delay(20, TimeUnit.SECONDS)
-				.interval(10,TimeUnit.SECONDS).name("Spawn monster").submit(this);
-
-		logger.info("Brawlator plugin initialized.");
 	}
 
 	/**

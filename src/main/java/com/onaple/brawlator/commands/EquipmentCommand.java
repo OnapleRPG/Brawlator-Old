@@ -6,14 +6,14 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 
-public class equipementCommand implements CommandExecutor {
+public class EquipmentCommand implements CommandExecutor {
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
        /* Optional<MonsterBean> monsterBeanOptional = args.<MonsterBean>getOne("monster");
 
         Optional<String> emplacementOptionnal = args.<String>getOne("emplacement");
 
-        Optional<EquipementBean> equipementBean = args.<EquipementBean>getOne("equipment");
+        Optional<EquipmentBean> equipementBean = args.<EquipmentBean>getOne("equipment");
 
         if (monsterBeanOptional.isPresent()) {
             MonsterBean monsterBean = monsterBeanOptional.get();

@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 /**
  * Command to add an effect to a monster
  */
-public class effectCommand implements CommandExecutor {
+public class EffectCommand implements CommandExecutor {
 
     @Inject
     private Logger logger;

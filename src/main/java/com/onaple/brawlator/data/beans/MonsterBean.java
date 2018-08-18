@@ -22,7 +22,7 @@ public class MonsterBean {
     /** Effets appliquer au monstre **/
     private List<EffectBean> effectLists;
     /** Eqipement du monstre**/
-    private HashMap<String,EquipementBean> equipement;
+    private HashMap<String,EquipmentBean> equipement;
 
     public MonsterBean() {
     }
@@ -61,7 +61,7 @@ public class MonsterBean {
     public void setEffectLists(List<EffectBean> effectLists) { this.effectLists = effectLists; }
 
     public MonsterBean(String name, String type, double hp, double speed, double attackDamage, int knockbackResistance,
-                       List<EffectBean> effectLists,HashMap<String, EquipementBean> equipement) {
+                       List<EffectBean> effectLists,HashMap<String, EquipmentBean> equipement) {
         this.name = name;
         this.type = type;
         this.hp = hp;
@@ -73,14 +73,14 @@ public class MonsterBean {
         this.equipement = equipement;
     }
 
-    public void addEquipement(String emplacement,EquipementBean equipementBean){
+    public void addEquipement(String emplacement,EquipmentBean equipementBean){
         this.equipement.put(emplacement,equipementBean);
 
   //      this.effectLists = effectLists;
 
     }
 
-    public HashMap<String, EquipementBean> getEquipement() {
+    public HashMap<String, EquipmentBean> getEquipement() {
         return equipement;
     }
 

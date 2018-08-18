@@ -1,6 +1,6 @@
 package com.onaple.brawlator.commands.element;
 
-import com.onaple.brawlator.data.beans.EquipementBean;
+import com.onaple.brawlator.data.beans.EquipmentBean;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.ArgumentParseException;
@@ -33,7 +33,7 @@ public class EquipementCommandElement extends CommandElement {
         if(idOptionnal.isPresent()){
             id = parseInt(idOptionnal.get());
         }
-        return new EquipementBean(equipementNameInput, id);
+        return new EquipmentBean(equipementNameInput, id);
     }
 
     private int parseInt(String input) throws ArgumentParseException {

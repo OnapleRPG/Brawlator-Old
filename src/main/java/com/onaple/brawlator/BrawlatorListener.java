@@ -37,22 +37,8 @@ public class BrawlatorListener {
                 String name = nameOptional.get().toPlain();
                 logger.info(name);
                 lootAction.getloot(name).forEach(itemStack -> event.getEntities()
-                        .add(createItemEntity(itemStack, entity.getLocation())));
+                        .add(lootAction.createItemEntity(itemStack, entity.getLocation())));
             }
         }
-    }
-
-    /**
-     * Spawn an itemstack at a given block position
-     * @param itemStack Item to spawn
-     * @param location Location of the block
-     * @return Entity spawned
-     */
-    private Entity createItemEntity(ItemStack itemStack, Location<World> location) {
-        location = location.add(0.5, 0.25, 0.5);
-        Extent extent = location.getExtent();
-        Entity itemEntity = extent.createEntity(EntityTypes.ITEM, location.getPosition());
-        itemEntity.offer(Keys.REPRESENTED_ITEM, itemStack.createSnapshot());
-        return itemEntity;
     }
 }

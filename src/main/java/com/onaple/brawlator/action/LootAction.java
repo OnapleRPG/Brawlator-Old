@@ -6,9 +6,15 @@ import com.onaple.brawlator.Brawlator;
 import com.onaple.itemizer.service.IItemService;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
+import org.spongepowered.api.world.extent.Extent;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -53,5 +59,19 @@ public class LootAction {
         }
         logger.warn("No loot table defined");
         return loots;
+    }
+
+    /**
+     * Spawn an itemstack at a given block position
+     * @param itemStack Item to spawn
+     * @param location Location of the block
+     * @return Entity spawned
+     */
+    public Entity createItemEntity(ItemStack itemStack, Location<World> location) {
+        location = location.add(0.5, 0.25, 0.5);
+        Extent extent = location.getExtent();
+        Entity itemEntity = extent.createEntity(EntityTypes.ITEM, location.getPosition());
+        itemEntity.offer(Keys.REPRESENTED_ITEM, itemStack.createSnapshot());
+        return itemEntity;
     }
 }

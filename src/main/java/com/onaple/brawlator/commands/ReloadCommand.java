@@ -70,6 +70,4 @@ public class ReloadCommand implements CommandExecutor{
                 .append(Text.builder(e.getMessage()).color(TextColors.RED).build())
                 .build());
     }
-
-
 }

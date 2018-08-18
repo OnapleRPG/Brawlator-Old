@@ -98,7 +98,7 @@ public class ConfigurationHandler {
     public int setMonsterList(CommentedConfigurationNode configNode) throws ObjectMappingException {
         TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(MonsterBean.class), new MonsterSerializer())
                 .registerType(TypeToken.of(EffectBean.class), new EffectSerializer())
-                .registerType(TypeToken.of(EquipementBean.class), new EquipementSerialiser());
+                .registerType(TypeToken.of(EquipmentBean.class), new EquipementSerialiser());
         monsterList.clear();
         monsterList.addAll(configNode.getNode("monster").getList(TypeToken.of(MonsterBean.class)));
         return monsterList.size();
