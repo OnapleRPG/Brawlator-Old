@@ -109,7 +109,6 @@ public class SpawnerBean {
     public void updateTime() {
         if (this.time > 0) {
             time--;
-            logger.info("Spawner at " + position.toString() + " have " + time);
         } else {
             time = spawnRate;
 

@@ -52,7 +52,7 @@ public class ConfigurationHandler {
         CommentedConfigurationNode configNode = null;
         try {
             configNode = ConfigLoader.load();
-            logger.info(configName + " was loaded successfully");
+            logger.info("{} was loaded successfully", configName);
         } catch (IOException e) {
             throw new IOException("Error while loading configuration " + configName + " : " + e.getMessage());
         }

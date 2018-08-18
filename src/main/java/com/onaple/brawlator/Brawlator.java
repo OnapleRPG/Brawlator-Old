@@ -75,15 +75,15 @@ public class Brawlator {
         // Load configuration files
 		try {
 			int monsterLoadedCount = loadMonsters();
-			logger.info("Monsters loaded : " + monsterLoadedCount);
+			logger.info("Monsters loaded : {}", monsterLoadedCount);
 			int spawnerLoadedCount = loadSpawners();
-			logger.info("Spawners loaded : " + spawnerLoadedCount);
+			logger.info("Spawners loaded : {}", spawnerLoadedCount);
 			int lootTableLoadedCount = loadLootTables();
-			logger.info("Loot tables loaded : " + lootTableLoadedCount);
+			logger.info("Loot tables loaded : {}", lootTableLoadedCount);
 		} catch (IOException e) {
-			logger.error("IOException : " + e.getMessage());
+			logger.error("IOException : {}", e.getMessage());
 		} catch (ObjectMappingException e) {
-		    logger.error("ObjectMappingException : " + e.getMessage());
+		    logger.error("ObjectMappingException : {}", e.getMessage());
         }
 
         // Register Brawlator commands
@@ -194,12 +194,12 @@ public class Brawlator {
 			try {
 				pluginInstance = Sponge.getPluginManager().getPlugin("brawlator").orElseThrow(() -> new PluginNotFoundException("brawlator"));
 				Optional<Asset> itemsDefaultConfigFile = pluginInstance.getAsset(path);
-				logger.info("No config file set for " + path + " default config will be loaded");
+				logger.info("No config file set for {} default config will be loaded", path);
 				if (itemsDefaultConfigFile.isPresent()) {
 					try {
 						itemsDefaultConfigFile.get().copyToDirectory(Paths.get(configDir+"/brawlator/"));
 					} catch (IOException e) {
-						Itemizer.getLogger().error("Error while setting default configuration : " + e.getMessage());
+						Itemizer.getLogger().error("Error while setting default configuration : {}", e.getMessage());
 					}
 				} else {
 					logger.warn("Item default config not found");
