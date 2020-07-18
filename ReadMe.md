@@ -1,4 +1,8 @@
 # Brawlator ![Build Status](https://travis-ci.org/OnapleRPG/Brawlator.svg?branch=master) ![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=Brawlator&metric=alert_status) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+## Project discontinued
+We decided to entirely redo Brawlator from scratch! [Checkout the new one](https://github.com/OnapleRPG/Brawlator)!
+
 ## Introduction
 Brawlator is a **sponge** plugin. It provide a system able to create and manage **customs** monsters based on **minecraft entity**. Monsters can be created by in game **command lines** and are stored in a **configuration file**.
 
